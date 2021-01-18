@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,8 +12,14 @@ func main() {
 	// Registers a function to a path on the default serve mux (http handler)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Hello World")
-		data, _ := ioutil.ReadAll(r.Body)
-		log.Printf("Data %s\n", data)
+		data, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("Ooops"))
+			return
+		}
+		log.Printf("Data : %s\n", data)
+		fmt.Fprintf(w, "Hello %s", data)
 	})
 
 	http.HandleFunc("/goodbye", func(http.ResponseWriter, *http.Request) {
