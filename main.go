@@ -5,11 +5,15 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	mux "github.com/gorilla/mux"
 )
 
 func main() {
-	l := log.New(os.Stdout, "product-api", log.LstdFlags)
+	l := log.New(os.Stdout, "microservice-prototype", log.LstdFlags)
 	hh := handlers.NewHello(l)
+	gorillaMux := mux.NewRouter()
+	gorillaMux.HandleFunc("/", hh.ServeHTTP)
 
 	sm := http.NewServeMux()
 	sm.Handle("/", hh)
