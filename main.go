@@ -1,7 +1,7 @@
 package main
 
 import (
-	"example/handlers"
+	"handlers"
 	"log"
 	"net/http"
 	"os"
