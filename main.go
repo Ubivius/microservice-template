@@ -1,11 +1,12 @@
 package main
 
 import (
-	"handlers"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/Ubivius/microservice-template/handlers"
 )
 
 func main() {
