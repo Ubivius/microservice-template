@@ -1,4 +1,8 @@
-module example
+module github.com/Ubivius/microservice-template/
+
+go 1.15
+
+/*module example
 
 go 1.15
 
@@ -10,3 +14,4 @@ require (
 	github.com/gorilla/mux v1.8.0
 	handlers v1.0.0
 )
+*/
