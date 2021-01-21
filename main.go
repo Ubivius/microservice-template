@@ -6,15 +6,18 @@ import (
 	"net/http"
 	"os"
 
-	mux "github.com/gorilla/mux"
+	"github.com/gorilla/mux"
+	"go.uber.org/zap"
 )
 
 func main() {
+	logger, _ := zap.NewProduction()
+	defer logger.Sync()
 	l := log.New(os.Stdout, "microservice-prototype", log.LstdFlags)
-	// hh := handlers.NewHello(l)
+	helloHandler := handlers.NewHello(l)
 	achievementHandlers := handlers.NewAchievement(l)
 	gorillaMux := mux.NewRouter()
-	gorillaMux.HandleFunc("/", handlers.NewHello(l).ServeHTTP)
+	gorillaMux.HandleFunc("/", helloHandler.ServeHTTP)
 	gorillaMux.HandleFunc("/achievement", achievementHandlers.ServeHTTP)
 
 	// All that is required to run a web service
