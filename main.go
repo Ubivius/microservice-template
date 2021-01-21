@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"bytes"
 	"handlers"
 	"log"
 	"net/http"
@@ -20,7 +20,7 @@ func main() {
 		Addresses: []string{
 			"http://localhost:9200",
 			"http://localhost:9201",
-		}
+		},
 	}
 
 	es, err := elasticsearch.NewClient(cfg)
@@ -32,6 +32,7 @@ func main() {
 	b.WriteString(`{"Users" : "Jeremi"}`)
 
 	res, _ := es.Index("method1", &b)
+	l.Println(res)
 
 	// Handlers
 	helloHandler := handlers.NewHello(l)
