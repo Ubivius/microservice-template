@@ -7,12 +7,9 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
-	"go.uber.org/zap"
 )
 
 func main() {
-	logger, _ := zap.NewProduction()
-	defer logger.Sync()
 	l := log.New(os.Stdout, "microservice-prototype", log.LstdFlags)
 	helloHandler := handlers.NewHello(l)
 	achievementHandlers := handlers.NewAchievement(l)
