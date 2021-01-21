@@ -1,21 +1,19 @@
 package main
 
 import (
+	"example/handlers"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
-	// Handle func is a convenience method on the http package.
-	// Registers a function to a path on the default serve mux (http handler)
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	l := log.New(os.Stdout, "product-api", log.LstdFlags)
+	hh := handlers.NewHello()
 
-	})
-
-	http.HandleFunc("/goodbye", func(http.ResponseWriter, *http.Request) {
-		log.Println("Goodbye")
-	})
+	sm := http.NewServeMux()
+	sm.Handle("/", hh)
 
 	// All that is required to run a web service
-	http.ListenAndServe(":9090", nil)
+	http.ListenAndServe(":9090", sm)
 }
