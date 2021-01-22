@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -30,4 +31,8 @@ func main() {
 		ReadTimeout: 1 * time.Second,
 	}
 	server.ListenAndServe()
+
+	// Server shutdown
+	timeoutContext := context.WithDeadline(context.Background(), 30*time.Second)
+	server.Shutdown(timeoutContext)
 }
