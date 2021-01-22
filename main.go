@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"time"
 
 	"github.com/Ubivius/microservice-template/handlers"
@@ -30,9 +31,22 @@ func main() {
 		IdleTimeout: 120 * time.Second,
 		ReadTimeout: 1 * time.Second,
 	}
-	server.ListenAndServe()
+
+	go func() {
+		err := server.ListenAndServe()
+		if err != nil {
+			l.Fatal(err)
+		}
+	}()
+
+	signalChannel := make(chan os.Signal)
+	signal.Notify(signalChannel, os.Interrupt)
+	signal.Notify(signalChannel, os.Kill)
+	receivedSignal := <-signalChannel
+
+	l.Println("Received terminate, beginning graceful shutdown", receivedSignal)
 
 	// Server shutdown
-	timeoutContext := context.WithDeadline(context.Background(), 30*time.Second)
+	timeoutContext, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	server.Shutdown(timeoutContext)
 }
