@@ -27,7 +27,7 @@ func (products *Products) ToJSON(w io.Writer) error {
 }
 
 // Returns the list of products
-func GetProducts() []*Product {
+func GetProducts() Products {
 	return productList
 }
 
