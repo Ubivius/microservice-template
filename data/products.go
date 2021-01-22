@@ -16,6 +16,10 @@ type Product struct {
 	DeletedOn   string
 }
 
+func GetProducts() []*Product {
+	return productList
+}
+
 // Products is a collection of Product
 type Products []*Product
 

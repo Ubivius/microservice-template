@@ -16,13 +16,11 @@ func main() {
 	l := log.New(os.Stdout, "product-api", log.LstdFlags)
 
 	// Creating handlers
-	helloHandler := handlers.NewHello(l)
-	goodbyeHandler := handlers.NewGoodbye(l)
+	productHandler := handlers.NewProducts(l)
 
 	// Mux route handling with default http ServeMux
 	sm := http.NewServeMux()
-	sm.Handle("/", helloHandler)
-	sm.Handle("/goodbye", goodbyeHandler)
+	sm.Handle("/", productHandler)
 
 	// Server setup
 	server := &http.Server{
