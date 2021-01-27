@@ -6,7 +6,8 @@ import (
 	"time"
 )
 
-// Product defines the structure for an API product
+// Product defines the structure for an API product.
+// Formatting done with json tags to the right. "-" : don't include when encoding to json
 type Product struct {
 	ID          int     `json:"id"`
 	Name        string  `json:"name"`
