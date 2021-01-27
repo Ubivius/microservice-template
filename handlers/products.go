@@ -15,7 +15,19 @@ func NewProducts(l *log.Logger) *Products {
 	return &Products{l}
 }
 
-func (p *Products) ServeHTTP(w http.ResponseWriter, h *http.Request) {
+// If we don't handle specific methods, the same function is called for get, post, delete, put
+func (p *Products) ServeHTTP(w http.ResponseWriter, request *http.Request) {
+	// Handling get
+	if request.Method == http.MethodGet {
+		p.getProducts(w, request)
+		return
+	}
+	// Handling updates
+
+	w.WriteHeader(http.StatusMethodNotAllowed)
+}
+
+func (p *Products) getProducts(w http.ResponseWriter, request *http.Request) {
 	productList := data.GetProducts()
 	err := productList.ToJSON(w)
 	if err != nil {
