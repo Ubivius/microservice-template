@@ -22,12 +22,28 @@ func (p *Products) ServeHTTP(w http.ResponseWriter, request *http.Request) {
 		p.getProducts(w, request)
 		return
 	}
-	// Handling updates
 
+	if request.Method == http.MethodPost {
+		p.addProduct(w, request)
+		return
+	}
+
+	// If method is not implemented, return an error
 	w.WriteHeader(http.StatusMethodNotAllowed)
 }
 
+func (p *Products) addProduct(w http.ResponseWriter, request *http.Request) {
+	p.l.Println("Handle POST product")
+	product := &data.Product{}
+	err := product.FromJson(request.Body)
+	if err != nil {
+		http.Error(w, "Unable to unmarshal json", http.StatusBadRequest)
+	}
+	data.AddProduct(product)
+}
+
 func (p *Products) getProducts(w http.ResponseWriter, request *http.Request) {
+	p.l.Println("Handle GET products")
 	productList := data.GetProducts()
 	err := productList.ToJSON(w)
 	if err != nil {

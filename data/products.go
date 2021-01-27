@@ -22,6 +22,11 @@ type Product struct {
 // Products is a collection of Product
 type Products []*Product
 
+func (product *Product) FromJson(reader io.Reader) error {
+	decoder := json.NewDecoder(reader)
+	return decoder.Decode(product)
+}
+
 func (products *Products) ToJSON(w io.Writer) error {
 	encoder := json.NewEncoder(w)
 	return encoder.Encode(products)
@@ -30,6 +35,16 @@ func (products *Products) ToJSON(w io.Writer) error {
 // Returns the list of products
 func GetProducts() Products {
 	return productList
+}
+
+func AddProduct(product *Product) {
+	product.ID = getNextId()
+	productList = append(productList, product)
+}
+
+func getNextId() int {
+	lastProduct := productList[len(productList)-1]
+	return lastProduct.ID + 1
 }
 
 // productList is a hard coded list of products for this
