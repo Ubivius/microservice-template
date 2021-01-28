@@ -3,6 +3,8 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"regexp"
+	"strconv"
 
 	"github.com/Ubivius/microservice-template/data"
 )
@@ -25,6 +27,34 @@ func (p *Products) ServeHTTP(w http.ResponseWriter, request *http.Request) {
 
 	if request.Method == http.MethodPost {
 		p.addProduct(w, request)
+		return
+	}
+
+	if request.Method == http.MethodPut {
+		p.l.Println("Handle PUT product")
+		// Expect the id in the URI
+		regex := regexp.MustCompile(`/([0-9]+)`)
+		group := regex.FindAllStringSubmatch(request.URL.Path, -1)
+
+		if len(group) != 1 {
+			http.Error(w, "Invalid URI", http.StatusBadRequest)
+			return
+		}
+
+		if len(group[0]) != 1 {
+			http.Error(w, "Invalid URI", http.StatusBadRequest)
+			return
+		}
+
+		// Extract the id from the regex result
+		idString := group[0][1]
+		id, err := strconv.Atoi(idString)
+		if err != nil {
+			http.Error(w, "Invalid URI", http.StatusBadRequest)
+			return
+		}
+
+		p.l.Println("Got id : ", id)
 		return
 	}
 
