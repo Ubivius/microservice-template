@@ -20,14 +20,24 @@ func main() {
 	productHandler := handlers.NewProducts(l)
 
 	// Mux route handling with gorilla/mux
-	sm := mux.NewRouter()
-	getRouter := sm.Methods("GET").Subrouter()
-	// sm.Handle("/products", productHandler)
+	router := mux.NewRouter()
+
+	// Get Router
+	getRouter := router.Methods(http.MethodGet).Subrouter()
+	getRouter.HandleFunc("/", productHandler.GetProducts)
+
+	// Put router
+	putRouter := router.Methods(http.MethodPut).Subrouter()
+	putRouter.HandleFunc("/{id:[0-9]+}", productHandler.UpdateProducts)
+
+	// Post router
+	postRouter := router.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/", productHandler.AddProduct)
 
 	// Server setup
 	server := &http.Server{
 		Addr:        ":9090",
-		Handler:     sm,
+		Handler:     router,
 		IdleTimeout: 120 * time.Second,
 		ReadTimeout: 1 * time.Second,
 	}
