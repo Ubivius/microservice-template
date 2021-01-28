@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"strconv"
@@ -26,16 +27,11 @@ func (p *Products) UpdateProducts(w http.ResponseWriter, request *http.Request) 
 	}
 
 	p.l.Println("Handle PUT product", id)
-	product := &data.Product{}
 
-	// Parsing to json
-	err = product.FromJson(request.Body)
-	if err != nil {
-		http.Error(w, "Unable to unmarshal json", http.StatusBadRequest)
-	}
+	product := request.Context().Value(KeyProduct{}).(data.Product)
 
 	// Update product
-	err = data.UpdateProduct(id, product)
+	err = data.UpdateProduct(id, &product)
 	if err == data.ErrorProductNotFound {
 		http.Error(w, "Product not found", http.StatusNotFound)
 		return
@@ -64,4 +60,27 @@ func (p *Products) GetProducts(w http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		http.Error(w, "Unable to marshal json", http.StatusInternalServerError)
 	}
+}
+
+type KeyProduct struct{}
+
+// Validation middleware
+func (p *Products) MiddlewareProductValidation(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
+		product := &data.Product{}
+
+		// Parsing to json
+		err := product.FromJson(request.Body)
+		if err != nil {
+			http.Error(w, "Unable to unmarshal json", http.StatusBadRequest)
+			return
+		}
+
+		// Add the product to the context
+		context := context.WithValue(request.Context(), KeyProduct{}, product)
+		newRequest := request.WithContext(context)
+
+		// Call the next handler, which can be another middleware or the final handler
+		next.ServeHTTP(w, newRequest)
+	})
 }
