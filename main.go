@@ -9,18 +9,20 @@ import (
 	"time"
 
 	"github.com/Ubivius/microservice-template/handlers"
+	"github.com/gorilla/mux"
 )
 
 func main() {
 	// Logger
-	l := log.New(os.Stdout, "product-api", log.LstdFlags)
+	l := log.New(os.Stdout, "Template", log.LstdFlags)
 
 	// Creating handlers
 	productHandler := handlers.NewProducts(l)
 
-	// Mux route handling with default http ServeMux
-	sm := http.NewServeMux()
-	sm.Handle("/", productHandler)
+	// Mux route handling with gorilla/mux
+	sm := mux.NewRouter()
+	getRouter := sm.Methods("GET").Subrouter()
+	// sm.Handle("/products", productHandler)
 
 	// Server setup
 	server := &http.Server{
