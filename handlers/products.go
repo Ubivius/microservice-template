@@ -31,17 +31,19 @@ func (p *Products) ServeHTTP(w http.ResponseWriter, request *http.Request) {
 	}
 
 	if request.Method == http.MethodPut {
-		p.l.Println("Handle PUT product")
+		p.l.Println("Handle PUT product", request.URL.Path)
 		// Expect the id in the URI
 		regex := regexp.MustCompile(`/([0-9]+)`)
 		group := regex.FindAllStringSubmatch(request.URL.Path, -1)
 
 		if len(group) != 1 {
+			p.l.Println("Invalide URI, more than one id")
 			http.Error(w, "Invalid URI", http.StatusBadRequest)
 			return
 		}
 
-		if len(group[0]) != 1 {
+		if len(group[0]) != 2 {
+			p.l.Println("Invalide URI, more than one capture group")
 			http.Error(w, "Invalid URI", http.StatusBadRequest)
 			return
 		}
@@ -50,6 +52,7 @@ func (p *Products) ServeHTTP(w http.ResponseWriter, request *http.Request) {
 		idString := group[0][1]
 		id, err := strconv.Atoi(idString)
 		if err != nil {
+			p.l.Println("Valid URI, unable to convert id to int")
 			http.Error(w, "Invalid URI", http.StatusBadRequest)
 			return
 		}
