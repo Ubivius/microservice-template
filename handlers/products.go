@@ -31,7 +31,7 @@ func (p *Products) ServeHTTP(w http.ResponseWriter, request *http.Request) {
 	}
 
 	if request.Method == http.MethodPut {
-		p.l.Println("Handle PUT product", request.URL.Path)
+		p.l.Println("PUT", request.URL.Path)
 		// Expect the id in the URI
 		regex := regexp.MustCompile(`/([0-9]+)`)
 		group := regex.FindAllStringSubmatch(request.URL.Path, -1)
