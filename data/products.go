@@ -5,13 +5,15 @@ import (
 	"fmt"
 	"io"
 	"time"
+
+	"github.com/go-playground/validator"
 )
 
 // Product defines the structure for an API product.
 // Formatting done with json tags to the right. "-" : don't include when encoding to json
 type Product struct {
 	ID          int     `json:"id"`
-	Name        string  `json:"name"`
+	Name        string  `json:"name" validate:"required"`
 	Description string  `json:"description"`
 	Price       float32 `json:"price"`
 	SKU         string  `json:"sku"`
@@ -21,7 +23,8 @@ type Product struct {
 }
 
 func (p *Product) Validate() error {
-	return nil
+	validate := validator.New()
+	return validate.Struct(p)
 }
 
 // Products is a collection of Product
