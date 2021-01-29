@@ -20,6 +20,10 @@ type Product struct {
 	DeletedOn   string  `json:"-"`
 }
 
+func (p *Product) Validate() error {
+	return nil
+}
+
 // Products is a collection of Product
 type Products []*Product
 
