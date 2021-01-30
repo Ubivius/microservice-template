@@ -21,11 +21,6 @@ type Product struct {
 // Products is a collection of Product
 type Products []*Product
 
-// Returns the list of products
-func GetProducts() Products {
-	return productList
-}
-
 func UpdateProduct(id int, p *Product) error {
 	_, position, err := findProduct(id)
 	if err != nil {
@@ -55,6 +50,15 @@ func AddProduct(product *Product) {
 func getNextId() int {
 	lastProduct := productList[len(productList)-1]
 	return lastProduct.ID + 1
+}
+
+//////////////////////////////////////////////////////////////////////////////
+/////////////////////////// Fake database ///////////////////////////////////
+///// DB connection setup and docker file will be done in sprint 8 /////////
+///////////////////////////////////////////////////////////////////////////
+// Returns the list of products
+func GetProducts() Products {
+	return productList
 }
 
 // productList is a hard coded list of products for this
