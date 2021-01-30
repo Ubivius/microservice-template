@@ -21,20 +21,27 @@ func NewProductsHandler(logger *log.Logger) *ProductsHandler {
 	return &ProductsHandler{logger}
 }
 
-func (productHandler *ProductsHandler) UpdateProducts(responseWriter http.ResponseWriter, request *http.Request) {
+// getProductId extracts the product ID from the URL
+// The verification of this variable is handled by gorilla/mux
+// We panic if it is not valid because that means gorilla is failing
+func getProductId(request *http.Request) int {
 	vars := mux.Vars(request)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		http.Error(responseWriter, "Unable to convert id to int", http.StatusBadRequest)
-		return
+		panic(err)
 	}
+	return id
+}
+
+func (productHandler *ProductsHandler) UpdateProducts(responseWriter http.ResponseWriter, request *http.Request) {
+	id := getProductId(request)
 
 	productHandler.logger.Println("Handle PUT product", id)
 
 	product := request.Context().Value(KeyProduct{}).(data.Product)
 
 	// Update product
-	err = data.UpdateProduct(id, &product)
+	err := data.UpdateProduct(id, &product)
 	if err == data.ErrorProductNotFound {
 		http.Error(responseWriter, "Product not found", http.StatusNotFound)
 		return
