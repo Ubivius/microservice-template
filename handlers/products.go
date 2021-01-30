@@ -9,6 +9,10 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// KeyProduct is a key used for the Product object inside context
+type KeyProduct struct{}
+
+// Product handler used for getting and updating products
 type Products struct {
 	logger *log.Logger
 }
@@ -56,5 +60,3 @@ func (p *Products) GetProducts(w http.ResponseWriter, request *http.Request) {
 		http.Error(w, "Unable to marshal json", http.StatusInternalServerError)
 	}
 }
-
-type KeyProduct struct{}

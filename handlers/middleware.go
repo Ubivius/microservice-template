@@ -8,6 +8,10 @@ import (
 	"github.com/Ubivius/microservice-template/data"
 )
 
+// Errors should be templated in the future.
+// A good starting reference can be found here : https://github.com/nicholasjackson/building-microservices-youtube/blob/episode_7/product-api/handlers/middleware.go
+// We want our validation errors to have a standard format
+
 // Json Product Validation
 func (productHandler *Products) MiddlewareProductValidation(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
