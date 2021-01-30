@@ -24,18 +24,26 @@ type Product struct {
 // Products is a collection of Product
 type Products []*Product
 
+// All of these functions will become database calls in the future
 // GETTING PRODUCTS
 
 // Returns the list of products
-// Will be a database call in the future
 func GetProducts() Products {
 	return productList
+}
+
+// Returns a single product with the given id
+func GetProductById(id int) (*Product, error) {
+	i := findIndexByProductID(id)
+	if id == -1 {
+		return nil, ErrorProductNotFound
+	}
+	return productList[i], nil
 }
 
 // UPDATING PRODUCTS
 
 // need to remove id int from parameters when product handler is updated
-// Will be a database call in the future
 func UpdateProduct(id int, p *Product) error {
 	index := findIndexByProductID(p.ID)
 	if index == -1 {
@@ -46,14 +54,12 @@ func UpdateProduct(id int, p *Product) error {
 }
 
 // ADD A PRODUCT
-// Will be a database call in the future
 func AddProduct(product *Product) {
 	product.ID = getNextId()
 	productList = append(productList, product)
 }
 
 // DELETING A PRODUCT
-// Will be a database call in the future
 func DeleteProduct(id int) error {
 	index := findIndexByProductID(id)
 	if index == -1 {
@@ -68,7 +74,6 @@ func DeleteProduct(id int) error {
 
 // Returns the index of a product in the database
 // Returns -1 when no product is found
-// Will be a database call in the future
 func findIndexByProductID(id int) int {
 	for index, product := range productList {
 		if product.ID == id {
