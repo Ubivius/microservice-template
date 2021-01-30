@@ -5,3 +5,5 @@ Beginning of code was based off of Nic Jackson's building microservices in Go : 
 
 ## TODO
 - Refactor to have a game related item instead of random product example
+- Tests for http handlers
+- Make validate take an interface instead of a specific struct
