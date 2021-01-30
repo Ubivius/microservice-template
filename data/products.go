@@ -45,6 +45,17 @@ func AddProduct(product *Product) {
 }
 
 // DELETING A PRODUCT
+func DeleteProduct(id int) error {
+	index := findIndexByProductID(id)
+	if index == -1 {
+		return ErrorProductNotFound
+	}
+
+	// This should not work, probably needs ':' after index+1. To test
+	productList = append(productList[:index], productList[index+1])
+
+	return nil
+}
 
 // Returns the index of a product in the database
 // Returns -1 when no product is found

@@ -6,8 +6,8 @@ import (
 	"github.com/go-playground/validator"
 )
 
-// Validate a product with json validation and customer SKU validator
-func (p *Product) Validate() error {
+// ValidateProduct a product with json validation and customer SKU validator
+func (p *Product) ValidateProduct() error {
 	validate := validator.New()
 	validate.RegisterValidation("sku", validateSKU)
 
