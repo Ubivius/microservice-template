@@ -10,3 +10,4 @@ Beginning of code was based off of Nic Jackson's building microservices in Go : 
 - Improve setup documentation
 - Automated tests for non handler functions
 - Only current options to interact with API is with curl
+- Move routing to another file? Or keep in main.go

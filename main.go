@@ -24,17 +24,22 @@ func main() {
 
 	// Get Router
 	getRouter := router.Methods(http.MethodGet).Subrouter()
-	getRouter.HandleFunc("/", productHandler.GetProducts)
+	getRouter.HandleFunc("/products", productHandler.GetProducts)
+	getRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.GetProductById)
 
 	// Put router
 	putRouter := router.Methods(http.MethodPut).Subrouter()
-	putRouter.HandleFunc("/{id:[0-9]+}", productHandler.UpdateProducts)
+	putRouter.HandleFunc("/products", productHandler.UpdateProducts)
 	putRouter.Use(productHandler.MiddlewareProductValidation)
 
 	// Post router
 	postRouter := router.Methods(http.MethodPost).Subrouter()
-	postRouter.HandleFunc("/", productHandler.AddProduct)
+	postRouter.HandleFunc("/products", productHandler.AddProduct)
 	postRouter.Use(productHandler.MiddlewareProductValidation)
+
+	// Delete router
+	deleteRouter := router.Methods(http.MethodDelete).Subrouter()
+	deleteRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.Delete)
 
 	// Server setup
 	server := &http.Server{
@@ -45,8 +50,10 @@ func main() {
 	}
 
 	go func() {
+		logger.Println("Starting server on port ", server.Addr)
 		err := server.ListenAndServe()
 		if err != nil {
+			logger.Println("Error starting server : ", err)
 			logger.Fatal(err)
 		}
 	}()
