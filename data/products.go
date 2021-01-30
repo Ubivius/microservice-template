@@ -28,13 +28,13 @@ type Products []*Product
 
 // UPDATING PRODUCTS
 
+// need to remove id int from parameters when product handler is updated
 func UpdateProduct(id int, p *Product) error {
-	_, position, err := findProduct(id)
-	if err != nil {
-		return err
+	index := findIndexByProductID(p.ID)
+	if index == -1 {
+		return ErrorProductNotFound
 	}
-	p.ID = id
-	productList[position] = p
+	productList[index] = p
 	return nil
 }
 
