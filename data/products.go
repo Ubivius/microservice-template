@@ -5,6 +5,9 @@ import (
 	"time"
 )
 
+// Product specific errors
+var ErrorProductNotFound = fmt.Errorf("Product not found")
+
 // Product defines the structure for an API product.
 // Formatting done with json tags to the right. "-" : don't include when encoding to json
 type Product struct {
@@ -21,6 +24,10 @@ type Product struct {
 // Products is a collection of Product
 type Products []*Product
 
+// GETTING PRODUCTS
+
+// UPDATING PRODUCTS
+
 func UpdateProduct(id int, p *Product) error {
 	_, position, err := findProduct(id)
 	if err != nil {
@@ -31,7 +38,21 @@ func UpdateProduct(id int, p *Product) error {
 	return nil
 }
 
-var ErrorProductNotFound = fmt.Errorf("Product not found")
+// ADD A PRODUCT
+
+// DELETING A PRODUCT
+
+// Returns the index of a product in the database
+// Returns -1 when no product is found
+func findIndexByProductID(id int) int {
+	for index, product := range productList {
+		if product.ID == id {
+			return index
+		}
+	}
+
+	return -1
+}
 
 func findProduct(id int) (*Product, int, error) {
 	for i, product := range productList {
