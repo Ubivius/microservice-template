@@ -26,9 +26,16 @@ type Products []*Product
 
 // GETTING PRODUCTS
 
+// Returns the list of products
+// Will be a database call in the future
+func GetProducts() Products {
+	return productList
+}
+
 // UPDATING PRODUCTS
 
 // need to remove id int from parameters when product handler is updated
+// Will be a database call in the future
 func UpdateProduct(id int, p *Product) error {
 	index := findIndexByProductID(p.ID)
 	if index == -1 {
@@ -39,12 +46,14 @@ func UpdateProduct(id int, p *Product) error {
 }
 
 // ADD A PRODUCT
+// Will be a database call in the future
 func AddProduct(product *Product) {
 	product.ID = getNextId()
 	productList = append(productList, product)
 }
 
 // DELETING A PRODUCT
+// Will be a database call in the future
 func DeleteProduct(id int) error {
 	index := findIndexByProductID(id)
 	if index == -1 {
@@ -59,6 +68,7 @@ func DeleteProduct(id int) error {
 
 // Returns the index of a product in the database
 // Returns -1 when no product is found
+// Will be a database call in the future
 func findIndexByProductID(id int) int {
 	for index, product := range productList {
 		if product.ID == id {
@@ -72,11 +82,6 @@ func findIndexByProductID(id int) int {
 /////////////////////////// Fake database ///////////////////////////////////
 ///// DB connection setup and docker file will be done in sprint 8 /////////
 ///////////////////////////////////////////////////////////////////////////
-
-// Returns the list of products
-func GetProducts() Products {
-	return productList
-}
 
 // Finds the maximum index of our fake database and adds 1
 func getNextId() int {
