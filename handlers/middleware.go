@@ -9,13 +9,13 @@ import (
 )
 
 // Json Product Validation
-func (p *Products) MiddlewareProductValidation(next http.Handler) http.Handler {
+func (productHandler *Products) MiddlewareProductValidation(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
 		product := &data.Product{}
 
 		err := data.FromJSON(product, request.Body)
 		if err != nil {
-			p.l.Println("[ERROR] deserializing product", err)
+			productHandler.l.Println("[ERROR] deserializing product", err)
 			http.Error(w, "Error reading product", http.StatusBadRequest)
 			return
 		}
@@ -23,7 +23,7 @@ func (p *Products) MiddlewareProductValidation(next http.Handler) http.Handler {
 		// validate the product
 		err = product.ValidateProduct()
 		if err != nil {
-			p.l.Println("[ERROR] validating product", err)
+			productHandler.l.Println("[ERROR] validating product", err)
 			http.Error(w, fmt.Sprintf("Error validating product: %s", err), http.StatusBadRequest)
 			return
 		}
