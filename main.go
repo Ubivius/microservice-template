@@ -17,7 +17,7 @@ func main() {
 	logger := log.New(os.Stdout, "Template", log.LstdFlags)
 
 	// Creating handlers
-	productHandler := handlers.NewProducts(logger)
+	productHandler := handlers.NewProductsHandler(logger)
 
 	// Mux route handling with gorilla/mux
 	router := mux.NewRouter()

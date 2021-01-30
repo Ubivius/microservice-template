@@ -13,7 +13,7 @@ import (
 // We want our validation errors to have a standard format
 
 // Json Product Validation
-func (productHandler *Products) MiddlewareProductValidation(next http.Handler) http.Handler {
+func (productHandler *ProductsHandler) MiddlewareProductValidation(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
 		product := &data.Product{}
 

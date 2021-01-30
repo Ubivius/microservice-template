@@ -13,50 +13,50 @@ import (
 type KeyProduct struct{}
 
 // Product handler used for getting and updating products
-type Products struct {
+type ProductsHandler struct {
 	logger *log.Logger
 }
 
-func NewProducts(logger *log.Logger) *Products {
-	return &Products{logger}
+func NewProductsHandler(logger *log.Logger) *ProductsHandler {
+	return &ProductsHandler{logger}
 }
 
-func (p *Products) UpdateProducts(w http.ResponseWriter, request *http.Request) {
+func (productHandler *ProductsHandler) UpdateProducts(responseWriter http.ResponseWriter, request *http.Request) {
 	vars := mux.Vars(request)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		http.Error(w, "Unable to convert id to int", http.StatusBadRequest)
+		http.Error(responseWriter, "Unable to convert id to int", http.StatusBadRequest)
 		return
 	}
 
-	p.logger.Println("Handle PUT product", id)
+	productHandler.logger.Println("Handle PUT product", id)
 
 	product := request.Context().Value(KeyProduct{}).(data.Product)
 
 	// Update product
 	err = data.UpdateProduct(id, &product)
 	if err == data.ErrorProductNotFound {
-		http.Error(w, "Product not found", http.StatusNotFound)
+		http.Error(responseWriter, "Product not found", http.StatusNotFound)
 		return
 	}
 
 	if err != nil {
-		http.Error(w, "Product not found", http.StatusInternalServerError)
+		http.Error(responseWriter, "Product not found", http.StatusInternalServerError)
 		return
 	}
 }
 
-func (p *Products) AddProduct(w http.ResponseWriter, request *http.Request) {
-	p.logger.Println("Handle POST Product")
+func (productHandler *ProductsHandler) AddProduct(responseWriter http.ResponseWriter, request *http.Request) {
+	productHandler.logger.Println("Handle POST Product")
 	product := request.Context().Value(KeyProduct{}).(*data.Product)
 	data.AddProduct(product)
 }
 
-func (p *Products) GetProducts(w http.ResponseWriter, request *http.Request) {
-	p.logger.Println("Handle GET products")
+func (productHandler *ProductsHandler) GetProducts(responseWriter http.ResponseWriter, request *http.Request) {
+	productHandler.logger.Println("Handle GET products")
 	productList := data.GetProducts()
-	err := productList.ToProductJSON(w)
+	err := productList.ToProductJSON(responseWriter)
 	if err != nil {
-		http.Error(w, "Unable to marshal json", http.StatusInternalServerError)
+		http.Error(responseWriter, "Unable to marshal json", http.StatusInternalServerError)
 	}
 }
