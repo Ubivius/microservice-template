@@ -53,7 +53,7 @@ func (p *Products) AddProduct(w http.ResponseWriter, request *http.Request) {
 func (p *Products) GetProducts(w http.ResponseWriter, request *http.Request) {
 	p.l.Println("Handle GET products")
 	productList := data.GetProducts()
-	err := productList.ToJSON(w)
+	err := productList.ToProductJSON(w)
 	if err != nil {
 		http.Error(w, "Unable to marshal json", http.StatusInternalServerError)
 	}
