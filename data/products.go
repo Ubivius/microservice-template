@@ -44,7 +44,7 @@ func GetProductById(id int) (*Product, error) {
 // UPDATING PRODUCTS
 
 // need to remove id int from parameters when product handler is updated
-func UpdateProduct(id int, p *Product) error {
+func UpdateProduct(p *Product) error {
 	index := findIndexByProductID(p.ID)
 	if index == -1 {
 		return ErrorProductNotFound

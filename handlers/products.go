@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Ubivius/microservice-template/data"
 	"github.com/gorilla/mux"
 )
 
@@ -31,24 +30,4 @@ func getProductId(request *http.Request) int {
 		panic(err)
 	}
 	return id
-}
-
-func (productHandler *ProductsHandler) UpdateProducts(responseWriter http.ResponseWriter, request *http.Request) {
-	id := getProductId(request)
-
-	productHandler.logger.Println("Handle PUT product", id)
-
-	product := request.Context().Value(KeyProduct{}).(data.Product)
-
-	// Update product
-	err := data.UpdateProduct(id, &product)
-	if err == data.ErrorProductNotFound {
-		http.Error(responseWriter, "Product not found", http.StatusNotFound)
-		return
-	}
-
-	if err != nil {
-		http.Error(responseWriter, "Product not found", http.StatusInternalServerError)
-		return
-	}
 }

@@ -8,4 +8,5 @@ Beginning of code was based off of Nic Jackson's building microservices in Go : 
 - Tests for http handlers
 - Make validate take an interface instead of a specific struct
 - Improve setup documentation
-- Tests for non handler functions
+- Automated tests for non handler functions
+- Only current options to interact with API is with curl
