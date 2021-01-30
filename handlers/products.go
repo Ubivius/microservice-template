@@ -58,12 +58,3 @@ func (productHandler *ProductsHandler) AddProduct(responseWriter http.ResponseWr
 	product := request.Context().Value(KeyProduct{}).(*data.Product)
 	data.AddProduct(product)
 }
-
-func (productHandler *ProductsHandler) GetProducts(responseWriter http.ResponseWriter, request *http.Request) {
-	productHandler.logger.Println("Handle GET products")
-	productList := data.GetProducts()
-	err := productList.ToProductJSON(responseWriter)
-	if err != nil {
-		http.Error(responseWriter, "Unable to marshal json", http.StatusInternalServerError)
-	}
-}
