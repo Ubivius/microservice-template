@@ -52,9 +52,3 @@ func (productHandler *ProductsHandler) UpdateProducts(responseWriter http.Respon
 		return
 	}
 }
-
-func (productHandler *ProductsHandler) AddProduct(responseWriter http.ResponseWriter, request *http.Request) {
-	productHandler.logger.Println("Handle POST Product")
-	product := request.Context().Value(KeyProduct{}).(*data.Product)
-	data.AddProduct(product)
-}
