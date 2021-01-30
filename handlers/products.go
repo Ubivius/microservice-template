@@ -10,11 +10,11 @@ import (
 )
 
 type Products struct {
-	l *log.Logger
+	logger *log.Logger
 }
 
-func NewProducts(l *log.Logger) *Products {
-	return &Products{l}
+func NewProducts(logger *log.Logger) *Products {
+	return &Products{logger}
 }
 
 func (p *Products) UpdateProducts(w http.ResponseWriter, request *http.Request) {
@@ -25,7 +25,7 @@ func (p *Products) UpdateProducts(w http.ResponseWriter, request *http.Request) 
 		return
 	}
 
-	p.l.Println("Handle PUT product", id)
+	p.logger.Println("Handle PUT product", id)
 
 	product := request.Context().Value(KeyProduct{}).(data.Product)
 
@@ -43,13 +43,13 @@ func (p *Products) UpdateProducts(w http.ResponseWriter, request *http.Request) 
 }
 
 func (p *Products) AddProduct(w http.ResponseWriter, request *http.Request) {
-	p.l.Println("Handle POST Product")
+	p.logger.Println("Handle POST Product")
 	product := request.Context().Value(KeyProduct{}).(*data.Product)
 	data.AddProduct(product)
 }
 
 func (p *Products) GetProducts(w http.ResponseWriter, request *http.Request) {
-	p.l.Println("Handle GET products")
+	p.logger.Println("Handle GET products")
 	productList := data.GetProducts()
 	err := productList.ToProductJSON(w)
 	if err != nil {

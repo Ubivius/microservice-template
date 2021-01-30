@@ -14,10 +14,10 @@ import (
 
 func main() {
 	// Logger
-	l := log.New(os.Stdout, "Template", log.LstdFlags)
+	logger := log.New(os.Stdout, "Template", log.LstdFlags)
 
 	// Creating handlers
-	productHandler := handlers.NewProducts(l)
+	productHandler := handlers.NewProducts(logger)
 
 	// Mux route handling with gorilla/mux
 	router := mux.NewRouter()
@@ -47,16 +47,17 @@ func main() {
 	go func() {
 		err := server.ListenAndServe()
 		if err != nil {
-			l.Fatal(err)
+			logger.Fatal(err)
 		}
 	}()
 
+	// Handle shutdown signals from operating system
 	signalChannel := make(chan os.Signal)
 	signal.Notify(signalChannel, os.Interrupt)
 	signal.Notify(signalChannel, os.Kill)
 	receivedSignal := <-signalChannel
 
-	l.Println("Received terminate, beginning graceful shutdown", receivedSignal)
+	logger.Println("Received terminate, beginning graceful shutdown", receivedSignal)
 
 	// Server shutdown
 	timeoutContext, _ := context.WithTimeout(context.Background(), 30*time.Second)
