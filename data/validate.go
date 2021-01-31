@@ -13,11 +13,11 @@ import (
 // Nic Jackson episode : https://github.com/nicholasjackson/building-microservices-youtube/blob/episode_7/product-api/data/validation.go
 
 // ValidateProduct a product with json validation and customer SKU validator
-func (p *Product) ValidateProduct() error {
+func (product *Product) ValidateProduct() error {
 	validate := validator.New()
 	validate.RegisterValidation("sku", validateSKU)
 
-	return validate.Struct(p)
+	return validate.Struct(product)
 }
 
 // Custom SKU validator

@@ -12,7 +12,7 @@ func FromJSON(i interface{}, reader io.Reader) error {
 }
 
 // ToJSON serializes interface into a json String
-func ToJSON(i interface{}, w io.Writer) error {
-	encoder := json.NewEncoder(w)
+func ToJSON(i interface{}, writer io.Writer) error {
+	encoder := json.NewEncoder(writer)
 	return encoder.Encode(i)
 }

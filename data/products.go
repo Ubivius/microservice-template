@@ -34,22 +34,22 @@ func GetProducts() Products {
 
 // Returns a single product with the given id
 func GetProductById(id int) (*Product, error) {
-	i := findIndexByProductID(id)
+	index := findIndexByProductID(id)
 	if id == -1 {
 		return nil, ErrorProductNotFound
 	}
-	return productList[i], nil
+	return productList[index], nil
 }
 
 // UPDATING PRODUCTS
 
 // need to remove id int from parameters when product handler is updated
-func UpdateProduct(p *Product) error {
-	index := findIndexByProductID(p.ID)
+func UpdateProduct(product *Product) error {
+	index := findIndexByProductID(product.ID)
 	if index == -1 {
 		return ErrorProductNotFound
 	}
-	productList[index] = p
+	productList[index] = product
 	return nil
 }
 
