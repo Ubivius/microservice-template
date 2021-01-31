@@ -1,17 +1,11 @@
-module github.com/Ubivius/microservice-template/
+module github.com/Ubivius/microservice-template
 
 go 1.15
-
-/*module example
-
-go 1.15
-
-replace handlers => ./handlers
 
 require (
-	github.com/elastic/go-elasticsearch v0.0.0
-	github.com/elastic/go-elasticsearch/v8 v8.0.0-20201229214741-2366c2514674 // indirect
+	github.com/go-playground/universal-translator v0.17.0 // indirect
+	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/gorilla/mux v1.8.0
-	handlers v1.0.0
+	github.com/leodido/go-urn v1.2.1 // indirect
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
-*/

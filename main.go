@@ -1,48 +1,72 @@
 package main
 
 import (
-	"bytes"
-	"handlers"
+	"context"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"time"
 
-	"github.com/elastic/go-elasticsearch"
+	"github.com/Ubivius/microservice-template/handlers"
 	"github.com/gorilla/mux"
 )
 
 func main() {
-	//Logger
-	l := log.New(os.Stdout, "microservice-prototype", log.LstdFlags)
+	// Logger
+	logger := log.New(os.Stdout, "Template", log.LstdFlags)
 
-	// Configuration elastic search
-	cfg := elasticsearch.Config{
-		Addresses: []string{
-			"http://localhost:9200",
-			"http://localhost:9201",
-		},
+	// Creating handlers
+	productHandler := handlers.NewProductsHandler(logger)
+
+	// Mux route handling with gorilla/mux
+	router := mux.NewRouter()
+
+	// Get Router
+	getRouter := router.Methods(http.MethodGet).Subrouter()
+	getRouter.HandleFunc("/products", productHandler.GetProducts)
+	getRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.GetProductById)
+
+	// Put router
+	putRouter := router.Methods(http.MethodPut).Subrouter()
+	putRouter.HandleFunc("/products", productHandler.UpdateProducts)
+	putRouter.Use(productHandler.MiddlewareProductValidation)
+
+	// Post router
+	postRouter := router.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/products", productHandler.AddProduct)
+	postRouter.Use(productHandler.MiddlewareProductValidation)
+
+	// Delete router
+	deleteRouter := router.Methods(http.MethodDelete).Subrouter()
+	deleteRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.Delete)
+
+	// Server setup
+	server := &http.Server{
+		Addr:        ":9090",
+		Handler:     router,
+		IdleTimeout: 120 * time.Second,
+		ReadTimeout: 1 * time.Second,
 	}
 
-	es, err := elasticsearch.NewClient(cfg)
-	if err != nil {
-		l.Println("Error creating the es client.")
-	}
+	go func() {
+		logger.Println("Starting server on port ", server.Addr)
+		err := server.ListenAndServe()
+		if err != nil {
+			logger.Println("Error starting server : ", err)
+			logger.Fatal(err)
+		}
+	}()
 
-	var b bytes.Buffer
-	b.WriteString(`{"Users" : "Jeremi"}`)
+	// Handle shutdown signals from operating system
+	signalChannel := make(chan os.Signal)
+	signal.Notify(signalChannel, os.Interrupt)
+	signal.Notify(signalChannel, os.Kill)
+	receivedSignal := <-signalChannel
 
-	res, _ := es.Index("method1", &b)
-	l.Println(res)
+	logger.Println("Received terminate, beginning graceful shutdown", receivedSignal)
 
-	// Handlers
-	helloHandler := handlers.NewHello(l)
-	achievementHandlers := handlers.NewAchievement(l)
-
-	// Routing
-	gorillaMux := mux.NewRouter()
-	gorillaMux.HandleFunc("/", helloHandler.ServeHTTP)
-	gorillaMux.HandleFunc("/achievement", achievementHandlers.ServeHTTP)
-
-	// Start server
-	http.ListenAndServe(":9090", gorillaMux)
+	// Server shutdown
+	timeoutContext, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	server.Shutdown(timeoutContext)
 }
