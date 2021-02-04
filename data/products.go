@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Product specific errors
+// ErrorProductNotFound : Product specific errors
 var ErrorProductNotFound = fmt.Errorf("Product not found")
 
 // Product defines the structure for an API product.
@@ -27,13 +27,13 @@ type Products []*Product
 // All of these functions will become database calls in the future
 // GETTING PRODUCTS
 
-// Returns the list of products
+// GetProducts returns the list of products
 func GetProducts() Products {
 	return productList
 }
 
-// Returns a single product with the given id
-func GetProductById(id int) (*Product, error) {
+// GetProductByID returns a single product with the given id
+func GetProductByID(id int) (*Product, error) {
 	index := findIndexByProductID(id)
 	if id == -1 {
 		return nil, ErrorProductNotFound
@@ -43,7 +43,7 @@ func GetProductById(id int) (*Product, error) {
 
 // UPDATING PRODUCTS
 
-// need to remove id int from parameters when product handler is updated
+// UpdateProduct updates the product specified in received JSON
 func UpdateProduct(product *Product) error {
 	index := findIndexByProductID(product.ID)
 	if index == -1 {
@@ -53,13 +53,13 @@ func UpdateProduct(product *Product) error {
 	return nil
 }
 
-// ADD A PRODUCT
+// AddProduct creates a new product
 func AddProduct(product *Product) {
-	product.ID = getNextId()
+	product.ID = getNextID()
 	productList = append(productList, product)
 }
 
-// DELETING A PRODUCT
+// DeleteProduct deletes the product with the given id
 func DeleteProduct(id int) error {
 	index := findIndexByProductID(id)
 	if index == -1 {
@@ -89,7 +89,7 @@ func findIndexByProductID(id int) int {
 ///////////////////////////////////////////////////////////////////////////
 
 // Finds the maximum index of our fake database and adds 1
-func getNextId() int {
+func getNextID() int {
 	lastProduct := productList[len(productList)-1]
 	return lastProduct.ID + 1
 }

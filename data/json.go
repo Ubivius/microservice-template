@@ -5,7 +5,7 @@ import (
 	"io"
 )
 
-// FromProductJSON deserializes the interface from JSON string
+// FromJSON deserializes the interface from JSON string
 func FromJSON(i interface{}, reader io.Reader) error {
 	decoder := json.NewDecoder(reader)
 	return decoder.Decode(i)
