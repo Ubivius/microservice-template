@@ -15,7 +15,12 @@ import (
 // ValidateProduct a product with json validation and customer SKU validator
 func (product *Product) ValidateProduct() error {
 	validate := validator.New()
-	validate.RegisterValidation("sku", validateSKU)
+	err := validate.RegisterValidation("sku", validateSKU)
+	if err != nil {
+		// Panic if we get this error, that means we are not validating input
+		// This will be handled in a better way once we move the JSON validation to accept an interface
+		panic(err)
+	}
 
 	return validate.Struct(product)
 }
@@ -26,9 +31,5 @@ func validateSKU(fieldLevel validator.FieldLevel) bool {
 	re := regexp.MustCompile(`[a-z]+-[a-z]+-[a-z]+`)
 	matches := re.FindAllString(fieldLevel.Field().String(), -1)
 
-	if len(matches) != 1 {
-		return false
-	}
-
-	return true
+	return len(matches) == 1
 }

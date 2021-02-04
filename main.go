@@ -25,7 +25,7 @@ func main() {
 	// Get Router
 	getRouter := router.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/products", productHandler.GetProducts)
-	getRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.GetProductById)
+	getRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.GetProductByID)
 
 	// Put router
 	putRouter := router.Methods(http.MethodPut).Subrouter()
@@ -59,14 +59,15 @@ func main() {
 	}()
 
 	// Handle shutdown signals from operating system
-	signalChannel := make(chan os.Signal)
+	signalChannel := make(chan os.Signal, 1)
 	signal.Notify(signalChannel, os.Interrupt)
-	signal.Notify(signalChannel, os.Kill)
 	receivedSignal := <-signalChannel
 
 	logger.Println("Received terminate, beginning graceful shutdown", receivedSignal)
 
 	// Server shutdown
-	timeoutContext, _ := context.WithTimeout(context.Background(), 30*time.Second)
-	server.Shutdown(timeoutContext)
+	timeoutContext, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	_ = server.Shutdown(timeoutContext)
 }

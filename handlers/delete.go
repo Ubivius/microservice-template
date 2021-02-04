@@ -6,10 +6,9 @@ import (
 	"github.com/Ubivius/microservice-template/data"
 )
 
-// DELETE /products/{id}
-// Deletes a product with specified id from the database
+// Delete a product with specified id from the database
 func (productHandler *ProductsHandler) Delete(responseWriter http.ResponseWriter, request *http.Request) {
-	id := getProductId(request)
+	id := getProductID(request)
 	productHandler.logger.Println("Handle DELETE product", id)
 
 	err := data.DeleteProduct(id)
