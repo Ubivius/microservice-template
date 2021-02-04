@@ -68,5 +68,5 @@ func main() {
 
 	// Server shutdown
 	timeoutContext, _ := context.WithTimeout(context.Background(), 30*time.Second)
-	server.Shutdown(timeoutContext)
+	_ = server.Shutdown(timeoutContext)
 }
