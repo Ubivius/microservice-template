@@ -25,7 +25,7 @@ func (productHandler *ProductsHandler) GetProductById(responseWriter http.Respon
 
 	productHandler.logger.Println("[DEBUG] getting id", id)
 
-	product, err := data.GetProductById(id)
+	product, err := data.GetProductByID(id)
 	switch err {
 	case nil:
 	case data.ErrorProductNotFound:
