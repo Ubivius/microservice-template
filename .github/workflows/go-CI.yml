@@ -18,9 +18,6 @@ jobs:
       with:
         go-version: 1.15
 
-    - name: Lint
-      uses: actions-contrib/golangci-lint@v1
-
     - name: Build
       run: go build -v ./...
 
