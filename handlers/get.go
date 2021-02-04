@@ -19,7 +19,7 @@ func (productHandler *ProductsHandler) GetProducts(responseWriter http.ResponseW
 
 // GetProductByID returns a single product from the database
 func (productHandler *ProductsHandler) GetProductByID(responseWriter http.ResponseWriter, request *http.Request) {
-	id := getProductId(request)
+	id := getProductID(request)
 
 	productHandler.logger.Println("[DEBUG] getting id", id)
 
