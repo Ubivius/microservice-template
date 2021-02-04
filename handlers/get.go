@@ -6,8 +6,7 @@ import (
 	"github.com/Ubivius/microservice-template/data"
 )
 
-// GET /products
-// Returns the full list of products
+// GetProducts returns the full list of products
 func (productHandler *ProductsHandler) GetProducts(responseWriter http.ResponseWriter, request *http.Request) {
 	productHandler.logger.Println("Handle GET products")
 	productList := data.GetProducts()
@@ -18,9 +17,8 @@ func (productHandler *ProductsHandler) GetProducts(responseWriter http.ResponseW
 	}
 }
 
-// GET /products/{id}
-// Returns a single product from the database
-func (productHandler *ProductsHandler) GetProductById(responseWriter http.ResponseWriter, request *http.Request) {
+// GetProductByID returns a single product from the database
+func (productHandler *ProductsHandler) GetProductByID(responseWriter http.ResponseWriter, request *http.Request) {
 	id := getProductId(request)
 
 	productHandler.logger.Println("[DEBUG] getting id", id)
