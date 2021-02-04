@@ -59,7 +59,7 @@ func main() {
 	}()
 
 	// Handle shutdown signals from operating system
-	signalChannel := make(chan os.Signal)
+	signalChannel := make(chan os.Signal, 1)
 	signal.Notify(signalChannel, os.Interrupt)
 	signal.Notify(signalChannel, os.Kill)
 	receivedSignal := <-signalChannel
