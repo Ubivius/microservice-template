@@ -6,6 +6,7 @@ import (
 	"github.com/Ubivius/microservice-template/data"
 )
 
+// UpdateProducts updates the product with the ID specified in the received JSON product
 func (productHandler *ProductsHandler) UpdateProducts(responseWriter http.ResponseWriter, request *http.Request) {
 	product := request.Context().Value(KeyProduct{}).(data.Product)
 	productHandler.logger.Println("Handle PUT product", product.ID)
