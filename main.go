@@ -61,7 +61,6 @@ func main() {
 	// Handle shutdown signals from operating system
 	signalChannel := make(chan os.Signal, 1)
 	signal.Notify(signalChannel, os.Interrupt)
-	signal.Notify(signalChannel, os.Kill)
 	receivedSignal := <-signalChannel
 
 	logger.Println("Received terminate, beginning graceful shutdown", receivedSignal)
