@@ -10,11 +10,29 @@ import (
 
 	"github.com/Ubivius/microservice-template/handlers"
 	"github.com/gorilla/mux"
+	"go.opentelemetry.io/otel/exporters/stdout"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 func main() {
 	// Logger
 	logger := log.New(os.Stdout, "Template", log.LstdFlags)
+
+	// Initialising open telemetry
+	exporter, err := stdout.NewExporter(
+		stdout.WithPrettyPrint(),
+	)
+	if err != nil {
+		logger.Fatal("Failed to initialize stdout export pipeline : ", err)
+	}
+
+	// Initialising tracer provider
+	ctx := context.Background()
+	batchSpanProcessor := sdktrace.NewBatchSpanProcessor(exporter)
+	tracerProvider := sdktrace.NewTracerProvider(sdktrace.WithSpanProcessor(batchSpanProcessor))
+
+	// Find a better way to handle this error
+	defer func() { _ = tracerProvider.Shutdown(ctx) }()
 
 	// Creating handlers
 	productHandler := handlers.NewProductsHandler(logger)
