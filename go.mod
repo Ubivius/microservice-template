@@ -7,5 +7,6 @@ require (
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/gorilla/mux v1.8.0
 	github.com/leodido/go-urn v1.2.1 // indirect
+	go.opentelemetry.io/otel/exporters/stdout v0.16.0 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
