@@ -48,14 +48,17 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build and Push Artefact to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
+        pre: |
+          echo ::save-state name=BRANCH::$(echo ${GITHUB_REF})
+          echo ::save-state name=REPO_NAME::$(echo ${GITHUB_REPOSITORY})
         env:
           BUILD_TYPE: ${{ env.BUILD_LVL }}
         with:
-          name: "ubivius/$GITHUB_REPOSITORY"
+          name: ubivius/${{ env.STATE_REPO_NAME }}
           username: ${{ env.DOCKERHUB_USER }}
           password: ${{ env.DOCKERHUB_PWD }}
           buildargs: BUILD_TYPE
-          default_branch: "$GITHUB_REF"
+          default_branch: ${{ env.STATE_BRANCH }}
           dockerfile: Dockerfile
           tags: "${{ env.REPO_VERSION }}"
           
