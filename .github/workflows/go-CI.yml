@@ -49,11 +49,11 @@ jobs:
       - name: Build and Push Artefact to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
         env:
-          BUILD_TYPE: ${{ BUILD_LVL }}
+          BUILD_TYPE: $BUILD_LVL
         with:
-          name: ubivius/${{ REPO_NAME }}:${{ REPO_VERSION }}
-          username: ${{ DOCKERHUB_USER }}
-          password: ${{ DOCKERHUB_PWD }}
+          name: ubivius/$REPO_NAME:$REPO_VERSION
+          username: $DOCKERHUB_USER
+          password: $DOCKERHUB_PWD
           default_branch: $GITHUB_REF
           dockerfile: Dockerfile
           buildargs: BUILD_TYPE
