@@ -43,6 +43,7 @@ jobs:
           version: v1.29
   
   publish-docker:
+    needs: [ build-and-test, golangci-lint]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
