@@ -60,21 +60,18 @@ jobs:
         with:
           version: v1.29
   
-  docker-build-and-publish:
+  publish-docker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build Docker Artefact
-        run: |
-            cd /home/runner/work/${{ inputs.repo-name }}/${{ inputs.repo-name }}
-            docker build . \
-            --tag ubivius/${{ inputs.repo-name }}:${{ inputs.repo-version }} \
-            --build-arg BUILD_TYPE=${{ inputs.build-lvl }}
-
-      - name: Publish to Registry
+      - name: Build and Push Artefact to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
+        env:
+          BUILD_TYPE: ${{ inputs.build-lvl }}
         with:
           name: ubivius/${{ inputs.repo-name }}:${{ inputs.repo-version }}
           username: ${{ inputs.dockerhub-user }}
           password: ${{ inputs.dockerhub-pwd }}
-
+          default_branch: ${{ GITHUB_REF }}
+          dockerfile: Dockerfile
+          buildargs: BUILD_TYPE
