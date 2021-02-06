@@ -13,7 +13,7 @@ env:
   DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_EMAIL: ${{ secrets.DOCKERHUB_EMAIL }}
   DOCKERHUB_PWD: ${{ secrets.DOCKERHUB_PWD }}
-  REPO_NAME: ${{ GITHUB_REPOSITORY.split("/")[1] }}
+  REPO_NAME: ${{ GITHUB_REPOSITORY }}.split("/")[1]
   REPO_VERSION: 0.0.0
 
 jobs:
