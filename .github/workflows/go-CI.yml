@@ -4,12 +4,38 @@ on:
   push:
     tags:
       - v*
-    branches: [ master, main ]
+    branches: [ master, main, feature/UBI-201-Add-push-2-dockerhub]
   pull_request:
     branches: [ master, main ]
 
+inputs:
+    build-lvl: 
+        description: 'Arg to determine image build output (local=debian, test=alpine or prod=distroless)'
+        required: true
+        default: test
+    dockerhub-user:
+        description: 'DockerHub.com user to enable docker build artefacts push'
+        required: true
+        default: ${{ secrets.DOCKERHUB_USERNAME }}
+    dockerhub-email:
+        description: 'DockerHub.com email to enable docker build artefacts push'
+        required: true
+        default: ${{ secrets.DOCKERHUB_EMAIL }}
+    dockerhub-pwd:
+        description: 'DockerHub.com password to enable docker build artefacts push'
+        required: true
+        default: ${{ secrets.DOCKERHUB_PWD }}
+    repo-name:
+        description: 'Name of the repository that runs the Action'
+        required: true
+        default: ${{ GITHUB_REPOSITORY.split("/")[1] }}
+    repo-version:
+        description: 'Value to store app version for tagging puposes'
+        required: true
+        default: 0.0.0
+
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -25,7 +51,7 @@ jobs:
     - name: Test
       run: go test -v ./...
 
-  golangci:
+  golangci-lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -33,3 +59,22 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: v1.29
+  
+  docker-build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Docker Artefact
+        run: |
+            cd /home/runner/work/${{ inputs.repo-name }}/${{ inputs.repo-name }}
+            docker build . \
+            --tag ubivius/${{ inputs.repo-name }}:${{ inputs.repo-version }} \
+            --build-arg BUILD_TYPE=${{ inputs.build-lvl }}
+
+      - name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: ubivius/${{ inputs.repo-name }}:${{ inputs.repo-version }}
+          username: ${{ inputs.dockerhub-user }}
+          password: ${{ inputs.dockerhub-pwd }}
+
