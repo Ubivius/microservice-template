@@ -53,7 +53,7 @@ jobs:
           BUILD_TYPE: $BUILD_LVL
         with:
           name: ubivius/$REPO_NAME:$REPO_VERSION
-          username: $DOCKERHUB_USER
+          username: $DOCKERHUB_EMAIL
           password: $DOCKERHUB_PWD
           default_branch: $GITHUB_REF
           dockerfile: Dockerfile
