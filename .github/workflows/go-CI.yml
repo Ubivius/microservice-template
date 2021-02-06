@@ -13,7 +13,7 @@ env:
   DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_EMAIL: ${{ secrets.DOCKERHUB_EMAIL }}
   DOCKERHUB_PWD: ${{ secrets.DOCKERHUB_PWD }}
-  REPO_NAME: $GITHUB_REPOSITORY.split("/")[1]
+  REPO_NAME: $GITHUB_REPOSITORY
   REPO_VERSION: 0.0.0
 
 jobs:
@@ -52,11 +52,11 @@ jobs:
         env:
           BUILD_TYPE: $BUILD_LVL
         with:
-          name: ubivius/$REPO_NAME
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PWD }}
+          name: ubivius/${{ REPO_NAME }}
+          username: $DOCKERHUB_USER
+          password: $DOCKERHUB_PWD
           buildargs: BUILD_TYPE
           default_branch: $GITHUB_REF
           dockerfile: Dockerfile
-          tags: "$REPO_VERSION"
+          tags: "${{ REPO_VERSION }}"
           
