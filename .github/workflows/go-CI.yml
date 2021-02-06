@@ -51,11 +51,11 @@ jobs:
         env:
           BUILD_TYPE: ${{ env.BUILD_LVL }}
         with:
-          name: ubivius/$GITHUB_REPOSITORY
+          name: "ubivius/$GITHUB_REPOSITORY"
           username: ${{ env.DOCKERHUB_USER }}
           password: ${{ env.DOCKERHUB_PWD }}
           buildargs: BUILD_TYPE
-          default_branch: $GITHUB_REF
+          default_branch: "$GITHUB_REF"
           dockerfile: Dockerfile
           tags: "${{ env.REPO_VERSION }}"
           
