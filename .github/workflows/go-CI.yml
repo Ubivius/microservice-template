@@ -8,31 +8,13 @@ on:
   pull_request:
     branches: [ master, main ]
 
-inputs:
-    build-lvl: 
-        description: 'Arg to determine image build output (local=debian, test=alpine or prod=distroless)'
-        required: true
-        default: test
-    dockerhub-user:
-        description: 'DockerHub.com user to enable docker build artefacts push'
-        required: true
-        default: ${{ secrets.DOCKERHUB_USERNAME }}
-    dockerhub-email:
-        description: 'DockerHub.com email to enable docker build artefacts push'
-        required: true
-        default: ${{ secrets.DOCKERHUB_EMAIL }}
-    dockerhub-pwd:
-        description: 'DockerHub.com password to enable docker build artefacts push'
-        required: true
-        default: ${{ secrets.DOCKERHUB_PWD }}
-    repo-name:
-        description: 'Name of the repository that runs the Action'
-        required: true
-        default: ${{ GITHUB_REPOSITORY.split("/")[1] }}
-    repo-version:
-        description: 'Value to store app version for tagging puposes'
-        required: true
-        default: 0.0.0
+env:
+  BUILD_LVL: test
+  DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_EMAIL: ${{ secrets.DOCKERHUB_EMAIL }}
+  DOCKERHUB_PWD: ${{ secrets.DOCKERHUB_PWD }}
+  REPO_NAME: ${{ GITHUB_REPOSITORY.split("/")[1] }}
+  REPO_VERSION: 0.0.0
 
 jobs:
   build-and-test:
@@ -67,11 +49,11 @@ jobs:
       - name: Build and Push Artefact to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
         env:
-          BUILD_TYPE: ${{ inputs.build-lvl }}
+          BUILD_TYPE: ${{ BUILD_LVL }}
         with:
-          name: ubivius/${{ inputs.repo-name }}:${{ inputs.repo-version }}
-          username: ${{ inputs.dockerhub-user }}
-          password: ${{ inputs.dockerhub-pwd }}
+          name: ubivius/${{ REPO_NAME }}:${{ REPO_VERSION }}
+          username: ${{ DOCKERHUB_USER }}
+          password: ${{ DOCKERHUB_PWD }}
           default_branch: ${{ GITHUB_REF }}
           dockerfile: Dockerfile
           buildargs: BUILD_TYPE
