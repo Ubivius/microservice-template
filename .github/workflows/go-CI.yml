@@ -47,16 +47,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Pre-load env-var
+        run: echo '::save-state name=BRANCH::$(echo ${GITHUB_REF})'
+        id: fetch-branch
+
+      - name: Pre-load env-var
         run: |
-            echo '::save-state name=BRANCH::$(echo ${GITHUB_REF})'
             IN=$(echo ${GITHUB_REPOSITORY})
             arrIN=(${IN//\// })
             echo '::save-state name=REPO_NAME::$(echo ${arrIN[1]} )'
+        id: fetch-repo-name
+            
 
       - name: Build and Push Artefact to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: ubivius/${{ STATE_REPO_NAME }}
+          name: ubivius/${{ steps.fetch-repo-name.output.STATE_REPO_NAME }}
           username: ${{ env.DOCKERHUB_USER }}
           password: ${{ env.DOCKERHUB_PWD }}
           buildargs: ${{ env.BUILD_LVL }}
