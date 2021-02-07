@@ -54,8 +54,7 @@ jobs:
         run: |
             IN=$(echo ${GITHUB_REPOSITORY})
             NAME=${IN#"Ubivius/"}
-            echo $NAME
-            echo '::set-output name=REPO_NAME::$NAME'
+            echo '::set-output name=REPO_NAME::${NAME}'
         id: fetch-repo-name
             
 
