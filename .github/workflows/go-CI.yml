@@ -47,8 +47,8 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Build and Push Artefact to Registry
-        pre: echo '::save-state name=REPO_NAME::$(echo ${GITHUB_REPOSITORY})'
         uses: elgohr/Publish-Docker-Github-Action@master
+        run: echo '::save-state name=REPO_NAME::$(echo ${GITHUB_REPOSITORY})'
         with:
           name: ubivius/${{ env.STATE_REPO_NAME }}
           username: ${{ env.DOCKERHUB_USER }}
