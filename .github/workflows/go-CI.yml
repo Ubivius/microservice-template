@@ -51,12 +51,12 @@ jobs:
         id: fetch-branch
 
       - name: Pre-load env-var
+        id: fetch-repo-name
         run: |
             IN=$(echo ${GITHUB_REPOSITORY})
             NAME=${IN#"Ubivius/"}
-            echo '::set-output name=REPO_NAME::$(echo $NAME)'
-        id: fetch-repo-name
-            
+            echo "::set-output name=REPO_NAME::$(echo $NAME)"
+        shell: bash
 
       - name: Build and Push Artefact to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
