@@ -5,9 +5,9 @@ FROM golang:stretch as build-env
 
 COPY . ./src
 RUN apt update
+RUN mkdir bin
 WORKDIR /go/src
 RUN echo "Setup build environnement"
-RUN mkdir bin
 RUN export PATH=$PATH:/go/bin
 RUN export GO111MODULE=on
 RUN echo "Building Microsevice..."
