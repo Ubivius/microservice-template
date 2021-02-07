@@ -6,14 +6,14 @@ FROM golang:stretch as build-env
 COPY . ./src
 RUN apt update
 WORKDIR /go/src
-echo "Setup build environnement"
-mkdir bin
-export PATH=$PATH:/go/bin
-export GO111MODULE=on
-go mod init
-echo "Building Microsevice..."
-go build -o /go/bin/app -v ./...
-echo "First Docker build-stage is now done"
+RUN echo "Setup build environnement"
+RUN mkdir bin
+RUN export PATH=$PATH:/go/bin
+RUN export GO111MODULE=on
+RUN go mod init
+RUN echo "Building Microsevice..."
+RUN go build -o /go/bin/app -v ./...
+RUN echo "First Docker build-stage is now done"
 
 
 FROM gcr.io/distroless/base as prod
