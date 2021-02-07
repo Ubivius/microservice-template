@@ -45,11 +45,18 @@ jobs:
     needs: [ build-and-test, golangci-lint]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
+      - name: Pre-load env-var
+        run: |
+            echo '::save-state name=BRANCH::$(echo ${GITHUB_REF})'
+            IN=$(echo ${GITHUB_REPOSITORY})
+            arrIN=(${IN//\// })
+            echo '::save-state name=REPO_NAME::$(echo ${arrIN[1]} )'
+
       - name: Build and Push Artefact to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: ubivius/microservice-template
+          name: ubivius/${{ STATE_REPO_NAME }}
           username: ${{ env.DOCKERHUB_USER }}
           password: ${{ env.DOCKERHUB_PWD }}
           buildargs: ${{ env.BUILD_LVL }}
