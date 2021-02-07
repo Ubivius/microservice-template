@@ -1,0 +1,63 @@
+name: CI for Merge on master/main
+
+on:
+  push:
+    tags:
+      - v*
+    branches: [ master, main ]
+
+env:
+  BUILD_LVL: test
+  DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_EMAIL: ${{ secrets.DOCKERHUB_EMAIL }}
+  DOCKERHUB_PWD: ${{ secrets.DOCKERHUB_PWD }}
+  REPO_VERSION: 0.0.0
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Test
+      run: go test -v ./...
+
+  golangci-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
+  
+  publish-docker:
+    needs: [ build-and-test, golangci-lint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Pre-load env-var
+        id: fetch-vars
+        run: |
+            IN=$(echo ${GITHUB_REPOSITORY})
+            NAME=${IN#"Ubivius/"}
+            echo "::set-output name=REPO_NAME::$(echo $NAME)"
+            echo "::set-output name=BRANCH::$(echo $GITHUB_REF)"
+        shell: bash
+
+      - name: Build and Push Artefact to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: ubivius/${{ steps.fetch-vars.outputs.REPO_NAME }}
+          username: ${{ env.DOCKERHUB_USER }}
+          password: ${{ env.DOCKERHUB_PWD }}
+          buildargs: ${{ env.BUILD_LVL }}
+          dockerfile: Dockerfile
+          tags: "${{ env.REPO_VERSION }}"
