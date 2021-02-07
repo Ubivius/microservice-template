@@ -33,8 +33,8 @@ func (productHandler *ProductsHandler) MiddlewareProductValidation(next http.Han
 		}
 
 		// Add the product to the context
-		context := context.WithValue(request.Context(), KeyProduct{}, product)
-		newRequest := request.WithContext(context)
+		ctx := context.WithValue(request.Context(), KeyProduct{}, product)
+		newRequest := request.WithContext(ctx)
 
 		// Call the next handler, which can be another middleware or the final handler
 		next.ServeHTTP(responseWriter, newRequest)
