@@ -54,6 +54,7 @@ jobs:
         run: |
             IN=$(echo ${GITHUB_REPOSITORY})
             NAME=${IN#"ubivius/"}
+            echo $NAME
             echo '::save-state name=REPO_NAME::$(echo $NAME)'
         id: fetch-repo-name
             
@@ -61,7 +62,7 @@ jobs:
       - name: Build and Push Artefact to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: ubivius/${{ steps.fetch-repo-name.output.STATE_REPO_NAME }}
+          name: ubivius/${{ steps.fetch-repo-name.states.STATE_REPO_NAME }}
           username: ${{ env.DOCKERHUB_USER }}
           password: ${{ env.DOCKERHUB_PWD }}
           buildargs: ${{ env.BUILD_LVL }}
