@@ -9,7 +9,7 @@ RUN echo "Setup build environnement"
 RUN export PATH=$PATH:/go/bin
 RUN export GO111MODULE=on
 RUN echo "Building Microsevice..."
-RUN go build main.go -o /go/bin/app -v
+RUN go build main.go -v
 RUN echo "First Docker build-stage is now done"
 
 FROM gcr.io/distroless/base as prod
@@ -19,5 +19,5 @@ FROM golang:alpine as test
 FROM golang:stretch as local
 
 FROM ${BUILD_TYPE} AS exit_artefact
-COPY --from=build-env /go/bin/app /microservice
+COPY --from=build-env /go/src/main /microservice
 CMD ["microservice"]
