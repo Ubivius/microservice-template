@@ -47,10 +47,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build and Push Artefact to Registry
-        uses: elgohr/Publish-Docker-Github-Action@master
         pre: |
           echo ::save-state name=BRANCH::$(echo ${GITHUB_REF})
           echo ::save-state name=REPO_NAME::$(echo ${GITHUB_REPOSITORY})
+        uses: elgohr/Publish-Docker-Github-Action@master
         env:
           BUILD_TYPE: ${{ env.BUILD_LVL }}
         with:
