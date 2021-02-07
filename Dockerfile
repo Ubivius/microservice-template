@@ -4,9 +4,11 @@ ARG BUILD_TYPE=local
 FROM golang:stretch as build-env
 
 COPY . ./src
+RUN pwd
 RUN apt update
 RUN mkdir bin
 WORKDIR /go/src
+RUN pwd
 RUN echo "Setup build environnement"
 RUN export PATH=$PATH:/go/bin
 RUN export GO111MODULE=on
