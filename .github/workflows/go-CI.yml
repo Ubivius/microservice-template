@@ -45,11 +45,9 @@ jobs:
     needs: [ build-and-test, golangci-lint]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@master
       - name: Build and Push Artefact to Registry
-        pre: |
-          echo ::save-state name=BRANCH::$(echo ${GITHUB_REF})
-          echo ::save-state name=REPO_NAME::$(echo ${GITHUB_REPOSITORY})
+        pre: echo ::save-state name=REPO_NAME::$(echo ${GITHUB_REPOSITORY})
         uses: elgohr/Publish-Docker-Github-Action@master
         env:
           BUILD_TYPE: ${{ env.BUILD_LVL }}
@@ -58,7 +56,7 @@ jobs:
           username: ${{ env.DOCKERHUB_USER }}
           password: ${{ env.DOCKERHUB_PWD }}
           buildargs: BUILD_TYPE
-          default_branch: ${{ env.STATE_BRANCH }}
+          default_branch: test
           dockerfile: Dockerfile
           tags: "${{ env.REPO_VERSION }}"
           
