@@ -10,7 +10,6 @@ RUN echo "Setup build environnement"
 RUN mkdir bin
 RUN export PATH=$PATH:/go/bin
 RUN export GO111MODULE=on
-RUN go mod init
 RUN echo "Building Microsevice..."
 RUN go build -o /go/bin/app -v ./...
 RUN echo "First Docker build-stage is now done"
