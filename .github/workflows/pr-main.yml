@@ -1,4 +1,4 @@
-name: CI for Pull-Request on master, main
+name: CI for Pull-Request on master/main
 
 on:
   pull_request:

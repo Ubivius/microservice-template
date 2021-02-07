@@ -1,4 +1,4 @@
-name: CI for Push on master, main
+name: CI for Merge on master/main
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: CI for Push on dev
+name: CI for Merge on dev
 
 on:
   push:
