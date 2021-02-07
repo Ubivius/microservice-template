@@ -53,8 +53,8 @@ jobs:
       - name: Pre-load env-var
         run: |
             IN=$(echo ${GITHUB_REPOSITORY})
-            arrIN=(${IN//\// })
-            echo '::save-state name=REPO_NAME::$(echo ${arrIN[1]} )'
+            NAME=${IN#"ubivius/"}
+            echo '::save-state name=REPO_NAME::$(echo $NAME)'
         id: fetch-repo-name
             
 
