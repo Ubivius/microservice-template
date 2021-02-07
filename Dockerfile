@@ -2,20 +2,15 @@
 # if BUILD_TYPE is empty, set to local
 ARG BUILD_TYPE=local
 FROM golang:stretch as build-env
-
 COPY . ./src
-RUN pwd
 RUN apt update
 WORKDIR /go/src
-RUN pwd
 RUN echo "Setup build environnement"
 RUN export PATH=$PATH:/go/bin
 RUN export GO111MODULE=on
 RUN echo "Building Microsevice..."
-RUN go build main.go -o /go/bin/app -v ./...
-RUN ls -la /go/bin
+RUN go build main.go -o /go/bin/app -v
 RUN echo "First Docker build-stage is now done"
-
 
 FROM gcr.io/distroless/base as prod
 
