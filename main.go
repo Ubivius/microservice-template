@@ -10,9 +10,7 @@ import (
 
 	"github.com/Ubivius/microservice-template/handlers"
 	"github.com/gorilla/mux"
-	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/stdout"
-	"go.opentelemetry.io/otel/propagation"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
@@ -34,13 +32,7 @@ func main() {
 	ctx := context.Background()
 	batchSpanProcessor := sdktrace.NewBatchSpanProcessor(exporter)
 	tracerProvider := sdktrace.NewTracerProvider(sdktrace.WithSpanProcessor(batchSpanProcessor))
-
-	// Find a better way to handle this error
 	defer func() { _ = tracerProvider.Shutdown(ctx) }()
-
-	otel.SetTracerProvider(tracerProvider)
-	propagator := propagation.NewCompositeTextMapPropagator(propagation.Baggage{}, propagation.TraceContext{})
-	otel.SetTextMapPropagator(propagator)
 
 	// Creating handlers
 	productHandler := handlers.NewProductsHandler(logger)
