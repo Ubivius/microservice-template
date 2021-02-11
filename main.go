@@ -19,7 +19,6 @@ func main() {
 	logger := log.New(os.Stdout, "Template", log.LstdFlags)
 
 	// Initialising open telemetry
-
 	// Creating console exporter
 	exporter, err := stdout.NewExporter(
 		stdout.WithPrettyPrint(),
