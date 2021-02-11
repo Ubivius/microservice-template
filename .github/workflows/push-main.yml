@@ -55,7 +55,7 @@ jobs:
       - name: Build and Push Artefact to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: ubivius/${{ steps.fetch-vars.outputs.REPO_NAME }}
+          name: ubiviushub/${{ steps.fetch-vars.outputs.REPO_NAME }}
           username: ${{ env.DOCKERHUB_USER }}
           password: ${{ env.DOCKERHUB_PWD }}
           buildargs: ${{ env.BUILD_LVL }}
