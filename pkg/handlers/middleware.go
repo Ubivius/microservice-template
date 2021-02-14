@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Ubivius/microservice-template/internal/data"
+	"github.com/Ubivius/microservice-template/pkg/data"
 )
 
 // Errors should be templated in the future.

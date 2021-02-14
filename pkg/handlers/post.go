@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Ubivius/microservice-template/internal/data"
+	"github.com/Ubivius/microservice-template/pkg/data"
 )
 
 // AddProduct creates a new product from the received JSON

@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Ubivius/microservice-template/internal/data"
+	"github.com/Ubivius/microservice-template/pkg/data"
 )
 
 // GetProducts returns the full list of products
@@ -13,7 +13,7 @@ func (productHandler *ProductsHandler) GetProducts(responseWriter http.ResponseW
 	err := data.ToJSON(productList, responseWriter)
 	if err != nil {
 		productHandler.logger.Println("[ERROR] serializing product", err)
-		http.Error(responseWriter, "Unable to marshal json", http.StatusInternalServerError)
+		http.Error(responseWriter, "Unable to marshal json", http.StatuspkgServerError)
 	}
 }
 
@@ -32,7 +32,7 @@ func (productHandler *ProductsHandler) GetProductByID(responseWriter http.Respon
 		return
 	default:
 		productHandler.logger.Println("[ERROR] fetching product", err)
-		http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
+		http.Error(responseWriter, err.Error(), http.StatuspkgServerError)
 		return
 	}
 
