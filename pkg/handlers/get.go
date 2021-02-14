@@ -13,7 +13,7 @@ func (productHandler *ProductsHandler) GetProducts(responseWriter http.ResponseW
 	err := data.ToJSON(productList, responseWriter)
 	if err != nil {
 		productHandler.logger.Println("[ERROR] serializing product", err)
-		http.Error(responseWriter, "Unable to marshal json", http.StatuspkgServerError)
+		http.Error(responseWriter, "Unable to marshal json", http.StatusInternalServerError)
 	}
 }
 
@@ -32,7 +32,7 @@ func (productHandler *ProductsHandler) GetProductByID(responseWriter http.Respon
 		return
 	default:
 		productHandler.logger.Println("[ERROR] fetching product", err)
-		http.Error(responseWriter, err.Error(), http.StatuspkgServerError)
+		http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

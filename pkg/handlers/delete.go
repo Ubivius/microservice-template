@@ -20,7 +20,7 @@ func (productHandler *ProductsHandler) Delete(responseWriter http.ResponseWriter
 
 	if err != nil {
 		productHandler.logger.Println("[ERROR] deleting product", err)
-		http.Error(responseWriter, "Erro deleting poduct", http.StatuspkgServerError)
+		http.Error(responseWriter, "Error deleting poduct", http.StatusInternalServerError)
 		return
 	}
 
