@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/Ubivius/microservice-template/handlers"
+	"github.com/Ubivius/microservice-template/internal/handlers"
 	"github.com/gorilla/mux"
 	"go.opentelemetry.io/otel/exporters/stdout"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"

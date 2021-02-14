@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Ubivius/microservice-template/data"
+	"github.com/Ubivius/microservice-template/internal/data"
 )
 
 // UpdateProducts updates the product with the ID specified in the received JSON product
