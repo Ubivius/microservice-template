@@ -56,7 +56,7 @@ func TestValidationMiddlewareWithNoName(t *testing.T) {
 
 	productHandler := NewProductsHandler(NewTestLogger())
 
-	// Create a router for middleware because function attachment is handled by gorilla/mux
+	// Create a router for middleware because linking is handled by gorilla/mux
 	router := mux.NewRouter()
 	router.HandleFunc("/products", productHandler.AddProduct)
 	router.Use(productHandler.MiddlewareProductValidation)
