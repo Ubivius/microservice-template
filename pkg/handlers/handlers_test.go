@@ -1,10 +1,29 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
+
+func NewLogger() *log.Logger {
+	return log.New(os.Stdout, "Tests", log.LstdFlags)
+}
+
+// Testing GetProduct
+func TestGetProducts(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "/products", nil)
+	response := httptest.NewRecorder()
+
+	productHandler := NewProductsHandler(NewLogger())
+	productHandler.GetProducts(response, request)
+
+	t.Log(response.Code)
+	t.Log(response.Body)
+	t.Log("hello")
+}
 
 func Teapot(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusTeapot)
