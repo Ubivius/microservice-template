@@ -52,7 +52,7 @@ func main() {
 	// Post router
 	postRouter := router.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/products", productHandler.AddProduct)
-	// postRouter.Use(productHandler.MiddlewareProductValidation)
+	postRouter.Use(productHandler.MiddlewareProductValidation)
 
 	// Delete router
 	deleteRouter := router.Methods(http.MethodDelete).Subrouter()
