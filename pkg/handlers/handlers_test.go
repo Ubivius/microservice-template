@@ -104,9 +104,9 @@ func TestAddProduct(t *testing.T) {
 	}
 	bodyBytes, _ := json.Marshal(body)
 	t.Log(string(bodyBytes))
-	// reader := strings.NewReader("{\"name\":\"addName\",\"description\":\"addDescription\",\"price\":1,\"sku\":\"abc-abc-abcd\"}")
+	reader := strings.NewReader("{\"name\":\"addName\", \"price\":1.00, \"sku\":\"abc-abc-abcd\"}")
 
-	request := httptest.NewRequest(http.MethodPost, "/products", nil)
+	request := httptest.NewRequest(http.MethodPost, "/products", reader)
 	response := httptest.NewRecorder()
 
 	productHandler := NewProductsHandler(NewTestLogger())
