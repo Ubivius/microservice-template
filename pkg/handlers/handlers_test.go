@@ -94,6 +94,7 @@ func TestDeleteNonExistantProduct(t *testing.T) {
 	}
 }
 
+// Currently cant cast from KeyProduct to data.Product because KeyProduct is nil.
 func TestAddProduct(t *testing.T) {
 	// Creating request body
 	body := &data.Product{
