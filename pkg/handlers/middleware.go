@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
@@ -32,11 +31,7 @@ func (productHandler *ProductsHandler) MiddlewareProductValidation(next http.Han
 			return
 		}
 
-		// Add the product to the context
-		ctx := context.WithValue(request.Context(), KeyProduct{}, product)
-		newRequest := request.WithContext(ctx)
-
 		// Call the next handler, which can be another middleware or the final handler
-		next.ServeHTTP(responseWriter, newRequest)
+		next.ServeHTTP(responseWriter, request)
 	})
 }

@@ -3,6 +3,8 @@
 curl localhost:9090/products
 curl localhost:9090/products/1
 curl localhost:9090/products -XPOST --header "Content-Type: application/json" -d '{"name":"addName", "price":1.00, "sku":"abc-abc-abcd"}'
+curl localhost:9090/products -XPOST --header "Content-Type: application/json" -d '{"name":"addName", "price":1, "sku":"abc-abc-abcd"}'
+curl localhost:9090/products -XPOST --header "Content-Type: application/json" -d @- <<'EOF' {"name":"addName", "price":1.00, "sku":"abc-abc-abcd"} EOF
 curl localhost:9090/products
 curl localhost:9090/delete/1
 curl localhost:9090/products
