@@ -33,7 +33,7 @@ func TestGetProducts(t *testing.T) {
 	}
 }
 
-func TestGetProductByID(t *testing.T) {
+func TestGetExistingProductByID(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "/products/1", nil)
 	response := httptest.NewRecorder()
 
@@ -47,29 +47,33 @@ func TestGetProductByID(t *testing.T) {
 
 	productHandler.GetProductByID(response, request)
 
-	if response.Code != 200 {
-		t.Errorf("Expected status code 200 but got : %d", response.Code)
+	if response.Code != http.StatusOK {
+		t.Errorf("Expected status code %d but got : %d", http.StatusOK, response.Code)
 	}
 	if !strings.Contains(response.Body.String(), "\"id\":1") {
 		t.Error("Missing elements from expected results")
 	}
 }
 
-func TestDeleteExistingProduct(t *testing.T) {
-	request := httptest.NewRequest(http.MethodDelete, "/products/1", nil)
+func TestGetnonExistingProductByID(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "/products/4", nil)
 	response := httptest.NewRecorder()
 
 	productHandler := NewProductsHandler(NewTestLogger())
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
-		"id": "1",
+		"id": "4",
 	}
 	request = mux.SetURLVars(request, vars)
 
-	productHandler.Delete(response, request)
-	if response.Code != http.StatusNoContent {
-		t.Errorf("Expected status code %d but got : %d", http.StatusNoContent, response.Code)
+	productHandler.GetProductByID(response, request)
+
+	if response.Code != http.StatusBadRequest {
+		t.Errorf("Expected status code %d but got : %d", http.StatusBadRequest, response.Code)
+	}
+	if !strings.Contains(response.Body.String(), "Product not found") {
+		t.Error("Expected response : Product not found")
 	}
 }
 
@@ -140,5 +144,23 @@ func TestUpdateProduct(t *testing.T) {
 
 	if response.Code != http.StatusNoContent {
 		t.Errorf("Expected status code %d, but got %d", http.StatusNoContent, response.Code)
+	}
+}
+
+func TestDeleteExistingProduct(t *testing.T) {
+	request := httptest.NewRequest(http.MethodDelete, "/products/1", nil)
+	response := httptest.NewRecorder()
+
+	productHandler := NewProductsHandler(NewTestLogger())
+
+	// Mocking gorilla/mux vars
+	vars := map[string]string{
+		"id": "1",
+	}
+	request = mux.SetURLVars(request, vars)
+
+	productHandler.Delete(response, request)
+	if response.Code != http.StatusNoContent {
+		t.Errorf("Expected status code %d but got : %d", http.StatusNoContent, response.Code)
 	}
 }
