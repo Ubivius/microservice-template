@@ -55,7 +55,7 @@ func TestGetExistingProductByID(t *testing.T) {
 	}
 }
 
-func TestGetnonExistingProductByID(t *testing.T) {
+func TestGetNonExistingProductByID(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "/products/4", nil)
 	response := httptest.NewRecorder()
 
