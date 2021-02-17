@@ -15,6 +15,7 @@ import (
 func (productHandler *ProductsHandler) MiddlewareProductValidation(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
 		product := &data.Product{}
+		productHandler.logger.Println("Body : ", request.Body)
 
 		err := data.FromJSON(product, request.Body)
 		if err != nil {

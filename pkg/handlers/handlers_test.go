@@ -116,7 +116,7 @@ func TestAddProduct(t *testing.T) {
 	t.Fail()
 }
 
-// Test struct
+// Test struct request
 func TestPost(t *testing.T) {
 	test := struct {
 		body string
@@ -131,5 +131,3 @@ func TestPost(t *testing.T) {
 	t.Log(response.Code)
 	t.Fail()
 }
-
-// 2 examples based off : https://github.com/cyruzin/feelthemovies/blob/master/internal/app/controllers/users_test.go
