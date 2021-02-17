@@ -116,17 +116,20 @@ func TestAddProduct(t *testing.T) {
 	t.Fail()
 }
 
+// Test struct
 func TestPost(t *testing.T) {
 	test := struct {
 		body string
 	}{
-		body: `{"name":"addName"}`,
+		body: `{"name":"addName", "price":1, "sku":"abc-abc-abcd"}`,
 	}
 	request := httptest.NewRequest(http.MethodPost, "/products", strings.NewReader(test.body))
 	response := httptest.NewRecorder()
 
 	productHandler := NewProductsHandler(NewTestLogger())
 	productHandler.AddProduct(response, request)
-	t.Log(response.Body.String())
+	t.Log(response.Code)
 	t.Fail()
 }
+
+// 2 examples based off : https://github.com/cyruzin/feelthemovies/blob/master/internal/app/controllers/users_test.go
