@@ -26,6 +26,10 @@ func (productHandler *ProductsHandler) GetProductByID(responseWriter http.Respon
 	product, err := data.GetProductByID(id)
 	switch err {
 	case nil:
+		err = data.ToJSON(product, responseWriter)
+		if err != nil {
+			productHandler.logger.Println("[ERROR] serializing product", err)
+		}
 	case data.ErrorProductNotFound:
 		productHandler.logger.Println("[ERROR] fetching product", err)
 		http.Error(responseWriter, "Product not found", http.StatusBadRequest)
@@ -36,8 +40,4 @@ func (productHandler *ProductsHandler) GetProductByID(responseWriter http.Respon
 		return
 	}
 
-	err = data.ToJSON(product, responseWriter)
-	if err != nil {
-		productHandler.logger.Println("[ERROR] serializing product", err)
-	}
 }

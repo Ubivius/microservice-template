@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/gorilla/mux"
 )
 
 // Move to util package in Sprint 9
@@ -24,7 +26,29 @@ func TestGetProducts(t *testing.T) {
 	if response.Code != 200 {
 		t.Errorf("Expected status code 200 but got : %d", response.Code)
 	}
-	if !strings.Contains(response.Body.String(), "id") {
+	if !strings.Contains(response.Body.String(), "\"id\":2") {
+		t.Error("Missing elements from expected results")
+	}
+}
+
+func TestGetProductByID(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "/products/1", nil)
+	response := httptest.NewRecorder()
+
+	productHandler := NewProductsHandler(NewLogger())
+
+	// Mocking gorilla/mux vars
+	vars := map[string]string{
+		"id": "1",
+	}
+	request = mux.SetURLVars(request, vars)
+
+	productHandler.GetProductByID(response, request)
+
+	if response.Code != 200 {
+		t.Errorf("Expected status code 200 but got : %d", response.Code)
+	}
+	if !strings.Contains(response.Body.String(), "\"id\":1") {
 		t.Error("Missing elements from expected results")
 	}
 }
