@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -8,6 +9,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Ubivius/microservice-template/pkg/data"
 	"github.com/gorilla/mux"
 )
 
@@ -90,4 +92,24 @@ func TestDeleteNonExistantProduct(t *testing.T) {
 	if !strings.Contains(response.Body.String(), "Product not found") {
 		t.Error("Expected response : Product not found")
 	}
+}
+
+func TestAddProduct(t *testing.T) {
+	// Creating request body
+	body := &data.Product{
+		Name:        "addName",
+		Description: "addDescription",
+		Price:       1.00,
+		SKU:         "abc-abc-abcd",
+	}
+	bodyBytes, _ := json.Marshal(body)
+	reader := strings.NewReader(string(bodyBytes))
+
+	request := httptest.NewRequest(http.MethodPost, "/products", reader)
+	response := httptest.NewRecorder()
+
+	productHandler := NewProductsHandler(NewTestLogger())
+	productHandler.AddProduct(response, request)
+	t.Log(response.Body.String())
+	t.Fail()
 }
