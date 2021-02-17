@@ -52,3 +52,21 @@ func TestGetProductByID(t *testing.T) {
 		t.Error("Missing elements from expected results")
 	}
 }
+
+func TestDeleteExistingProduct(t *testing.T) {
+	request := httptest.NewRequest(http.MethodDelete, "/products/1", nil)
+	response := httptest.NewRecorder()
+
+	productHandler := NewProductsHandler(NewLogger())
+
+	// Mocking gorilla/mux vars
+	vars := map[string]string{
+		"id": "1",
+	}
+	request = mux.SetURLVars(request, vars)
+
+	productHandler.Delete(response, request)
+	if response.Code != http.StatusNoContent {
+		t.Errorf("Expected status code %d but got : %d", http.StatusNoContent, response.Code)
+	}
+}
