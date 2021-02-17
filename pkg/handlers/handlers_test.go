@@ -105,9 +105,24 @@ func TestAddProduct(t *testing.T) {
 	}
 	bodyBytes, _ := json.Marshal(body)
 	t.Log(string(bodyBytes))
-	reader := strings.NewReader("{\"name\":\"addName\", \"price\":1.00, \"sku\":\"abc-abc-abcd\"}")
+	reader := strings.NewReader(`{\"name\":\"addName\", \"price\":1.00, \"sku\":\"abc-abc-abcd\"}`)
 
 	request := httptest.NewRequest(http.MethodPost, "/products", reader)
+	response := httptest.NewRecorder()
+
+	productHandler := NewProductsHandler(NewTestLogger())
+	productHandler.AddProduct(response, request)
+	t.Log(response.Body.String())
+	t.Fail()
+}
+
+func TestPost(t *testing.T) {
+	test := struct {
+		body string
+	}{
+		body: `{"name":"addName"}`,
+	}
+	request := httptest.NewRequest(http.MethodPost, "/products", strings.NewReader(test.body))
 	response := httptest.NewRecorder()
 
 	productHandler := NewProductsHandler(NewTestLogger())
