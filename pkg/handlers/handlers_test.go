@@ -94,7 +94,6 @@ func TestDeleteNonExistantProduct(t *testing.T) {
 	}
 }
 
-// Currently cant cast from KeyProduct to data.Product because KeyProduct is nil.
 func TestAddProduct(t *testing.T) {
 	// Creating request body
 	body := &data.Product{
@@ -114,7 +113,32 @@ func TestAddProduct(t *testing.T) {
 	productHandler := NewProductsHandler(NewTestLogger())
 	productHandler.AddProduct(response, newRequest)
 
-	if response.Code != http.StatusAccepted {
-		t.Errorf("Expected status code %d, but got %d", http.StatusAccepted, response.Code)
+	if response.Code != http.StatusNoContent {
+		t.Errorf("Expected status code %d, but got %d", http.StatusNoContent, response.Code)
+	}
+}
+
+func TestUpdateProduct(t *testing.T) {
+	// Creating request body
+	body := &data.Product{
+		ID:          1,
+		Name:        "addName",
+		Description: "addDescription",
+		Price:       1,
+		SKU:         "abc-abc-abcd",
+	}
+
+	request := httptest.NewRequest(http.MethodPut, "/products", nil)
+	response := httptest.NewRecorder()
+
+	// Add the body to the context since we arent passing through middleware
+	ctx := context.WithValue(request.Context(), KeyProduct{}, body)
+	newRequest := request.WithContext(ctx)
+
+	productHandler := NewProductsHandler(NewTestLogger())
+	productHandler.UpdateProducts(response, newRequest)
+
+	if response.Code != http.StatusNoContent {
+		t.Errorf("Expected status code %d, but got %d", http.StatusNoContent, response.Code)
 	}
 }
