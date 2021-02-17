@@ -112,10 +112,10 @@ func TestAddProduct(t *testing.T) {
 
 	// Add the body to the context since we arent passing through middleware
 	ctx := context.WithValue(request.Context(), KeyProduct{}, body)
-	newRequest := request.WithContext(ctx)
+	request = request.WithContext(ctx)
 
 	productHandler := NewProductsHandler(NewTestLogger())
-	productHandler.AddProduct(response, newRequest)
+	productHandler.AddProduct(response, request)
 
 	if response.Code != http.StatusNoContent {
 		t.Errorf("Expected status code %d, but got %d", http.StatusNoContent, response.Code)
@@ -137,10 +137,10 @@ func TestUpdateProduct(t *testing.T) {
 
 	// Add the body to the context since we arent passing through middleware
 	ctx := context.WithValue(request.Context(), KeyProduct{}, body)
-	newRequest := request.WithContext(ctx)
+	request = request.WithContext(ctx)
 
 	productHandler := NewProductsHandler(NewTestLogger())
-	productHandler.UpdateProducts(response, newRequest)
+	productHandler.UpdateProducts(response, request)
 
 	if response.Code != http.StatusNoContent {
 		t.Errorf("Expected status code %d, but got %d", http.StatusNoContent, response.Code)
