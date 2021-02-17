@@ -11,8 +11,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Move to util package in Sprint 9
-func NewLogger() *log.Logger {
+// Move to util package in Sprint 9, should be a testing specific logger
+func NewTestLogger() *log.Logger {
 	return log.New(os.Stdout, "Tests", log.LstdFlags)
 }
 
@@ -20,7 +20,7 @@ func TestGetProducts(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "/products", nil)
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewLogger())
+	productHandler := NewProductsHandler(NewTestLogger())
 	productHandler.GetProducts(response, request)
 
 	if response.Code != 200 {
@@ -35,7 +35,7 @@ func TestGetProductByID(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "/products/1", nil)
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewLogger())
+	productHandler := NewProductsHandler(NewTestLogger())
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
@@ -57,7 +57,7 @@ func TestDeleteExistingProduct(t *testing.T) {
 	request := httptest.NewRequest(http.MethodDelete, "/products/1", nil)
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewLogger())
+	productHandler := NewProductsHandler(NewTestLogger())
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
@@ -68,5 +68,26 @@ func TestDeleteExistingProduct(t *testing.T) {
 	productHandler.Delete(response, request)
 	if response.Code != http.StatusNoContent {
 		t.Errorf("Expected status code %d but got : %d", http.StatusNoContent, response.Code)
+	}
+}
+
+func TestDeleteNonExistantProduct(t *testing.T) {
+	request := httptest.NewRequest(http.MethodDelete, "/products/4", nil)
+	response := httptest.NewRecorder()
+
+	productHandler := NewProductsHandler(NewTestLogger())
+
+	// Mocking gorilla/mux vars
+	vars := map[string]string{
+		"id": "4",
+	}
+	request = mux.SetURLVars(request, vars)
+
+	productHandler.Delete(response, request)
+	if response.Code != http.StatusNotFound {
+		t.Errorf("Expected status code %d but got : %d", http.StatusNotFound, response.Code)
+	}
+	if !strings.Contains(response.Body.String(), "Product not found") {
+		t.Error("Expected response : Product not found")
 	}
 }
