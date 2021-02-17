@@ -1,9 +1,10 @@
 package handlers
 
 import (
-	"context"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
@@ -11,8 +12,10 @@ import (
 )
 
 func TestValidationMiddleware(t *testing.T) {
+	productHandler := NewProductsHandler(NewTestLogger())
 	// Create a router for middleware because function attachment is handled by gorilla/mux
 	router := mux.NewRouter()
+	router.HandleFunc("/products").Use(productHandler.MiddlewareProductValidation)
 
 	// Creating request body
 	body := &data.Product{
@@ -21,16 +24,10 @@ func TestValidationMiddleware(t *testing.T) {
 		Price:       1,
 		SKU:         "abc-abc-abcd",
 	}
+	bodyBytes, _ := json.Marshal(body)
 
-	request := httptest.NewRequest(http.MethodPost, "/products", nil)
+	request := httptest.NewRequest(http.MethodPost, "/products", strings.NewReader(string(bodyBytes)))
 	response := httptest.NewRecorder()
-
-	// Add the body to the context since we arent passing through middleware
-	ctx := context.WithValue(request.Context(), KeyProduct{}, body)
-	newRequest := request.WithContext(ctx)
-
-	productHandler := NewProductsHandler(NewTestLogger())
-	productHandler.AddProduct(response, newRequest)
 
 	if response.Code != http.StatusNoContent {
 		t.Errorf("Expected status code %d, but got %d", http.StatusNoContent, response.Code)
