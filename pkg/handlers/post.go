@@ -12,5 +12,5 @@ func (productHandler *ProductsHandler) AddProduct(responseWriter http.ResponseWr
 	product := request.Context().Value(KeyProduct{}).(*data.Product)
 
 	data.AddProduct(product)
-	responseWriter.WriteHeader(200)
+	responseWriter.WriteHeader(http.StatusAccepted)
 }

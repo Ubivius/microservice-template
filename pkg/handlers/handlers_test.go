@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"encoding/json"
+	"context"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -100,34 +100,21 @@ func TestAddProduct(t *testing.T) {
 	body := &data.Product{
 		Name:        "addName",
 		Description: "addDescription",
-		Price:       1.00,
+		Price:       1,
 		SKU:         "abc-abc-abcd",
 	}
-	bodyBytes, _ := json.Marshal(body)
-	t.Log(string(bodyBytes))
-	reader := strings.NewReader(`{\"name\":\"addName\", \"price\":1.00, \"sku\":\"abc-abc-abcd\"}`)
 
-	request := httptest.NewRequest(http.MethodPost, "/products", reader)
+	request := httptest.NewRequest(http.MethodPost, "/products", nil)
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewTestLogger())
-	productHandler.AddProduct(response, request)
-	t.Log(response.Body.String())
-	t.Fail()
-}
+	// Add the body to the context since we arent passing through middleware
+	ctx := context.WithValue(request.Context(), KeyProduct{}, body)
+	newRequest := request.WithContext(ctx)
 
-// Test struct request
-func TestPost(t *testing.T) {
-	test := struct {
-		body string
-	}{
-		body: `{"name":"addName", "price":1, "sku":"abc-abc-abcd"}`,
+	productHandler := NewProductsHandler(NewTestLogger())
+	productHandler.AddProduct(response, newRequest)
+
+	if response.Code != http.StatusAccepted {
+		t.Errorf("Expected status code %d, but got %d", http.StatusAccepted, response.Code)
 	}
-	request := httptest.NewRequest(http.MethodPost, "/products", strings.NewReader(test.body))
-	response := httptest.NewRecorder()
-
-	productHandler := NewProductsHandler(NewTestLogger())
-	productHandler.AddProduct(response, request)
-	t.Log(response.Code)
-	t.Fail()
 }
