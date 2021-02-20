@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/Ubivius/microservice-template/handlers"
+	"github.com/Ubivius/microservice-template/pkg/handlers"
 	"github.com/gorilla/mux"
 	"go.opentelemetry.io/otel/exporters/stdout"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
@@ -19,7 +19,6 @@ func main() {
 	logger := log.New(os.Stdout, "Template", log.LstdFlags)
 
 	// Initialising open telemetry
-
 	// Creating console exporter
 	exporter, err := stdout.NewExporter(
 		stdout.WithPrettyPrint(),
