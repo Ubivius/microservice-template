@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
@@ -10,7 +11,7 @@ import (
 func (productHandler *ProductsHandler) GetProducts(responseWriter http.ResponseWriter, request *http.Request) {
 	productHandler.logger.Println("Handle GET products")
 	productList := data.GetProducts()
-	err := data.ToJSON(productList, responseWriter)
+	err := json.NewEncoder(responseWriter).Encode(productList)
 	if err != nil {
 		productHandler.logger.Println("[ERROR] serializing product", err)
 		http.Error(responseWriter, "Unable to marshal json", http.StatusInternalServerError)
@@ -26,7 +27,7 @@ func (productHandler *ProductsHandler) GetProductByID(responseWriter http.Respon
 	product, err := data.GetProductByID(id)
 	switch err {
 	case nil:
-		err = data.ToJSON(product, responseWriter)
+		err = json.NewEncoder(responseWriter).Encode(product)
 		if err != nil {
 			productHandler.logger.Println("[ERROR] serializing product", err)
 		}

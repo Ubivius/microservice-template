@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -17,7 +18,7 @@ func (productHandler *ProductsHandler) MiddlewareProductValidation(next http.Han
 	return http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
 		product := &data.Product{}
 
-		err := data.FromJSON(product, request.Body)
+		err := json.NewDecoder(request.Body).Decode(product)
 		if err != nil {
 			productHandler.logger.Println("[ERROR] deserializing product", err)
 			http.Error(responseWriter, "Error reading product", http.StatusBadRequest)
