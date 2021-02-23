@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/Ubivius/microservice-template/pkg/handlers"
-	"github.com/gorilla/mux"
+	"github.com/Ubivius/microservice-template/pkg/router"
 	"go.opentelemetry.io/otel/exporters/stdout"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
@@ -36,32 +36,13 @@ func main() {
 	// Creating handlers
 	productHandler := handlers.NewProductsHandler(logger)
 
-	// Mux route handling with gorilla/mux
-	router := mux.NewRouter()
-
-	// Get Router
-	getRouter := router.Methods(http.MethodGet).Subrouter()
-	getRouter.HandleFunc("/products", productHandler.GetProducts)
-	getRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.GetProductByID)
-
-	// Put router
-	putRouter := router.Methods(http.MethodPut).Subrouter()
-	putRouter.HandleFunc("/products", productHandler.UpdateProducts)
-	putRouter.Use(productHandler.MiddlewareProductValidation)
-
-	// Post router
-	postRouter := router.Methods(http.MethodPost).Subrouter()
-	postRouter.HandleFunc("/products", productHandler.AddProduct)
-	postRouter.Use(productHandler.MiddlewareProductValidation)
-
-	// Delete router
-	deleteRouter := router.Methods(http.MethodDelete).Subrouter()
-	deleteRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.Delete)
+	// Router setup
+	r := router.New(productHandler, logger)
 
 	// Server setup
 	server := &http.Server{
 		Addr:        ":9090",
-		Handler:     router,
+		Handler:     r,
 		IdleTimeout: 120 * time.Second,
 		ReadTimeout: 1 * time.Second,
 	}
