@@ -11,6 +11,7 @@ import (
 // Mux route handling with gorilla/mux
 func New(productHandler *handlers.ProductsHandler, logger *log.Logger) *mux.Router {
 	router := mux.NewRouter()
+
 	// Get Router
 	getRouter := router.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/products", productHandler.GetProducts)
