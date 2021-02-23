@@ -20,5 +20,4 @@ FROM golang:stretch as local
 
 FROM ${BUILD_TYPE} AS exit_artefact
 COPY --from=build-env /go/src/main /microservice
-WORKDIR /
-CMD ["microservice"]
+CMD ["/microservice"]
