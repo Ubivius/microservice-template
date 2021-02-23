@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Mux route handling with gorilla/mux
 func New(productHandler *handlers.ProductsHandler, logger *log.Logger) *mux.Router {
 	router := mux.NewRouter()
 	// Get Router

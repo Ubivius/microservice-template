@@ -36,13 +36,13 @@ func main() {
 	// Creating handlers
 	productHandler := handlers.NewProductsHandler(logger)
 
-	// Mux route handling with gorilla/mux
-	router := router.New(productHandler, logger)
+	// Router setup
+	r := router.New(productHandler, logger)
 
 	// Server setup
 	server := &http.Server{
 		Addr:        ":9090",
-		Handler:     router,
+		Handler:     r,
 		IdleTimeout: 120 * time.Second,
 		ReadTimeout: 1 * time.Second,
 	}
