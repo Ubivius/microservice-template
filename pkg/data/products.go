@@ -32,7 +32,7 @@ type Product struct {
 type Products []*Product
 
 // Database connection
-func GetDBConnection() (*mongo.Collection, error) {
+func getDBConnection() (*mongo.Collection, error) {
 	clientOptions := options.Client().ApplyURI("mongodb+srv://admin:test@cluster0.sbzzm.mongodb.net/products?retryWrites=true&w=majority")
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -52,26 +52,6 @@ func GetDBConnection() (*mongo.Collection, error) {
 	collection := client.Database("test").Collection("products")
 
 	return collection, nil
-}
-
-// '{"name":"addName", "price":1.00, "sku":"abc-abc-abcd"}'
-func AddToDB(collection *mongo.Collection) {
-	// Create items
-	sword := productList[1]
-	boots := productList[0]
-
-	// Add items to database
-	insertResult, err := collection.InsertOne(context.TODO(), sword)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
-
-	insertResult, err = collection.InsertOne(context.TODO(), boots)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
 }
 
 // All of these functions will become database calls in the future

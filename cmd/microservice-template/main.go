@@ -8,7 +8,6 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/Ubivius/microservice-template/pkg/data"
 	"github.com/Ubivius/microservice-template/pkg/handlers"
 	"github.com/Ubivius/microservice-template/pkg/router"
 	"go.opentelemetry.io/otel/exporters/stdout"
@@ -18,13 +17,6 @@ import (
 func main() {
 	// Logger
 	logger := log.New(os.Stdout, "Template", log.LstdFlags)
-
-	// Temporary database connection call
-	coll, errTemp := data.GetDBConnection()
-	if errTemp != nil {
-		logger.Fatal("Failed MongoDB connection : ", errTemp)
-	}
-	data.AddToDB(coll)
 
 	// Initialising open telemetry
 	// Creating console exporter
