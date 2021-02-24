@@ -58,10 +58,16 @@ func GetDBConnection() (*mongo.Collection, error) {
 func AddToDB(collection *mongo.Collection) {
 	// Create items
 	sword := productList[1]
-	// boots := productList[2]
+	boots := productList[0]
 
 	// Add items to database
 	insertResult, err := collection.InsertOne(context.TODO(), sword)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
+
+	insertResult, err = collection.InsertOne(context.TODO(), boots)
 	if err != nil {
 		log.Fatal(err)
 	}
