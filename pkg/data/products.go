@@ -54,34 +54,6 @@ func GetDBConnection() (*mongo.Collection, error) {
 	return collection, nil
 }
 
-// DB client
-func DBConnection() error {
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://admin:test@cluster0.sbzzm.mongodb.net/products?retryWrites=true&w=majority")) // Connecting to url
-	if err != nil {
-		log.Fatal(err)
-	}
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second) // If no error, connection settings
-	err = client.Connect(ctx)                                           // Connect
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer client.Disconnect(ctx) // Defer disconnect to end of function
-
-	// Ping db to make sure we can access it
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// List databases in atlas
-	databases, err := client.ListDatabaseNames(ctx, bson.M{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(databases)
-	return nil
-}
-
 // All of these functions will become database calls in the future
 // GETTING PRODUCTS
 
@@ -173,4 +145,32 @@ var productList = []*Product{
 		CreatedOn:   time.Now().UTC().String(),
 		UpdatedOn:   time.Now().UTC().String(),
 	},
+}
+
+// DB client
+func DBConnection() error {
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://admin:test@cluster0.sbzzm.mongodb.net/products?retryWrites=true&w=majority")) // Connecting to url
+	if err != nil {
+		log.Fatal(err)
+	}
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second) // If no error, connection settings
+	err = client.Connect(ctx)                                           // Connect
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Disconnect(ctx) // Defer disconnect to end of function
+
+	// Ping db to make sure we can access it
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// List databases in atlas
+	databases, err := client.ListDatabaseNames(ctx, bson.M{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(databases)
+	return nil
 }
