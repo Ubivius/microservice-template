@@ -40,4 +40,3 @@ spec:
 {{- end }}
   selector:
     {{- include "microservice-template.selectorLabels" . | nindent 4 }}
-    
