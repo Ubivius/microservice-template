@@ -105,8 +105,15 @@ func UpdateProduct(product *Product) error {
 
 // AddProduct creates a new product
 func AddProduct(product *Product) {
-	product.ID = getNextID()
-	productList = append(productList, product)
+	collection, err := GetDBConnection()
+	if err != nil {
+		log.Fatal(err)
+	}
+	insertResult, err := collection.InsertOne(context.TODO(), product)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
 }
 
 // DeleteProduct deletes the product with the given id
