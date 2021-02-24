@@ -15,6 +15,14 @@ import (
 // ErrorProductNotFound : Product specific errors
 var ErrorProductNotFound = fmt.Errorf("Product not found")
 
+type ProductDB interface {
+	GetProducts() Products
+	GetProductByID(id int) (*Product, error)
+	UpdateProduct(product *Product) error
+	AddProduct(product *Product)
+	DeleteProduct(id int) error
+}
+
 // Product defines the structure for an API product.
 // Formatting done with json tags to the right. "-" : don't include when encoding to json
 type Product struct {
@@ -85,7 +93,7 @@ func UpdateProduct(product *Product) error {
 
 // AddProduct creates a new product
 func AddProduct(product *Product) {
-	collection, err := GetDBConnection()
+	collection, err := getDBConnection()
 	if err != nil {
 		log.Fatal(err)
 	}
