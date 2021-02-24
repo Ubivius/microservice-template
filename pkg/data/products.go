@@ -32,7 +32,7 @@ type Product struct {
 type Products []*Product
 
 // Database connection
-func GetDBConnection() error {
+func GetDBConnection() (*mongo.Collection, error) {
 	clientOptions := options.Client().ApplyURI("mongodb+srv://admin:test@cluster0.sbzzm.mongodb.net/products?retryWrites=true&w=majority")
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -48,7 +48,10 @@ func GetDBConnection() error {
 		log.Fatal(err)
 	}
 	fmt.Println("Connected to MongoDB!")
-	return nil
+
+	collection := client.Database("test").Collection("products")
+
+	return collection, nil
 }
 
 // DB client
