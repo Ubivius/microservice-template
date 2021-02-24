@@ -1,8 +1,13 @@
 package data
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"time"
+
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // ErrorProductNotFound : Product specific errors
@@ -23,6 +28,26 @@ type Product struct {
 
 // Products is a collection of Product
 type Products []*Product
+
+// Database connection
+func GetDBConnection() error {
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	// Connect to MongoDB
+	client, err := mongo.Connect(context.TODO(), clientOptions)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Check the connection
+	err = client.Ping(context.TODO(), nil)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Connected to MongoDB!")
+	return nil
+}
 
 // All of these functions will become database calls in the future
 // GETTING PRODUCTS
