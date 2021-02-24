@@ -8,6 +8,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 // ErrorProductNotFound : Product specific errors
@@ -46,6 +47,27 @@ func GetDBConnection() error {
 		log.Fatal(err)
 	}
 	fmt.Println("Connected to MongoDB!")
+	return nil
+}
+
+// DB client
+func DBConnection() error {
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://admin:test@cluster0.sbzzm.mongodb.net/products?retryWrites=true&w=majority")) // Connecting to url
+	if err != nil {
+		log.Fatal(err)
+	}
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second) // If no error, connection settings
+	err = client.Connect(ctx)                                           // Connect
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Disconnect(ctx) // Defer disconnect to end of function
+
+	// Ping db to make sure we can access it
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		log.Fatal(err)
+	}
 	return nil
 }
 

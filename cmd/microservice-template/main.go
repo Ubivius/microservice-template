@@ -19,7 +19,8 @@ func main() {
 	// Logger
 	logger := log.New(os.Stdout, "Template", log.LstdFlags)
 
-	errTemp := data.GetDBConnection()
+	// Temporary database connection call
+	errTemp := data.DBConnection()
 	if errTemp != nil {
 		logger.Fatal("Failed MongoDB connection : ", errTemp)
 	}
