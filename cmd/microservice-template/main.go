@@ -20,10 +20,11 @@ func main() {
 	logger := log.New(os.Stdout, "Template", log.LstdFlags)
 
 	// Temporary database connection call
-	_, errTemp := data.GetDBConnection()
+	coll, errTemp := data.GetDBConnection()
 	if errTemp != nil {
 		logger.Fatal("Failed MongoDB connection : ", errTemp)
 	}
+	data.AddToDB(coll)
 
 	// Initialising open telemetry
 	// Creating console exporter

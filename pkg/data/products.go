@@ -54,6 +54,20 @@ func GetDBConnection() (*mongo.Collection, error) {
 	return collection, nil
 }
 
+// '{"name":"addName", "price":1.00, "sku":"abc-abc-abcd"}'
+func AddToDB(collection *mongo.Collection) {
+	// Create items
+	sword := productList[1]
+	// boots := productList[2]
+
+	// Add items to database
+	insertResult, err := collection.InsertOne(context.TODO(), sword)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
+}
+
 // All of these functions will become database calls in the future
 // GETTING PRODUCTS
 
