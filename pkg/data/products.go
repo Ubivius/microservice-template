@@ -67,7 +67,19 @@ func getDBConnection() (*mongo.Collection, error) {
 
 // GetProducts returns the list of products
 func GetProducts() Products {
-	return productList
+	collection, err := getDBConnection()
+	if err != nil {
+		log.Fatal(err)
+	}
+	filter := bson.D{{"name", "addName"}}
+	product := Product{}
+	err = collection.FindOne(context.TODO(), filter).Decode(&product)
+	if err != nil {
+		return []*Product{}
+	}
+	return []*Product{
+		&product,
+	}
 }
 
 // GetProductByID returns a single product with the given id
