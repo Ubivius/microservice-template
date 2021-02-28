@@ -3,6 +3,7 @@ package authentication
 import (
 	"context"
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -11,11 +12,14 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// Define our struct
-type AuthenticationMiddleware struct {
-}
+var oauth2Config oauth2.Config
+var state string
+var verifier *oidc.IDTokenVerifier
+var ctx context.Context
+var originUrl string
+var method string
 
-func AuthConfig() (oauth2Config oauth2.Config, state string, verifier *oidc.IDTokenVerifier, ctx context.Context) {
+func init() {
 	//Authentication setup
 	configURL := "http://localhost:8080/auth/realms/ubivius"
 	ctx = context.Background()
@@ -39,20 +43,20 @@ func AuthConfig() (oauth2Config oauth2.Config, state string, verifier *oidc.IDTo
 		// "openid" is a required scope for OpenID Connect flows.
 		Scopes: []string{oidc.ScopeOpenID, "profile", "email"},
 	}
-	state = "somestate"
+	state = "verysafestate"
 
 	oidcConfig := &oidc.Config{
 		ClientID: clientID,
 	}
 	verifier = provider.Verifier(oidcConfig)
-	return oauth2Config, state, verifier, ctx
 }
 
-func (amw *AuthenticationMiddleware) Middleware(next http.Handler) http.Handler {
+func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		oauth2Config, state, verifier, ctx := AuthConfig()
 		rawAccessToken := r.Header.Get("Authorization")
-		log.Println("rawAccessToken: " + rawAccessToken)
+		originUrl = "http://localhost:9090" + r.URL.Path
+		method = r.Method
+		log.Println(rawAccessToken)
 		if rawAccessToken == "" {
 			log.Println("No access token provided")
 			http.Redirect(w, r, oauth2Config.AuthCodeURL(state), http.StatusFound)
@@ -73,17 +77,13 @@ func (amw *AuthenticationMiddleware) Middleware(next http.Handler) http.Handler 
 		}
 		log.Println("serving http")
 		next.ServeHTTP(w, r)
-		val, err := w.Write([]byte("hello world"))
-		if err != nil {
-			log.Println("error writing hello world")
-			http.Error(w, err.Error(), val)
-			return
-		}
 	})
 }
 
 func AuthCallback(responseWriter http.ResponseWriter, request *http.Request) {
-	oauth2Config, state, verifier, ctx := AuthConfig()
+	log.Println("start auth callback")
+
+	// Verify state and errors.
 	if request.URL.Query().Get("state") != state {
 		log.Println("state did not match")
 		http.Error(responseWriter, "state did not match", http.StatusBadRequest)
@@ -96,12 +96,16 @@ func AuthCallback(responseWriter http.ResponseWriter, request *http.Request) {
 		http.Error(responseWriter, "Failed to exchange token: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	// Extract the ID Token from OAuth2 token.
 	rawIDToken, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
 		log.Println("No id_token field in oauth2 token.")
 		http.Error(responseWriter, "No id_token field in oauth2 token.", http.StatusInternalServerError)
 		return
 	}
+
+	// Parse and verify ID Token payload.
 	idToken, err := verifier.Verify(ctx, rawIDToken)
 	if err != nil {
 		log.Println("Auth Failed to verify ID Token")
@@ -109,6 +113,7 @@ func AuthCallback(responseWriter http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+	// Extract custom claims
 	resp := struct {
 		OAuth2Token   *oauth2.Token
 		IDTokenClaims *json.RawMessage // ID Token payload is just JSON.
@@ -119,6 +124,7 @@ func AuthCallback(responseWriter http.ResponseWriter, request *http.Request) {
 		http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	data, err := json.MarshalIndent(resp, "", "    ")
 	if err != nil {
 		log.Println("Auth marshal indent error")
@@ -127,9 +133,41 @@ func AuthCallback(responseWriter http.ResponseWriter, request *http.Request) {
 	}
 
 	val, err := responseWriter.Write(data)
+	RedirectToInitialUrl(rawIDToken)
+
+	request.Header.Set("Authorization", rawIDToken)
 	if err != nil {
 		log.Println("Auth write data error")
 		http.Error(responseWriter, err.Error(), val)
 		return
 	}
+}
+
+func RedirectToInitialUrl(accessToken string) {
+	// Create a Bearer string by appending string access token
+	var bearer = "Bearer " + accessToken
+
+	// Create a new request using http
+	req, err := http.NewRequest(method, originUrl, nil)
+	if err != nil {
+		log.Println("Error while creating new request")
+		return
+	}
+
+	// add authorization header to the req
+	req.Header.Add("Authorization", bearer)
+
+	// Send req using http Client
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println("Error on response.\n[ERROR] -", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("Error while reading the response bytes:", err)
+	}
+	log.Println(string([]byte(body)))
 }
