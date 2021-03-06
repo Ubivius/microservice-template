@@ -59,10 +59,7 @@ func main() {
 	deleteRouter := router.Methods(http.MethodDelete).Subrouter()
 	deleteRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.Delete)
 
-	//getRouter.HandleFunc("/ubivius/callback", authentication.AuthCallback)
-	//getRouter.HandleFunc("/test", authentication.TestMiddleware)
-
-	router.Path("/ubivius/callback").Handler(http.HandlerFunc(authentication.AuthCallback)) // /api/v1/user-login will be NOT intercepted by ValidationMiddleWare
+	router.Path("/ubivius/callback").Handler(http.HandlerFunc(authentication.AuthCallback)) // not intercepted by MiddleWare
 
 	getRouter.Use(authentication.Middleware)
 	putRouter.Use(authentication.Middleware)
