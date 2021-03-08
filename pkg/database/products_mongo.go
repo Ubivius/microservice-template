@@ -13,6 +13,14 @@ func NewMongoProducts() *MongoProducts {
 	return &MongoProducts{}
 }
 
+func (mp *MongoProducts) Connect() error {
+	return nil
+}
+
+func (mp *MongoProducts) CloseDB() error {
+	return nil
+}
+
 func (mp *MongoProducts) GetProducts() data.Products {
 	return productList
 }
