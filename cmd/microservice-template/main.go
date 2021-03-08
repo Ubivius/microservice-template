@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/Ubivius/microservice-template/pkg/database"
 	"github.com/Ubivius/microservice-template/pkg/handlers"
 	"github.com/Ubivius/microservice-template/pkg/router"
 )
@@ -15,6 +16,9 @@ import (
 func main() {
 	// Logger
 	logger := log.New(os.Stdout, "Template", log.LstdFlags)
+
+	// Database init
+	db := database.NewMongoProducts()
 
 	// Creating handlers
 	productHandler := handlers.NewProductsHandler(logger, nil)
