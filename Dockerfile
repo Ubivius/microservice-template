@@ -1,6 +1,7 @@
 # BUILD_TYPE can have these values: local, test or prod
 # if BUILD_TYPE is empty, set to local
 ARG BUILD_TYPE=local
+
 FROM golang:stretch as build-env
 COPY . ./src
 RUN apt update
@@ -10,6 +11,8 @@ RUN export PATH=$PATH:/go/bin
 RUN export GO111MODULE=on
 RUN echo "Building Microsevice..."
 RUN go build cmd/microservice-*/main.go
+RUN echo "Do tests"
+RUN go test -v ./...
 RUN echo "First Docker build-stage is now done"
 
 FROM gcr.io/distroless/base as prod
@@ -20,4 +23,4 @@ FROM golang:stretch as local
 
 FROM ${BUILD_TYPE} AS exit_artefact
 COPY --from=build-env /go/src/main /microservice
-CMD ["/microservice"]
+CMD ["microservice"]
