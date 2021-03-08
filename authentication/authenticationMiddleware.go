@@ -62,9 +62,8 @@ func Middleware(next http.Handler) http.Handler {
 		log.Println(rawAccessToken)
 		if rawAccessToken == "" {
 			log.Println("No access token provided")
-			//http.Redirect(w, r, oauth2Config.AuthCodeURL(state), http.StatusFound)
 			w.WriteHeader(http.StatusForbidden)
-			w.Write([]byte("status code 403"))
+			w.Write([]byte("403 Forbidden"))
 			return
 		}
 
@@ -76,8 +75,11 @@ func Middleware(next http.Handler) http.Handler {
 		_, err := verifier.Verify(ctx, parts[1])
 		log.Println(err)
 		if err != nil {
-			log.Println("error redirecting " + oauth2Config.AuthCodeURL(state))
-			http.Redirect(w, r, oauth2Config.AuthCodeURL(state), http.StatusFound)
+			log.Println("Error while trying to access ressource")
+			w.WriteHeader(400)
+			w.Write([]byte("400 Bad Request"))
+			//log.Println("error redirecting " + oauth2Config.AuthCodeURL(state))
+			//http.Redirect(w, r, oauth2Config.AuthCodeURL(state), http.StatusFound)
 			return
 		}
 		log.Println("serving http")
@@ -177,7 +179,7 @@ func RedirectToInitialUrl(accessToken string) {
 	log.Println(string([]byte(body)))
 }
 
-func SignIn(username string, password string) {
+func SignIn(username string, password string) []byte {
 	urlPath := "http://localhost:8080/auth/realms/ubivius/protocol/openid-connect/token"
 
 	data := url.Values{}
@@ -202,10 +204,16 @@ func SignIn(username string, password string) {
 
 	log.Println("response Status:", resp.Status)
 	body, _ := ioutil.ReadAll(resp.Body)
-	log.Println("response Body:", string(body))
+	access_token := extractValue(string(body), "access_token")
+	log.Println("access_token: ", access_token)
+
+	player := map[string]string{"username": username, "access_token": access_token}
+	playerJson, _ := json.Marshal(player)
+
+	return playerJson
 }
 
-func SignUp(firstName string, lastName string, email string, username string) {
+func SignUp(firstName string, lastName string, email string, username string) []byte {
 	urlPath := "http://localhost:8080/auth/admin/realms/ubivius/users"
 
 	values := map[string]string{"firstName": firstName, "lastName": lastName, "email": email, "username": username, "enabled": "true"}
@@ -230,7 +238,13 @@ func SignUp(firstName string, lastName string, email string, username string) {
 
 	log.Println("response Status:", resp.Status)
 	body, err := ioutil.ReadAll(resp.Body)
+	access_token := extractValue(string(body), "access_token")
 	log.Println("response Body:", string(body))
+
+	player := map[string]string{"username": username, "access_token": access_token}
+	playerJson, _ := json.Marshal(player)
+
+	return playerJson
 }
 
 func GetAdminAccessToken() string {
