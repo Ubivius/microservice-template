@@ -16,3 +16,10 @@ func (mp *MongoProducts) GetProducts() data.Products {
 func (mp *MongoProducts) GetProductByID() (*data.Product, error) {
 	return &data.Product{}, nil
 }
+
+func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
+	return nil
+}
+
+func (mp *MongoProducts) AddProduct(product *data.Product) {
+}
