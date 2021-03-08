@@ -1,0 +1,13 @@
+apiVersion: v2
+name: microservice-template
+type: application
+version: 0.0.0
+appVersion: 0.0.0
+description: "microservice-template: Template for microservices."
+icon: https://avatars.githubusercontent.com/u/64909001
+sources:
+  - https://github.com/Ubivius/microservice-template
+maintainers:
+  - name: Ubivius
+    email: ubivius@gmail.com
+engine: gotpl
