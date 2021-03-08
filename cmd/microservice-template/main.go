@@ -59,12 +59,12 @@ func main() {
 	deleteRouter := router.Methods(http.MethodDelete).Subrouter()
 	deleteRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.Delete)
 
-	router.Path("/ubivius/callback").Handler(http.HandlerFunc(authentication.AuthCallback)) // not intercepted by MiddleWare
+	//router.Path("/ubivius/callback").Handler(http.HandlerFunc(authentication.AuthCallback)) // not intercepted by MiddleWare
 
-	getRouter.Use(authentication.Middleware)
-	putRouter.Use(authentication.Middleware)
+	router.Use(authentication.Middleware)
+	/*putRouter.Use(authentication.Middleware)
 	postRouter.Use(authentication.Middleware)
-	deleteRouter.Use(authentication.Middleware)
+	deleteRouter.Use(authentication.Middleware)*/
 
 	// Server setup
 	server := &http.Server{
