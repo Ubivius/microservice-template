@@ -10,28 +10,11 @@ import (
 
 	"github.com/Ubivius/microservice-template/pkg/handlers"
 	"github.com/Ubivius/microservice-template/pkg/router"
-	"go.opentelemetry.io/otel/exporters/stdout"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 func main() {
 	// Logger
 	logger := log.New(os.Stdout, "Template", log.LstdFlags)
-
-	// Initialising open telemetry
-	// Creating console exporter
-	exporter, err := stdout.NewExporter(
-		stdout.WithPrettyPrint(),
-	)
-	if err != nil {
-		logger.Fatal("Failed to initialize stdout export pipeline : ", err)
-	}
-
-	// Creating tracer provider
-	ctx := context.Background()
-	batchSpanProcessor := sdktrace.NewBatchSpanProcessor(exporter)
-	tracerProvider := sdktrace.NewTracerProvider(sdktrace.WithSpanProcessor(batchSpanProcessor))
-	defer func() { _ = tracerProvider.Shutdown(ctx) }()
 
 	// Creating handlers
 	productHandler := handlers.NewProductsHandler(logger)
