@@ -12,7 +12,7 @@ func (productHandler *ProductsHandler) UpdateProducts(responseWriter http.Respon
 	productHandler.logger.Println("Handle PUT product", product.ID)
 
 	// Update product
-	err := data.UpdateProduct(product)
+	err := productHandler.db.UpdateProduct(product)
 	if err == data.ErrorProductNotFound {
 		productHandler.logger.Println("[ERROR} product not found", err)
 		http.Error(responseWriter, "Product not found", http.StatusNotFound)

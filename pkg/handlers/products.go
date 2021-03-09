@@ -15,12 +15,12 @@ type KeyProduct struct{}
 // ProductsHandler contains the items common to all product handler functions
 type ProductsHandler struct {
 	logger *log.Logger
-	db     *database.ProductDB
+	db     database.ProductDB
 }
 
 // NewProductsHandler returns a pointer to a ProductsHandler with the logger passed as a parameter
 func NewProductsHandler(logger *log.Logger, db database.ProductDB) *ProductsHandler {
-	return &ProductsHandler{logger, &db}
+	return &ProductsHandler{logger, db}
 }
 
 // getProductID extracts the product ID from the URL
