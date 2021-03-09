@@ -1,6 +1,8 @@
 package database
 
 import (
+	"time"
+
 	"github.com/Ubivius/microservice-template/pkg/data"
 )
 
@@ -59,14 +61,14 @@ func (mp *MockProducts) DeleteProduct(id int) error {
 
 // Returns the index of a product in the database
 // Returns -1 when no product is found
-// func findIndexByProductID(id int) int {
-// 	for index, product := range productList {
-// 		if product.ID == id {
-// 			return index
-// 		}
-// 	}
-// 	return -1
-// }
+func findIndexByProductID(id int) int {
+	for index, product := range productList {
+		if product.ID == id {
+			return index
+		}
+	}
+	return -1
+}
 
 //////////////////////////////////////////////////////////////////////////////
 /////////////////////////// Fake database ///////////////////////////////////
@@ -74,28 +76,28 @@ func (mp *MockProducts) DeleteProduct(id int) error {
 ///////////////////////////////////////////////////////////////////////////
 
 // Finds the maximum index of our fake database and adds 1
-// func getNextID() int {
-// 	lastProduct := productList[len(productList)-1]
-// 	return lastProduct.ID + 1
-// }
+func getNextID() int {
+	lastProduct := productList[len(productList)-1]
+	return lastProduct.ID + 1
+}
 
-// var productList = []*data.Product{
-// 	{
-// 		ID:          1,
-// 		Name:        "Sword",
-// 		Description: "A basic steel sword",
-// 		Price:       250,
-// 		SKU:         "abc323",
-// 		CreatedOn:   time.Now().UTC().String(),
-// 		UpdatedOn:   time.Now().UTC().String(),
-// 	},
-// 	{
-// 		ID:          2,
-// 		Name:        "Boots",
-// 		Description: "Simple leather boots",
-// 		Price:       100,
-// 		SKU:         "fjd34",
-// 		CreatedOn:   time.Now().UTC().String(),
-// 		UpdatedOn:   time.Now().UTC().String(),
-// 	},
-// }
+var productList = []*data.Product{
+	{
+		ID:          1,
+		Name:        "Sword",
+		Description: "A basic steel sword",
+		Price:       250,
+		SKU:         "abc323",
+		CreatedOn:   time.Now().UTC().String(),
+		UpdatedOn:   time.Now().UTC().String(),
+	},
+	{
+		ID:          2,
+		Name:        "Boots",
+		Description: "Simple leather boots",
+		Price:       100,
+		SKU:         "fjd34",
+		CreatedOn:   time.Now().UTC().String(),
+		UpdatedOn:   time.Now().UTC().String(),
+	},
+}
