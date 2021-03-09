@@ -18,7 +18,7 @@ func main() {
 	logger := log.New(os.Stdout, "Template", log.LstdFlags)
 
 	// Database init
-	db := database.NewMockProducts()
+	db := database.NewMongoProducts()
 
 	// Creating handlers
 	productHandler := handlers.NewProductsHandler(logger, db)
