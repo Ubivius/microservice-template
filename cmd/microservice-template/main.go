@@ -21,7 +21,7 @@ func main() {
 	db := database.NewMockProducts()
 
 	// Creating handlers
-	productHandler := handlers.NewProductsHandler(logger, nil)
+	productHandler := handlers.NewProductsHandler(logger, db)
 
 	// Router setup
 	r := router.New(productHandler, logger)

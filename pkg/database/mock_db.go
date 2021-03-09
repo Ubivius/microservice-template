@@ -7,8 +7,8 @@ import (
 type MockProducts struct {
 }
 
-func NewMockProducts() *MongoProducts {
-	return &MongoProducts{}
+func NewMockProducts() *MockProducts {
+	return &MockProducts{}
 }
 
 func (mp *MockProducts) Connect() error {

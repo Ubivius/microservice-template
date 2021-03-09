@@ -19,8 +19,8 @@ type ProductsHandler struct {
 }
 
 // NewProductsHandler returns a pointer to a ProductsHandler with the logger passed as a parameter
-func NewProductsHandler(logger *log.Logger, db *database.ProductDB) *ProductsHandler {
-	return &ProductsHandler{logger, db}
+func NewProductsHandler(logger *log.Logger, db database.ProductDB) *ProductsHandler {
+	return &ProductsHandler{logger, &db}
 }
 
 // getProductID extracts the product ID from the URL
