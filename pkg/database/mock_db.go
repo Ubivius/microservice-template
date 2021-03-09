@@ -54,7 +54,7 @@ func (mp *MockProducts) DeleteProduct(id int) error {
 	}
 
 	// This should not work, probably needs ':' after index+1. To test
-	productList = append(productList[:index], productList[index+1])
+	productList = append(productList[:index], productList[index+1:]...)
 
 	return nil
 }
