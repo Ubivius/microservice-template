@@ -50,6 +50,9 @@ func main() {
 
 	logger.Println("Received terminate, beginning graceful shutdown", receivedSignal)
 
+	// DB connection shutdown
+	db.CloseDB()
+
 	// Server shutdown
 	timeoutContext, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()

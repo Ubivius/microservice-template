@@ -12,7 +12,7 @@ import (
 
 type MongoProducts struct {
 	client     *mongo.Client
-	connection *mongo.Collection
+	collection *mongo.Collection
 }
 
 // Should pass logger here
@@ -45,13 +45,21 @@ func (mp *MongoProducts) Connect() error {
 
 	log.Println("Connection to MongoDB established")
 
-	mp.connection = client.Database("test").Collection("products")
+	collection := client.Database("test").Collection("products")
+
+	// Assign client and collection to the MongoProducts struct
+	mp.collection = collection
 	mp.client = client
 	return nil
 }
 
-func (mp *MongoProducts) CloseDB() error {
-	return nil
+func (mp *MongoProducts) CloseDB() {
+	err := mp.client.Disconnect(context.TODO())
+	if err != nil {
+		log.Println(err)
+	} else {
+		log.Println("Connection to MongoDB closed.")
+	}
 }
 
 func (mp *MongoProducts) GetProducts() data.Products {

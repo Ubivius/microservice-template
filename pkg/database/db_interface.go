@@ -10,5 +10,5 @@ type ProductDB interface {
 	AddProduct(product *data.Product)
 	DeleteProduct(id int) error
 	Connect() error
-	CloseDB() error
+	CloseDB()
 }
