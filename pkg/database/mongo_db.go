@@ -1,17 +1,38 @@
 package database
 
 import (
+	"context"
+	"os"
+
 	"github.com/Ubivius/microservice-template/pkg/data"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type MongoProducts struct {
 }
 
+// Should pass logger here
+// NewMongoProducts(logger) to log err with log.fatal
 func NewMongoProducts() *MongoProducts {
-	return &MongoProducts{}
+	mp := &MongoProducts{}
+	err := mp.Connect()
+	// If connect fails, kill the program
+	if err != nil {
+		os.Exit(1)
+	}
+	return mp
 }
 
 func (mp *MongoProducts) Connect() error {
+	// Setting client options
+	clientOptions := options.Client().ApplyURI("mongodb+srv://admin:test@cluster0.sbzzm.mongodb.net/products?retryWrites=true&w=majority")
+
+	// Connect to MongoDB
+	client, err := mongo.Connect(context.TODO(), clientOptions)
+	if err != nil {
+		os.Exit(1)
+	}
 	return nil
 }
 
