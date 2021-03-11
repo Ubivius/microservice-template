@@ -11,6 +11,8 @@ import (
 )
 
 type MongoProducts struct {
+	client     *mongo.Client
+	connection *mongo.Collection
 }
 
 // Should pass logger here
@@ -43,7 +45,8 @@ func (mp *MongoProducts) Connect() error {
 
 	log.Println("Connection to MongoDB established")
 
-	collection := client.Database("test").Collection("products")
+	mp.connection = client.Database("test").Collection("products")
+	mp.client = client
 	return nil
 }
 
