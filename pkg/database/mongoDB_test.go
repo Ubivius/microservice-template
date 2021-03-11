@@ -27,5 +27,6 @@ func TestMongoDBAddProduct(t *testing.T) {
 
 	mp := NewMongoProducts()
 	mp.AddProduct(product)
+	// Check the logs to make sure that the value is inserted (you can see the inserted item id in the logs)
 	mp.CloseDB()
 }
