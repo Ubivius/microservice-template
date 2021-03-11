@@ -41,7 +41,9 @@ func (mp *MongoProducts) Connect() error {
 		log.Fatal(err)
 	}
 
-	log.Println("Connected to MongoDB!")
+	log.Println("Connection to MongoDB established")
+
+	collection := client.Database("test").Collection("products")
 	return nil
 }
 
