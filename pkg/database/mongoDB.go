@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -63,7 +64,33 @@ func (mp *MongoProducts) CloseDB() {
 }
 
 func (mp *MongoProducts) GetProducts() data.Products {
-	return productList
+	// results will hold the array of Products
+	var results data.Products
+
+	// Find returns a cursor that must be iterated through
+	cursor, err := mp.collection.Find(context.TODO(), bson.D{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Iterating through cursor
+	for cursor.Next(context.TODO()) {
+		var elem data.Product
+		err := cursor.Decode(&elem)
+		if err != nil {
+			log.Fatal(err)
+		}
+		results = append(results, &elem)
+	}
+
+	if err := cursor.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	// Close the cursor once finished
+	cursor.Close(context.TODO())
+
+	return results
 }
 
 func (mp *MongoProducts) GetProductByID(id int) (*data.Product, error) {

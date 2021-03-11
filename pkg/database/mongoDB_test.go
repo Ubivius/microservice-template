@@ -30,3 +30,5 @@ func TestMongoDBAddProduct(t *testing.T) {
 	// Check the logs to make sure that the value is inserted (you can see the inserted item id in the logs)
 	mp.CloseDB()
 }
+
+// Get Products from database, should be an integration test
