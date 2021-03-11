@@ -19,7 +19,7 @@ func NewTestLogger() *log.Logger {
 	return log.New(os.Stdout, "Tests", log.LstdFlags)
 }
 
-func NewProductDB() *database.MockProducts {
+func NewProductDB() database.ProductDB {
 	return database.NewMockProducts()
 }
 

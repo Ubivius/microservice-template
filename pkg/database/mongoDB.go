@@ -15,7 +15,7 @@ type MongoProducts struct {
 
 // Should pass logger here
 // NewMongoProducts(logger) to log err with log.fatal
-func NewMongoProducts() *MongoProducts {
+func NewMongoProducts() ProductDB {
 	mp := &MongoProducts{}
 	err := mp.Connect()
 	// If connect fails, kill the program

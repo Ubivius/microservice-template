@@ -9,7 +9,7 @@ import (
 type MockProducts struct {
 }
 
-func NewMockProducts() *MockProducts {
+func NewMockProducts() ProductDB {
 	return &MockProducts{}
 }
 
