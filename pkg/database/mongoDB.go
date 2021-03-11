@@ -30,7 +30,7 @@ func (mp *MongoProducts) Connect() error {
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
-	if err != nil {
+	if err != nil || client == nil {
 		os.Exit(1)
 	}
 	return nil
