@@ -38,7 +38,7 @@ func main() {
 		logger.Println("Starting server on port ", server.Addr)
 		err := server.ListenAndServe()
 		if err != nil {
-			logger.Println("Error starting server : ", err)
+			logger.Println("Server error : ", err)
 			logger.Fatal(err)
 		}
 	}()
