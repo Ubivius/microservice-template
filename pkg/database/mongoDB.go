@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"log"
 	"os"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
@@ -33,6 +34,14 @@ func (mp *MongoProducts) Connect() error {
 	if err != nil || client == nil {
 		os.Exit(1)
 	}
+
+	// Ping DB
+	err = client.Ping(context.TODO(), nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Connected to MongoDB!")
 	return nil
 }
 
