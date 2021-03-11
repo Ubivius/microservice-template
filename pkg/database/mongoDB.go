@@ -119,13 +119,10 @@ func (mp *MongoProducts) AddProduct(product *data.Product) {
 }
 
 func (mp *MongoProducts) DeleteProduct(id int) error {
-	index := findIndexByProductID(id)
-	if index == -1 {
-		return data.ErrorProductNotFound
+	result, err := mp.collection.DeleteMany(context.TODO(), bson.D{})
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	// This should not work, probably needs ':' after index+1. To test
-	productList = append(productList[:index], productList[index+1])
-
+	log.Printf("Deleted %v documents in the products collection\n", result.DeletedCount)
 	return nil
 }
