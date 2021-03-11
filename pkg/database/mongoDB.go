@@ -84,8 +84,11 @@ func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
 }
 
 func (mp *MongoProducts) AddProduct(product *data.Product) {
-	product.ID = getNextID()
-	productList = append(productList, product)
+	insertResult, err := mp.collection.InsertOne(context.TODO(), product)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Inserted a single document: ", insertResult.InsertedID)
 }
 
 func (mp *MongoProducts) DeleteProduct(id int) error {
