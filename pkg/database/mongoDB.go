@@ -95,11 +95,15 @@ func (mp *MongoProducts) GetProducts() data.Products {
 }
 
 func (mp *MongoProducts) GetProductByID(id int) (*data.Product, error) {
-	index := findIndexByProductID(id)
-	if index == -1 {
-		return nil, data.ErrorProductNotFound
-	}
-	return productList[index], nil
+	// MongoDB search filter
+	filter := bson.D{{Key: "id", Value: 0}}
+
+	// Holds search result
+	var result *data.Product
+
+	err := mp.collection.FindOne(context.TODO(), filter).Decode(result)
+
+	return result, err
 }
 
 func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
