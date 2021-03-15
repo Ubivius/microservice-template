@@ -99,11 +99,11 @@ func (mp *MongoProducts) GetProductByID(id int) (*data.Product, error) {
 	filter := bson.D{{Key: "id", Value: 0}}
 
 	// Holds search result
-	var result *data.Product
+	var result data.Product
 
-	err := mp.collection.FindOne(context.TODO(), filter).Decode(result)
+	err := mp.collection.FindOne(context.TODO(), filter).Decode(&result)
 
-	return result, err
+	return &result, err
 }
 
 func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
