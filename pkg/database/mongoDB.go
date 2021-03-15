@@ -96,7 +96,7 @@ func (mp *MongoProducts) GetProducts() data.Products {
 
 func (mp *MongoProducts) GetProductByID(id int) (*data.Product, error) {
 	// MongoDB search filter
-	filter := bson.D{{Key: "id", Value: 0}}
+	filter := bson.D{{Key: "id", Value: id}}
 
 	// Holds search result
 	var result data.Product
