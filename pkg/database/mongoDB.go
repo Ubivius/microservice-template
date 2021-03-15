@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"time"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
 	"go.mongodb.org/mongo-driver/bson"
@@ -111,10 +112,16 @@ func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
 }
 
 func (mp *MongoProducts) AddProduct(product *data.Product) {
+	// Adding time information to new product
+	product.CreatedOn = time.Now().UTC().String()
+	product.UpdatedOn = time.Now().UTC().String()
+
+	// Inserting the new product into the database
 	insertResult, err := mp.collection.InsertOne(context.TODO(), product)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	log.Println("Inserted a single document: ", insertResult.InsertedID)
 }
 
