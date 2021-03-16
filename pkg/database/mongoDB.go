@@ -135,10 +135,10 @@ func (mp *MongoProducts) AddProduct(product *data.Product) {
 	// Inserting the new product into the database
 	insertResult, err := mp.collection.InsertOne(context.TODO(), product)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	log.Println("Inserted a single document: ", insertResult.InsertedID)
+	log.Println("Inserting a document: ", insertResult.InsertedID)
 }
 
 func (mp *MongoProducts) DeleteProduct(id int) error {

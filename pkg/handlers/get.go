@@ -27,6 +27,7 @@ func (productHandler *ProductsHandler) GetProductByID(responseWriter http.Respon
 	productHandler.logger.Println("[DEBUG] getting id", id)
 
 	product, err := productHandler.db.GetProductByID(id)
+
 	switch err {
 	case nil:
 		err = json.NewEncoder(responseWriter).Encode(product)
