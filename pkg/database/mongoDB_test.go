@@ -6,6 +6,9 @@ import (
 	"github.com/Ubivius/microservice-template/pkg/data"
 )
 
+// TODO sprint 11: need setup step to set database to desired state before tests.
+// TODO sprint 11: complete integration tests once setup task is completed
+
 func TestMongoDBConnectionAndShutdownIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Test skipped during unit tests")
@@ -32,7 +35,6 @@ func TestMongoDBAddProductIntegration(t *testing.T) {
 
 	mp := NewMongoProducts()
 	mp.AddProduct(product)
-	// Check the logs to make sure that the value is inserted (you can see the inserted item id in the logs)
 	mp.CloseDB()
 }
 
@@ -54,6 +56,5 @@ func TestMongoDBUpdateProductIntegration(t *testing.T) {
 	if err != nil {
 		t.Fail()
 	}
-	// Check the logs to make sure that the value is inserted (you can see the inserted item id in the logs)
 	mp.CloseDB()
 }
