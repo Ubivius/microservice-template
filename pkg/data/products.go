@@ -17,7 +17,6 @@ type Product struct {
 	SKU         string  `json:"sku" validate:"required,sku"`
 	CreatedOn   string  `json:"-"`
 	UpdatedOn   string  `json:"-"`
-	DeletedOn   string  `json:"-"`
 }
 
 // Products is a collection of Product
