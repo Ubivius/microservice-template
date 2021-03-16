@@ -31,7 +31,7 @@ func TestMongoDBAddProduct(t *testing.T) {
 	mp.CloseDB()
 }
 
-// Update product
+// Update product in database, should be included in integration test instead
 func TestMongoDBUpdateProduct(t *testing.T) {
 	product := &data.Product{
 		ID:          0,
@@ -42,7 +42,10 @@ func TestMongoDBUpdateProduct(t *testing.T) {
 	}
 
 	mp := NewMongoProducts()
-	mp.UpdateProduct(product)
+	err := mp.UpdateProduct(product)
+	if err != nil {
+		t.Fail()
+	}
 	// Check the logs to make sure that the value is inserted (you can see the inserted item id in the logs)
 	mp.CloseDB()
 }
