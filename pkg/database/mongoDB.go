@@ -107,12 +107,21 @@ func (mp *MongoProducts) GetProductByID(id int) (*data.Product, error) {
 }
 
 func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
-	index := findIndexByProductID(product.ID)
-	if index == -1 {
-		return data.ErrorProductNotFound
+	// MongoDB search filter
+	filter := bson.D{{Key: "id", Value: product.ID}}
+
+	// Updated bson object
+	updatedProduct := bson.D{{Key: "name", Value: "newName"}}
+
+	update := bson.M{"$set": updatedProduct}
+
+	result, err := mp.collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		log.Println(err)
 	}
-	productList[index] = product
-	return nil
+
+	log.Printf("Matched %v documents and updated %v documents.\n", result.MatchedCount, result.ModifiedCount)
+	return err
 }
 
 func (mp *MongoProducts) AddProduct(product *data.Product) {

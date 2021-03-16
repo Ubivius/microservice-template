@@ -31,4 +31,18 @@ func TestMongoDBAddProduct(t *testing.T) {
 	mp.CloseDB()
 }
 
-// Get Products from database, should be an integration test
+// Update product
+func TestMongoDBUpdateProduct(t *testing.T) {
+	product := &data.Product{
+		ID:          0,
+		Name:        "testName",
+		Description: "testDescription",
+		Price:       1,
+		SKU:         "abc-abc-abcd",
+	}
+
+	mp := NewMongoProducts()
+	mp.UpdateProduct(product)
+	// Check the logs to make sure that the value is inserted (you can see the inserted item id in the logs)
+	mp.CloseDB()
+}
