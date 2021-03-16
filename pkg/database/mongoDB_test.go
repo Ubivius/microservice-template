@@ -9,6 +9,11 @@ import (
 // Should be an integration test
 // Temporary test
 func TestMongoDBConnectionAndShutdown(t *testing.T) {
+	// Skip tests in CI for now
+	if testing.Short() {
+		t.Skip("Skipping this test in CI for now")
+	}
+
 	mp := NewMongoProducts()
 	if mp == nil {
 		t.Fail()
@@ -18,6 +23,11 @@ func TestMongoDBConnectionAndShutdown(t *testing.T) {
 
 // Add product to database, should be an integration test
 func TestMongoDBAddProduct(t *testing.T) {
+	// Skip tests in CI for now
+	if testing.Short() {
+		t.Skip("Skipping this test in CI for now")
+	}
+
 	product := &data.Product{
 		Name:        "testName",
 		Description: "testDescription",
@@ -33,6 +43,11 @@ func TestMongoDBAddProduct(t *testing.T) {
 
 // Update product in database, should be included in integration test instead
 func TestMongoDBUpdateProduct(t *testing.T) {
+	// Skip tests in CI for now
+	if testing.Short() {
+		t.Skip("Skipping this test in CI for now")
+	}
+
 	product := &data.Product{
 		ID:          0,
 		Name:        "testName",
