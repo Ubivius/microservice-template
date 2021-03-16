@@ -101,26 +101,29 @@ func (mp *MongoProducts) GetProductByID(id int) (*data.Product, error) {
 	// Holds search result
 	var result data.Product
 
+	// Find a single matching item from the database
 	err := mp.collection.FindOne(context.TODO(), filter).Decode(&result)
 
 	return &result, err
 }
 
 func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
+	// Set updated timestamp in product
+	product.UpdatedOn = time.Now().UTC().String()
+
 	// MongoDB search filter
 	filter := bson.D{{Key: "id", Value: product.ID}}
 
 	// Updated bson object
 	updatedProduct := bson.D{{Key: "name", Value: "newName"}}
-
 	update := bson.M{"$set": updatedProduct}
 
-	result, err := mp.collection.UpdateOne(context.TODO(), filter, update)
+	// Update a single item in the database with the values in update that match the filter
+	_, err := mp.collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		log.Println(err)
 	}
 
-	log.Printf("Matched %v documents and updated %v documents.\n", result.MatchedCount, result.ModifiedCount)
 	return err
 }
 
@@ -139,6 +142,15 @@ func (mp *MongoProducts) AddProduct(product *data.Product) {
 }
 
 func (mp *MongoProducts) DeleteProduct(id int) error {
+	result, err := mp.collection.DeleteMany(context.TODO(), bson.D{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Deleted %v documents in the products collection\n", result.DeletedCount)
+	return nil
+}
+
+func (mp *MongoProducts) DeleteAllProducts(id int) error {
 	result, err := mp.collection.DeleteMany(context.TODO(), bson.D{})
 	if err != nil {
 		log.Fatal(err)
