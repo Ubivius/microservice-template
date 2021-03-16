@@ -31,7 +31,7 @@ func NewMongoProducts() ProductDB {
 
 func (mp *MongoProducts) Connect() error {
 	// Setting client options
-	clientOptions := options.Client().ApplyURI("mongodb+srv://admin:test@cluster0.sbzzm.mongodb.net/products?retryWrites=true&w=majority")
+	clientOptions := options.Client().ApplyURI("mongodb://admin:pass@localhost:27888/?authSource=admin")
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
