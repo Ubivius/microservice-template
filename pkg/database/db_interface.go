@@ -7,7 +7,7 @@ type ProductDB interface {
 	GetProducts() data.Products
 	GetProductByID(id int) (*data.Product, error)
 	UpdateProduct(product *data.Product) error
-	AddProduct(product *data.Product)
+	AddProduct(product *data.Product) error
 	DeleteProduct(id int) error
 	Connect() error
 	CloseDB()

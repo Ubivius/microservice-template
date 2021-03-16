@@ -135,7 +135,7 @@ func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
 	return err
 }
 
-func (mp *MongoProducts) AddProduct(product *data.Product) {
+func (mp *MongoProducts) AddProduct(product *data.Product) error {
 	// Adding time information to new product
 	product.CreatedOn = time.Now().UTC().String()
 	product.UpdatedOn = time.Now().UTC().String()
@@ -154,10 +154,11 @@ func (mp *MongoProducts) AddProduct(product *data.Product) {
 	// Inserting the new product into the database
 	insertResult, err := mp.collection.InsertOne(context.TODO(), addedProduct)
 	if err != nil {
-		log.Println(err)
+		return err
 	}
 
 	log.Println("Inserting a document: ", insertResult.InsertedID)
+	return nil
 }
 
 func (mp *MongoProducts) DeleteProduct(id int) error {

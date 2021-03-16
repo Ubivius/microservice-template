@@ -43,9 +43,10 @@ func (mp *MockProducts) UpdateProduct(product *data.Product) error {
 	return nil
 }
 
-func (mp *MockProducts) AddProduct(product *data.Product) {
+func (mp *MockProducts) AddProduct(product *data.Product) error {
 	product.ID = getNextID()
 	productList = append(productList, product)
+	return nil
 }
 
 func (mp *MockProducts) DeleteProduct(id int) error {

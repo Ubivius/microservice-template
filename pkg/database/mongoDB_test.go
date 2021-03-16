@@ -34,7 +34,10 @@ func TestMongoDBAddProductIntegration(t *testing.T) {
 	}
 
 	mp := NewMongoProducts()
-	mp.AddProduct(product)
+	err := mp.AddProduct(product)
+	if err != nil {
+		t.Errorf("Failed to add product to database")
+	}
 	mp.CloseDB()
 }
 
