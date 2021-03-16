@@ -115,7 +115,7 @@ func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
 	filter := bson.D{{Key: "id", Value: product.ID}}
 
 	// Updated bson object
-	updatedProduct := bson.D{{Key: "name", Value: "newName"}}
+	updatedProduct := bson.D{{Key: "name", Value: product.Name}}
 	update := bson.M{"$set": updatedProduct}
 
 	// Update a single item in the database with the values in update that match the filter
