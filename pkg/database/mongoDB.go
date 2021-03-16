@@ -142,10 +142,15 @@ func (mp *MongoProducts) AddProduct(product *data.Product) {
 }
 
 func (mp *MongoProducts) DeleteProduct(id int) error {
-	result, err := mp.collection.DeleteMany(context.TODO(), bson.D{})
+	// MongoDB search filter
+	filter := bson.D{{Key: "id", Value: id}}
+
+	// Delete a single item matching the filter
+	result, err := mp.collection.DeleteOne(context.TODO(), filter)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	log.Printf("Deleted %v documents in the products collection\n", result.DeletedCount)
 	return nil
 }
