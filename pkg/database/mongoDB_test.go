@@ -6,12 +6,9 @@ import (
 	"github.com/Ubivius/microservice-template/pkg/data"
 )
 
-// Should be an integration test
-// Temporary test
-func TestMongoDBConnectionAndShutdown(t *testing.T) {
-	// Skip tests in CI for now
+func TestMongoDBConnectionAndShutdownIntegration(t *testing.T) {
 	if testing.Short() {
-		t.Skip("Skipping this test in CI for now")
+		t.Skip("Test skipped during unit tests")
 	}
 
 	mp := NewMongoProducts()
@@ -21,11 +18,9 @@ func TestMongoDBConnectionAndShutdown(t *testing.T) {
 	mp.CloseDB()
 }
 
-// Add product to database, should be an integration test
-func TestMongoDBAddProduct(t *testing.T) {
-	// Skip tests in CI for now
+func TestMongoDBAddProductIntegration(t *testing.T) {
 	if testing.Short() {
-		t.Skip("Skipping this test in CI for now")
+		t.Skip("Test skipped during unit tests")
 	}
 
 	product := &data.Product{
@@ -41,11 +36,9 @@ func TestMongoDBAddProduct(t *testing.T) {
 	mp.CloseDB()
 }
 
-// Update product in database, should be included in integration test instead
-func TestMongoDBUpdateProduct(t *testing.T) {
-	// Skip tests in CI for now
+func TestMongoDBUpdateProductIntegration(t *testing.T) {
 	if testing.Short() {
-		t.Skip("Skipping this test in CI for now")
+		t.Skip("Test skipped during unit tests")
 	}
 
 	product := &data.Product{
