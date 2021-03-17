@@ -45,7 +45,7 @@ func (mp *MockProducts) UpdateProduct(product *data.Product) error {
 }
 
 func (mp *MockProducts) AddProduct(product *data.Product) error {
-	product.ID = getNextID()
+	product.ID = uuid.NewString()
 	productList = append(productList, product)
 	return nil
 }
@@ -76,11 +76,6 @@ func findIndexByProductID(id string) int {
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// Mocked database ///////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-
-// Finds the maximum index of our mocked database and adds 1
-func getNextID() string {
-	return uuid.NewString()
-}
 
 var productList = []*data.Product{
 	{
