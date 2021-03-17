@@ -35,7 +35,7 @@ func main() {
 	defer func() { _ = tracerProvider.Shutdown(ctx) }()
 
 	// Database init
-	db := database.NewMockProducts()
+	db := database.NewMongoProducts()
 
 	// Creating handlers
 	productHandler := handlers.NewProductsHandler(logger, db)

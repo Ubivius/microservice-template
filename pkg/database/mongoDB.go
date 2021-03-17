@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -96,7 +97,7 @@ func (mp *MongoProducts) GetProducts() data.Products {
 
 func (mp *MongoProducts) GetProductByID(id string) (*data.Product, error) {
 	// MongoDB search filter
-	filter := bson.D{{Key: "id", Value: id}}
+	filter := bson.D{{Key: "_id", Value: id}}
 
 	// Holds search result
 	var result data.Product
@@ -112,7 +113,7 @@ func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
 	product.UpdatedOn = time.Now().UTC().String()
 
 	// MongoDB search filter
-	filter := bson.D{{Key: "id", Value: product.ID}}
+	filter := bson.D{{Key: "_id", Value: product.ID}}
 
 	// Updated bson object
 	updatedProduct := bson.D{
@@ -136,13 +137,24 @@ func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
 }
 
 func (mp *MongoProducts) AddProduct(product *data.Product) error {
-	// product.ID = getNewId() TODO sprint 11. Requires some work to be done on database scripts
+	product.ID = uuid.NewString()
 	// Adding time information to new product
 	product.CreatedOn = time.Now().UTC().String()
 	product.UpdatedOn = time.Now().UTC().String()
 
+	// Updated bson object
+	addedProduct := bson.D{
+		{Key: "_id", Value: product.ID},
+		{Key: "name", Value: product.Name},
+		{Key: "description", Value: product.Description},
+		{Key: "price", Value: product.Price},
+		{Key: "sku", Value: product.SKU},
+		{Key: "createdon", Value: product.CreatedOn},
+		{Key: "updatedon", Value: product.UpdatedOn},
+	}
+
 	// Inserting the new product into the database
-	insertResult, err := mp.collection.InsertOne(context.TODO(), product)
+	insertResult, err := mp.collection.InsertOne(context.TODO(), addedProduct)
 	if err != nil {
 		return err
 	}
