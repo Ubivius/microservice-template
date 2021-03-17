@@ -132,7 +132,7 @@ func TestAddProduct(t *testing.T) {
 func TestUpdateProduct(t *testing.T) {
 	// Creating request body
 	body := &data.Product{
-		ID:          uuid.NewString(),
+		ID:          "a2181017-5c53-422b-b6bc-036b27c04fc8",
 		Name:        "addName",
 		Description: "addDescription",
 		Price:       1,
@@ -162,7 +162,7 @@ func TestDeleteExistingProduct(t *testing.T) {
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
-		"id": uuid.NewString(),
+		"id": "a2181017-5c53-422b-b6bc-036b27c04fc8",
 	}
 	request = mux.SetURLVars(request, vars)
 
