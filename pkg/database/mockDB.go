@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
+	"github.com/google/uuid"
 )
 
 type MockProducts struct {
@@ -26,7 +27,7 @@ func (mp *MockProducts) GetProducts() data.Products {
 	return productList
 }
 
-func (mp *MockProducts) GetProductByID(id int) (*data.Product, error) {
+func (mp *MockProducts) GetProductByID(id string) (*data.Product, error) {
 	index := findIndexByProductID(id)
 	if index == -1 {
 		return nil, data.ErrorProductNotFound
@@ -49,7 +50,7 @@ func (mp *MockProducts) AddProduct(product *data.Product) error {
 	return nil
 }
 
-func (mp *MockProducts) DeleteProduct(id int) error {
+func (mp *MockProducts) DeleteProduct(id string) error {
 	index := findIndexByProductID(id)
 	if index == -1 {
 		return data.ErrorProductNotFound
@@ -63,7 +64,7 @@ func (mp *MockProducts) DeleteProduct(id int) error {
 
 // Returns the index of a product in the database
 // Returns -1 when no product is found
-func findIndexByProductID(id int) int {
+func findIndexByProductID(id string) int {
 	for index, product := range productList {
 		if product.ID == id {
 			return index
@@ -77,14 +78,13 @@ func findIndexByProductID(id int) int {
 //////////////////////////////////////////////////////////////////////////////
 
 // Finds the maximum index of our mocked database and adds 1
-func getNextID() int {
-	lastProduct := productList[len(productList)-1]
-	return lastProduct.ID + 1
+func getNextID() string {
+	return uuid.NewString()
 }
 
 var productList = []*data.Product{
 	{
-		ID:          1,
+		ID:          uuid.NewString(),
 		Name:        "Sword",
 		Description: "A basic steel sword",
 		Price:       250,
@@ -93,7 +93,7 @@ var productList = []*data.Product{
 		UpdatedOn:   time.Now().UTC().String(),
 	},
 	{
-		ID:          2,
+		ID:          uuid.NewString(),
 		Name:        "Boots",
 		Description: "Simple leather boots",
 		Price:       100,

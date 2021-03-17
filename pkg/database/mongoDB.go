@@ -94,7 +94,7 @@ func (mp *MongoProducts) GetProducts() data.Products {
 	return results
 }
 
-func (mp *MongoProducts) GetProductByID(id int) (*data.Product, error) {
+func (mp *MongoProducts) GetProductByID(id string) (*data.Product, error) {
 	// MongoDB search filter
 	filter := bson.D{{Key: "id", Value: id}}
 
@@ -151,7 +151,7 @@ func (mp *MongoProducts) AddProduct(product *data.Product) error {
 	return nil
 }
 
-func (mp *MongoProducts) DeleteProduct(id int) error {
+func (mp *MongoProducts) DeleteProduct(id string) error {
 	// MongoDB search filter
 	filter := bson.D{{Key: "id", Value: id}}
 

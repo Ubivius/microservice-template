@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
+	"github.com/google/uuid"
 )
 
 // TODO sprint 11: need setup step to set database to desired state before tests.
@@ -47,7 +48,7 @@ func TestMongoDBUpdateProductIntegration(t *testing.T) {
 	}
 
 	product := &data.Product{
-		ID:          0,
+		ID:          uuid.NewString(),
 		Name:        "testName",
 		Description: "testDescription",
 		Price:       1,

@@ -11,6 +11,7 @@ import (
 
 	"github.com/Ubivius/microservice-template/pkg/data"
 	"github.com/Ubivius/microservice-template/pkg/database"
+	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 )
 
@@ -130,7 +131,7 @@ func TestAddProduct(t *testing.T) {
 func TestUpdateProduct(t *testing.T) {
 	// Creating request body
 	body := &data.Product{
-		ID:          1,
+		ID:          uuid.NewString(),
 		Name:        "addName",
 		Description: "addDescription",
 		Price:       1,
