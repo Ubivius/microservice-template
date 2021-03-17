@@ -100,14 +100,13 @@ func (mp *MongoProducts) GetProductByID(id string) (*data.Product, error) {
 	filter := bson.D{{Key: "_id", Value: id}}
 
 	// Holds search result
-	var result bson.D
+	var result data.Product
 
 	// Find a single matching item from the database
 	err := mp.collection.FindOne(context.TODO(), filter).Decode(&result)
 
 	// Parse result into the returned product
-	var product data.Product
-	return &product, err
+	return &result, err
 }
 
 func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
@@ -167,7 +166,7 @@ func (mp *MongoProducts) AddProduct(product *data.Product) error {
 
 func (mp *MongoProducts) DeleteProduct(id string) error {
 	// MongoDB search filter
-	filter := bson.D{{Key: "id", Value: id}}
+	filter := bson.D{{Key: "_id", Value: id}}
 
 	// Delete a single item matching the filter
 	result, err := mp.collection.DeleteOne(context.TODO(), filter)
