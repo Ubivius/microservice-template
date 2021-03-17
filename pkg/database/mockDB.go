@@ -84,7 +84,7 @@ func getNextID() string {
 
 var productList = []*data.Product{
 	{
-		ID:          uuid.NewString(),
+		ID:          "a2181017-5c53-422b-b6bc-036b27c04fc8",
 		Name:        "Sword",
 		Description: "A basic steel sword",
 		Price:       250,
@@ -93,7 +93,7 @@ var productList = []*data.Product{
 		UpdatedOn:   time.Now().UTC().String(),
 	},
 	{
-		ID:          uuid.NewString(),
+		ID:          "e2382ea2-b5fa-4506-aa9d-d338aa52af44",
 		Name:        "Boots",
 		Description: "Simple leather boots",
 		Price:       100,
