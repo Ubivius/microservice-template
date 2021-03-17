@@ -18,8 +18,6 @@ type MongoProducts struct {
 	collection *mongo.Collection
 }
 
-// Should pass logger here
-// NewMongoProducts(logger) to log err with log.fatal
 func NewMongoProducts() ProductDB {
 	mp := &MongoProducts{}
 	err := mp.Connect()
