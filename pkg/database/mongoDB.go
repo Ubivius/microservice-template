@@ -100,12 +100,14 @@ func (mp *MongoProducts) GetProductByID(id string) (*data.Product, error) {
 	filter := bson.D{{Key: "_id", Value: id}}
 
 	// Holds search result
-	var result data.Product
+	var result bson.D
 
 	// Find a single matching item from the database
 	err := mp.collection.FindOne(context.TODO(), filter).Decode(&result)
 
-	return &result, err
+	// Parse result into the returned product
+	var product data.Product
+	return &product, err
 }
 
 func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
