@@ -47,7 +47,7 @@ func TestGetExistingProductByID(t *testing.T) {
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
-		"id": "1",
+		"id": uuid.NewString(),
 	}
 	request = mux.SetURLVars(request, vars)
 
@@ -69,7 +69,7 @@ func TestGetNonExistingProductByID(t *testing.T) {
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
-		"id": "4",
+		"id": uuid.NewString(),
 	}
 	request = mux.SetURLVars(request, vars)
 
@@ -91,7 +91,7 @@ func TestDeleteNonExistantProduct(t *testing.T) {
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
-		"id": "4",
+		"id": uuid.NewString(),
 	}
 	request = mux.SetURLVars(request, vars)
 
@@ -161,7 +161,7 @@ func TestDeleteExistingProduct(t *testing.T) {
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
-		"id": "1",
+		"id": uuid.NewString(),
 	}
 	request = mux.SetURLVars(request, vars)
 
