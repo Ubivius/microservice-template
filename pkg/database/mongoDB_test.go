@@ -1,6 +1,7 @@
 package database
 
 import (
+	"log"
 	"testing"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
@@ -61,4 +62,16 @@ func TestMongoDBUpdateProductIntegration(t *testing.T) {
 		t.Fail()
 	}
 	mp.CloseDB()
+}
+
+func TestMongoDBGetProductsIntegration(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Test skipped during unit tests")
+	}
+
+	mp := NewMongoProducts()
+	products := mp.GetProducts()
+	log.Println("Id of first product: ", products[0].ID)
+	mp.CloseDB()
+	t.Fail()
 }
