@@ -134,19 +134,8 @@ func (mp *MongoProducts) AddProduct(product *data.Product) error {
 	product.CreatedOn = time.Now().UTC().String()
 	product.UpdatedOn = time.Now().UTC().String()
 
-	// Updated bson object
-	addedProduct := bson.D{
-		{Key: "_id", Value: product.ID},
-		{Key: "name", Value: product.Name},
-		{Key: "description", Value: product.Description},
-		{Key: "price", Value: product.Price},
-		{Key: "sku", Value: product.SKU},
-		{Key: "createdon", Value: product.CreatedOn},
-		{Key: "updatedon", Value: product.UpdatedOn},
-	}
-
 	// Inserting the new product into the database
-	insertResult, err := mp.collection.InsertOne(context.TODO(), addedProduct)
+	insertResult, err := mp.collection.InsertOne(context.TODO(), product)
 	if err != nil {
 		return err
 	}
