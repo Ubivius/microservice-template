@@ -66,8 +66,8 @@ func (mp *MongoProducts) CloseDB() {
 }
 
 func (mp *MongoProducts) GetProducts() data.Products {
-	// results will hold the array of Products
-	var results data.Products
+	// products will hold the array of Products
+	var products data.Products
 
 	// Find returns a cursor that must be iterated through
 	cursor, err := mp.collection.Find(context.TODO(), bson.D{})
@@ -77,12 +77,12 @@ func (mp *MongoProducts) GetProducts() data.Products {
 
 	// Iterating through cursor
 	for cursor.Next(context.TODO()) {
-		var elem data.Product
-		err := cursor.Decode(&elem)
+		var result data.Product
+		err := cursor.Decode(&result)
 		if err != nil {
 			log.Fatal(err)
 		}
-		results = append(results, &elem)
+		products = append(products, &result)
 	}
 
 	if err := cursor.Err(); err != nil {
@@ -92,7 +92,7 @@ func (mp *MongoProducts) GetProducts() data.Products {
 	// Close the cursor once finished
 	cursor.Close(context.TODO())
 
-	return results
+	return products
 }
 
 func (mp *MongoProducts) GetProductByID(id string) (*data.Product, error) {
