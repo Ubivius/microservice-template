@@ -10,6 +10,8 @@ import (
 	"testing"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
+	"github.com/Ubivius/microservice-template/pkg/database"
+	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 )
 
@@ -18,17 +20,22 @@ func NewTestLogger() *log.Logger {
 	return log.New(os.Stdout, "Tests", log.LstdFlags)
 }
 
+func NewProductDB() database.ProductDB {
+	return database.NewMockProducts()
+}
+
 func TestGetProducts(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "/products", nil)
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewTestLogger())
+	productHandler := NewProductsHandler(NewTestLogger(), NewProductDB())
 	productHandler.GetProducts(response, request)
 
 	if response.Code != 200 {
 		t.Errorf("Expected status code 200 but got : %d", response.Code)
 	}
-	if !strings.Contains(response.Body.String(), "\"id\":2") {
+	log.Println(response.Body.String())
+	if !strings.Contains(response.Body.String(), "a2181017-5c53-422b-b6bc-036b27c04fc8") || !strings.Contains(response.Body.String(), "e2382ea2-b5fa-4506-aa9d-d338aa52af44") {
 		t.Error("Missing elements from expected results")
 	}
 }
@@ -37,11 +44,11 @@ func TestGetExistingProductByID(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "/products/1", nil)
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewTestLogger())
+	productHandler := NewProductsHandler(NewTestLogger(), NewProductDB())
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
-		"id": "1",
+		"id": "a2181017-5c53-422b-b6bc-036b27c04fc8",
 	}
 	request = mux.SetURLVars(request, vars)
 
@@ -50,7 +57,7 @@ func TestGetExistingProductByID(t *testing.T) {
 	if response.Code != http.StatusOK {
 		t.Errorf("Expected status code %d but got : %d", http.StatusOK, response.Code)
 	}
-	if !strings.Contains(response.Body.String(), "\"id\":1") {
+	if !strings.Contains(response.Body.String(), "a2181017-5c53-422b-b6bc-036b27c04fc8") {
 		t.Error("Missing elements from expected results")
 	}
 }
@@ -59,11 +66,11 @@ func TestGetNonExistingProductByID(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "/products/4", nil)
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewTestLogger())
+	productHandler := NewProductsHandler(NewTestLogger(), NewProductDB())
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
-		"id": "4",
+		"id": uuid.NewString(),
 	}
 	request = mux.SetURLVars(request, vars)
 
@@ -81,11 +88,11 @@ func TestDeleteNonExistantProduct(t *testing.T) {
 	request := httptest.NewRequest(http.MethodDelete, "/products/4", nil)
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewTestLogger())
+	productHandler := NewProductsHandler(NewTestLogger(), NewProductDB())
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
-		"id": "4",
+		"id": uuid.NewString(),
 	}
 	request = mux.SetURLVars(request, vars)
 
@@ -114,7 +121,7 @@ func TestAddProduct(t *testing.T) {
 	ctx := context.WithValue(request.Context(), KeyProduct{}, body)
 	request = request.WithContext(ctx)
 
-	productHandler := NewProductsHandler(NewTestLogger())
+	productHandler := NewProductsHandler(NewTestLogger(), NewProductDB())
 	productHandler.AddProduct(response, request)
 
 	if response.Code != http.StatusNoContent {
@@ -125,7 +132,7 @@ func TestAddProduct(t *testing.T) {
 func TestUpdateProduct(t *testing.T) {
 	// Creating request body
 	body := &data.Product{
-		ID:          1,
+		ID:          "a2181017-5c53-422b-b6bc-036b27c04fc8",
 		Name:        "addName",
 		Description: "addDescription",
 		Price:       1,
@@ -139,7 +146,7 @@ func TestUpdateProduct(t *testing.T) {
 	ctx := context.WithValue(request.Context(), KeyProduct{}, body)
 	request = request.WithContext(ctx)
 
-	productHandler := NewProductsHandler(NewTestLogger())
+	productHandler := NewProductsHandler(NewTestLogger(), NewProductDB())
 	productHandler.UpdateProducts(response, request)
 
 	if response.Code != http.StatusNoContent {
@@ -151,11 +158,11 @@ func TestDeleteExistingProduct(t *testing.T) {
 	request := httptest.NewRequest(http.MethodDelete, "/products/1", nil)
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewTestLogger())
+	productHandler := NewProductsHandler(NewTestLogger(), NewProductDB())
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
-		"id": "1",
+		"id": "a2181017-5c53-422b-b6bc-036b27c04fc8",
 	}
 	request = mux.SetURLVars(request, vars)
 

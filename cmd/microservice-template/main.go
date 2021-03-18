@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/Ubivius/microservice-template/pkg/database"
 	"github.com/Ubivius/microservice-template/pkg/handlers"
 	"github.com/Ubivius/microservice-template/pkg/router"
 	"go.opentelemetry.io/otel/exporters/stdout"
@@ -33,8 +34,11 @@ func main() {
 	tracerProvider := sdktrace.NewTracerProvider(sdktrace.WithSpanProcessor(batchSpanProcessor))
 	defer func() { _ = tracerProvider.Shutdown(ctx) }()
 
+	// Database init
+	db := database.NewMongoProducts(logger)
+
 	// Creating handlers
-	productHandler := handlers.NewProductsHandler(logger)
+	productHandler := handlers.NewProductsHandler(logger, db)
 
 	// Router setup
 	r := router.New(productHandler, logger)
@@ -51,7 +55,7 @@ func main() {
 		logger.Println("Starting server on port ", server.Addr)
 		err := server.ListenAndServe()
 		if err != nil {
-			logger.Println("Error starting server : ", err)
+			logger.Println("Server error : ", err)
 			logger.Fatal(err)
 		}
 	}()
@@ -62,6 +66,9 @@ func main() {
 	receivedSignal := <-signalChannel
 
 	logger.Println("Received terminate, beginning graceful shutdown", receivedSignal)
+
+	// DB connection shutdown
+	db.CloseDB()
 
 	// Server shutdown
 	timeoutContext, cancel := context.WithTimeout(context.Background(), 30*time.Second)
