@@ -11,8 +11,6 @@ import (
 func (productHandler *ProductsHandler) GetProducts(responseWriter http.ResponseWriter, request *http.Request) {
 	productHandler.logger.Println("Handle GET products")
 	productList := productHandler.db.GetProducts()
-	// We want something like :
-	// productList := productHandler.db.GetProducts()
 	err := json.NewEncoder(responseWriter).Encode(productList)
 	if err != nil {
 		productHandler.logger.Println("[ERROR] serializing product", err)

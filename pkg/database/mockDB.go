@@ -56,7 +56,6 @@ func (mp *MockProducts) DeleteProduct(id string) error {
 		return data.ErrorProductNotFound
 	}
 
-	// This should not work, probably needs ':' after index+1. To test
 	productList = append(productList[:index], productList[index+1:]...)
 
 	return nil

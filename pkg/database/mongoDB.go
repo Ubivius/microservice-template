@@ -155,12 +155,3 @@ func (mp *MongoProducts) DeleteProduct(id string) error {
 	log.Printf("Deleted %v documents in the products collection\n", result.DeletedCount)
 	return nil
 }
-
-func (mp *MongoProducts) DeleteAllProducts(id int) error {
-	result, err := mp.collection.DeleteMany(context.TODO(), bson.D{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("Deleted %v documents in the products collection\n", result.DeletedCount)
-	return nil
-}
