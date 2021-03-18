@@ -10,7 +10,7 @@ import (
 // GetProducts returns the full list of products
 func (productHandler *ProductsHandler) GetProducts(responseWriter http.ResponseWriter, request *http.Request) {
 	productHandler.logger.Println("Handle GET products")
-	productList := data.GetProducts()
+	productList := productHandler.db.GetProducts()
 	err := json.NewEncoder(responseWriter).Encode(productList)
 	if err != nil {
 		productHandler.logger.Println("[ERROR] serializing product", err)
@@ -24,7 +24,8 @@ func (productHandler *ProductsHandler) GetProductByID(responseWriter http.Respon
 
 	productHandler.logger.Println("[DEBUG] getting id", id)
 
-	product, err := data.GetProductByID(id)
+	product, err := productHandler.db.GetProductByID(id)
+
 	switch err {
 	case nil:
 		err = json.NewEncoder(responseWriter).Encode(product)

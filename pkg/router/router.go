@@ -15,7 +15,7 @@ func New(productHandler *handlers.ProductsHandler, logger *log.Logger) *mux.Rout
 	// Get Router
 	getRouter := router.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/products", productHandler.GetProducts)
-	getRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.GetProductByID)
+	getRouter.HandleFunc("/products/{id:[0-9a-z-]+}", productHandler.GetProductByID)
 
 	// Put router
 	putRouter := router.Methods(http.MethodPut).Subrouter()
@@ -29,7 +29,7 @@ func New(productHandler *handlers.ProductsHandler, logger *log.Logger) *mux.Rout
 
 	// Delete router
 	deleteRouter := router.Methods(http.MethodDelete).Subrouter()
-	deleteRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.Delete)
+	deleteRouter.HandleFunc("/products/{id:[0-9a-z-]+}", productHandler.Delete)
 
 	return router
 }
