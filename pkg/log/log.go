@@ -5,7 +5,4 @@ import (
 )
 
 // MLog is a base parent logger for the controller manager.
-var MLog = logf.Log.WithName("manager")
-
-// CLog is a base parent logger for the controller.
-var CLog = MLog.WithName("controller")
+var MLog = logf.Log.WithName("template")
