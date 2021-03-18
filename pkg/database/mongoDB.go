@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"log"
-	"os"
 	"time"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
@@ -16,14 +15,15 @@ import (
 type MongoProducts struct {
 	client     *mongo.Client
 	collection *mongo.Collection
+	logger     *log.Logger
 }
 
-func NewMongoProducts() ProductDB {
-	mp := &MongoProducts{}
+func NewMongoProducts(l *log.Logger) ProductDB {
+	mp := &MongoProducts{logger: l}
 	err := mp.Connect()
 	// If connect fails, kill the program
 	if err != nil {
-		os.Exit(1)
+		mp.logger.Fatal(err)
 	}
 	return mp
 }
@@ -35,13 +35,13 @@ func (mp *MongoProducts) Connect() error {
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil || client == nil {
-		os.Exit(1)
+		mp.logger.Fatalln("Failed to connect to database. Shutting down service")
 	}
 
 	// Ping DB
 	err = client.Ping(context.TODO(), nil)
 	if err != nil {
-		log.Fatal(err)
+		mp.logger.Fatal(err)
 	}
 
 	log.Println("Connection to MongoDB established")
@@ -57,7 +57,7 @@ func (mp *MongoProducts) Connect() error {
 func (mp *MongoProducts) CloseDB() {
 	err := mp.client.Disconnect(context.TODO())
 	if err != nil {
-		log.Println(err)
+		mp.logger.Println(err)
 	} else {
 		log.Println("Connection to MongoDB closed.")
 	}
