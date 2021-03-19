@@ -63,7 +63,6 @@ func main() {
 		err := server.ListenAndServe()
 		if err != nil {
 			log.Error(err, "Server error")
-			os.Exit(1)
 		}
 	}()
 
