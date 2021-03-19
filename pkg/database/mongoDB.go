@@ -2,7 +2,7 @@ package database
 
 import (
 	"context"
-	"log"
+	"os"
 	"time"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
@@ -15,15 +15,15 @@ import (
 type MongoProducts struct {
 	client     *mongo.Client
 	collection *mongo.Collection
-	logger     *log.Logger
 }
 
-func NewMongoProducts(l *log.Logger) ProductDB {
-	mp := &MongoProducts{logger: l}
+func NewMongoProducts() ProductDB {
+	mp := &MongoProducts{}
 	err := mp.Connect()
 	// If connect fails, kill the program
 	if err != nil {
-		mp.logger.Fatal(err)
+		log.Error(err, "MongoDB setup failed")
+		os.Exit(1)
 	}
 	return mp
 }
@@ -35,16 +35,19 @@ func (mp *MongoProducts) Connect() error {
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil || client == nil {
-		mp.logger.Fatalln("Failed to connect to database. Shutting down service")
+		log.Error(err, "Failed to connect to database. Shutting down service")
+		os.Exit(1)
 	}
 
 	// Ping DB
 	err = client.Ping(context.TODO(), nil)
 	if err != nil {
-		mp.logger.Fatal(err)
+		// mp.logger.Fatal(err)
+		log.Error(err, "Failed to ping database. Shutting down service")
+		os.Exit(1)
 	}
 
-	log.Println("Connection to MongoDB established")
+	log.Info("Connection to MongoDB established")
 
 	collection := client.Database("test").Collection("products")
 
@@ -57,9 +60,7 @@ func (mp *MongoProducts) Connect() error {
 func (mp *MongoProducts) CloseDB() {
 	err := mp.client.Disconnect(context.TODO())
 	if err != nil {
-		mp.logger.Println(err)
-	} else {
-		log.Println("Connection to MongoDB closed.")
+		log.Error(err, "Error while disconnecting from database")
 	}
 }
 
@@ -70,7 +71,7 @@ func (mp *MongoProducts) GetProducts() data.Products {
 	// Find returns a cursor that must be iterated through
 	cursor, err := mp.collection.Find(context.TODO(), bson.D{})
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err, "Error getting products from database")
 	}
 
 	// Iterating through cursor
@@ -78,13 +79,13 @@ func (mp *MongoProducts) GetProducts() data.Products {
 		var result data.Product
 		err := cursor.Decode(&result)
 		if err != nil {
-			log.Fatal(err)
+			log.Error(err, "Error decoding product from database")
 		}
 		products = append(products, &result)
 	}
 
 	if err := cursor.Err(); err != nil {
-		log.Fatal(err)
+		log.Error(err, "Error in cursor after iteration")
 	}
 
 	// Close the cursor once finished
@@ -120,7 +121,7 @@ func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
 	// Update a single item in the database with the values in update that match the filter
 	_, err := mp.collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
-		log.Println(err)
+		log.Error(err, "Error updating product.")
 	}
 
 	return err
@@ -137,8 +138,8 @@ func (mp *MongoProducts) AddProduct(product *data.Product) error {
 	if err != nil {
 		return err
 	}
+	log.Info("Inserting product", "Inserted ID", insertResult.InsertedID)
 
-	log.Println("Inserting a document: ", insertResult.InsertedID)
 	return nil
 }
 
@@ -149,9 +150,9 @@ func (mp *MongoProducts) DeleteProduct(id string) error {
 	// Delete a single item matching the filter
 	result, err := mp.collection.DeleteOne(context.TODO(), filter)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err, "Error deleting product")
 	}
+	log.Info("Updated documents in products collection", "update_count", result.DeletedCount)
 
-	log.Printf("Deleted %v documents in the products collection\n", result.DeletedCount)
 	return nil
 }
