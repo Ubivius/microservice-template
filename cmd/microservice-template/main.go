@@ -17,7 +17,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
-// var log = logf.Log.WithName("template-main")
+var log = logf.Log.WithName("template-main")
 
 func main() {
 	// Starting k8s logger
@@ -32,7 +32,7 @@ func main() {
 		stdout.WithPrettyPrint(),
 	)
 	if err != nil {
-		// log.Error(err, "Failed to initialize stdout export pipeline")
+		log.Error(err, "Failed to initialize stdout export pipeline")
 	}
 
 	// Creating tracer provider
@@ -42,7 +42,7 @@ func main() {
 	defer func() { _ = tracerProvider.Shutdown(ctx) }()
 
 	// Database init
-	db := database.NewMockProducts()
+	db := database.NewMongoProducts()
 
 	// Creating handlers
 	productHandler := handlers.NewProductsHandler(db)
@@ -59,10 +59,10 @@ func main() {
 	}
 
 	go func() {
-		// log.Info("Starting server", "port", server.Addr)
+		log.Info("Starting server", "port", server.Addr)
 		err := server.ListenAndServe()
 		if err != nil {
-			// log.Error(err, "Server error")
+			log.Error(err, "Server error")
 			os.Exit(1)
 		}
 	}()
@@ -72,10 +72,7 @@ func main() {
 	signal.Notify(signalChannel, os.Interrupt)
 	receivedSignal := <-signalChannel
 
-	if receivedSignal.String() == "2" {
-		os.Exit(1)
-	}
-	// log.Info("Received terminate, beginning graceful shutdown", "received_signal", receivedSignal.String())
+	log.Info("Received terminate, beginning graceful shutdown", "received_signal", receivedSignal.String())
 
 	// DB connection shutdown
 	db.CloseDB()

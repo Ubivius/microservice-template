@@ -152,7 +152,7 @@ func (mp *MongoProducts) DeleteProduct(id string) error {
 	if err != nil {
 		log.Error(err, "Error deleting product")
 	}
-	log.Info("Updated documents in products collection", "update_count", result.DeletedCount)
+	log.Info("Deleted documents in products collection", "delete_count", result.DeletedCount)
 
 	return nil
 }
