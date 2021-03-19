@@ -49,7 +49,7 @@ func main() {
 	db := database.NewMockProducts()
 
 	// Creating handlers
-	productHandler := handlers.NewProductsHandler(logger, db)
+	productHandler := handlers.NewProductsHandler(db)
 
 	// Router setup
 	r := router.New(productHandler)
