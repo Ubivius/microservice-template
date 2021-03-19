@@ -19,6 +19,7 @@ require (
 	go.mongodb.org/mongo-driver v1.4.6
 	go.opentelemetry.io/otel/exporters/stdout v0.16.0
 	go.opentelemetry.io/otel/sdk v0.16.0
+	go.uber.org/zap v1.15.0
 	golang.org/x/crypto v0.0.0-20210317152858-513c2a44f670 // indirect
 	golang.org/x/net v0.0.0-20210316092652-d523dce5a7f4 // indirect
 	golang.org/x/oauth2 v0.0.0-20210313182246-cd4f82c27b84 // indirect

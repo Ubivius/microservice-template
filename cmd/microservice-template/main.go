@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -11,11 +12,22 @@ import (
 	"github.com/Ubivius/microservice-template/pkg/database"
 	"github.com/Ubivius/microservice-template/pkg/handlers"
 	"github.com/Ubivius/microservice-template/pkg/router"
+	"github.com/Ubivius/microservice-template/pkg/server"
 	"go.opentelemetry.io/otel/exporters/stdout"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
+var newLog = logf.Log.WithName("template-main")
+
 func main() {
+	// Starting k8s logger
+	opts := zap.Options{}
+	opts.BindFlags(flag.CommandLine)
+	newLogger := zap.New(zap.UseFlagOptions(&opts), zap.WriteTo(os.Stdout))
+	logf.SetLogger(newLogger.WithName("zap"))
+	server.NewServer()
 	// Logger
 	logger := log.New(os.Stdout, "Template", log.LstdFlags)
 
@@ -35,7 +47,7 @@ func main() {
 	defer func() { _ = tracerProvider.Shutdown(ctx) }()
 
 	// Database init
-	db := database.NewMongoProducts(logger)
+	db := database.NewMockProducts()
 
 	// Creating handlers
 	productHandler := handlers.NewProductsHandler(logger, db)
