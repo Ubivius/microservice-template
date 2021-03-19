@@ -27,6 +27,8 @@ func main() {
 	opts.BindFlags(flag.CommandLine)
 	newLogger := zap.New(zap.UseFlagOptions(&opts), zap.WriteTo(os.Stdout))
 	logf.SetLogger(newLogger.WithName("zap"))
+
+	// Starting server (this is only a test for logging for now)
 	server.NewServer()
 	// Logger
 	logger := log.New(os.Stdout, "Template", log.LstdFlags)
@@ -53,7 +55,7 @@ func main() {
 	productHandler := handlers.NewProductsHandler(logger, db)
 
 	// Router setup
-	r := router.New(productHandler, logger)
+	r := router.New(productHandler)
 
 	// Server setup
 	server := &http.Server{
