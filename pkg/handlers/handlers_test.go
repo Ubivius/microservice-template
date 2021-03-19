@@ -13,7 +13,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func NewProductDB() database.ProductDB {
+func loggerSetup() {
+
+}
+
+func newProductDB() database.ProductDB {
 	return database.NewMockProducts()
 }
 
@@ -21,7 +25,7 @@ func TestGetProducts(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "/products", nil)
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewProductDB())
+	productHandler := NewProductsHandler(newProductDB())
 	productHandler.GetProducts(response, request)
 
 	if response.Code != 200 {
@@ -37,7 +41,7 @@ func TestGetExistingProductByID(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "/products/1", nil)
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewProductDB())
+	productHandler := NewProductsHandler(newProductDB())
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
@@ -59,7 +63,7 @@ func TestGetNonExistingProductByID(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "/products/4", nil)
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewProductDB())
+	productHandler := NewProductsHandler(newProductDB())
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
@@ -81,7 +85,7 @@ func TestDeleteNonExistantProduct(t *testing.T) {
 	request := httptest.NewRequest(http.MethodDelete, "/products/4", nil)
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewProductDB())
+	productHandler := NewProductsHandler(newProductDB())
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
@@ -114,7 +118,7 @@ func TestAddProduct(t *testing.T) {
 	ctx := context.WithValue(request.Context(), KeyProduct{}, body)
 	request = request.WithContext(ctx)
 
-	productHandler := NewProductsHandler(NewProductDB())
+	productHandler := NewProductsHandler(newProductDB())
 	productHandler.AddProduct(response, request)
 
 	if response.Code != http.StatusNoContent {
@@ -139,7 +143,7 @@ func TestUpdateProduct(t *testing.T) {
 	ctx := context.WithValue(request.Context(), KeyProduct{}, body)
 	request = request.WithContext(ctx)
 
-	productHandler := NewProductsHandler(NewProductDB())
+	productHandler := NewProductsHandler(newProductDB())
 	productHandler.UpdateProducts(response, request)
 
 	if response.Code != http.StatusNoContent {
@@ -151,7 +155,7 @@ func TestDeleteExistingProduct(t *testing.T) {
 	request := httptest.NewRequest(http.MethodDelete, "/products/1", nil)
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewProductDB())
+	productHandler := NewProductsHandler(newProductDB())
 
 	// Mocking gorilla/mux vars
 	vars := map[string]string{
@@ -163,4 +167,5 @@ func TestDeleteExistingProduct(t *testing.T) {
 	if response.Code != http.StatusNoContent {
 		t.Errorf("Expected status code %d but got : %d", http.StatusNoContent, response.Code)
 	}
+	t.Fail()
 }
