@@ -42,7 +42,6 @@ func (mp *MongoProducts) Connect() error {
 	// Ping DB
 	err = client.Ping(context.TODO(), nil)
 	if err != nil {
-		// mp.logger.Fatal(err)
 		log.Error(err, "Failed to ping database. Shutting down service")
 		os.Exit(1)
 	}
