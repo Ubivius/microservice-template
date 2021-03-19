@@ -9,6 +9,7 @@ import (
 
 // Mux route handling with gorilla/mux
 func New(productHandler *handlers.ProductsHandler) *mux.Router {
+	log.Info("Starting router")
 	router := mux.NewRouter()
 
 	// Get Router

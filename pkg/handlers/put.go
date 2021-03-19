@@ -9,6 +9,7 @@ import (
 // UpdateProducts updates the product with the ID specified in the received JSON product
 func (productHandler *ProductsHandler) UpdateProducts(responseWriter http.ResponseWriter, request *http.Request) {
 	product := request.Context().Value(KeyProduct{}).(*data.Product)
+	log.Info("UpdateProducts request", "id", product.ID)
 
 	// Update product
 	err := productHandler.db.UpdateProduct(product)

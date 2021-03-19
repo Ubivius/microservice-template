@@ -11,6 +11,7 @@ type MockProducts struct {
 }
 
 func NewMockProducts() ProductDB {
+	log.Info("Connecting to mock database")
 	return &MockProducts{}
 }
 

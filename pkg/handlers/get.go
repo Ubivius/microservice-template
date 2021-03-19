@@ -9,6 +9,7 @@ import (
 
 // GetProducts returns the full list of products
 func (productHandler *ProductsHandler) GetProducts(responseWriter http.ResponseWriter, request *http.Request) {
+	log.Info("GetProducts request")
 	productList := productHandler.db.GetProducts()
 	err := json.NewEncoder(responseWriter).Encode(productList)
 	if err != nil {
@@ -20,6 +21,7 @@ func (productHandler *ProductsHandler) GetProducts(responseWriter http.ResponseW
 // GetProductByID returns a single product from the database
 func (productHandler *ProductsHandler) GetProductByID(responseWriter http.ResponseWriter, request *http.Request) {
 	id := getProductID(request)
+	log.Info("GetProductsByID request", "id", id)
 
 	product, err := productHandler.db.GetProductByID(id)
 

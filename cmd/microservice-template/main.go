@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -12,13 +11,14 @@ import (
 	"github.com/Ubivius/microservice-template/pkg/database"
 	"github.com/Ubivius/microservice-template/pkg/handlers"
 	"github.com/Ubivius/microservice-template/pkg/router"
+	"github.com/Ubivius/microservice-template/pkg/server"
 	"go.opentelemetry.io/otel/exporters/stdout"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
-var newLog = logf.Log.WithName("template-main")
+// var log = logf.Log.WithName("template-main")
 
 func main() {
 	// Starting k8s logger
@@ -27,8 +27,7 @@ func main() {
 	newLogger := zap.New(zap.UseFlagOptions(&opts), zap.WriteTo(os.Stdout))
 	logf.SetLogger(newLogger.WithName("zap"))
 
-	// Logger
-	logger := log.New(os.Stdout, "Template", log.LstdFlags)
+	server.NewServer()
 
 	// Initialising open telemetry
 	// Creating console exporter
@@ -36,7 +35,7 @@ func main() {
 		stdout.WithPrettyPrint(),
 	)
 	if err != nil {
-		logger.Fatal("Failed to initialize stdout export pipeline : ", err)
+		// log.Error(err, "Failed to initialize stdout export pipeline")
 	}
 
 	// Creating tracer provider
@@ -63,11 +62,11 @@ func main() {
 	}
 
 	go func() {
-		logger.Println("Starting server on port ", server.Addr)
+		// log.Info("Starting server", "port", server.Addr)
 		err := server.ListenAndServe()
 		if err != nil {
-			logger.Println("Server error : ", err)
-			logger.Fatal(err)
+			// log.Error(err, "Server error")
+			os.Exit(1)
 		}
 	}()
 
@@ -76,7 +75,10 @@ func main() {
 	signal.Notify(signalChannel, os.Interrupt)
 	receivedSignal := <-signalChannel
 
-	logger.Println("Received terminate, beginning graceful shutdown", receivedSignal)
+	if receivedSignal.String() == "2" {
+		os.Exit(1)
+	}
+	// log.Info("Received terminate, beginning graceful shutdown", "received_signal", receivedSignal.String())
 
 	// DB connection shutdown
 	db.CloseDB()

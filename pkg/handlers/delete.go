@@ -9,7 +9,7 @@ import (
 // Delete a product with specified id from the database
 func (productHandler *ProductsHandler) Delete(responseWriter http.ResponseWriter, request *http.Request) {
 	id := getProductID(request)
-	// productHandler.logger.Println("Handle DELETE product", id)
+	log.Info("Delete product by ID request", "id", id)
 
 	err := productHandler.db.DeleteProduct(id)
 	if err == data.ErrorProductNotFound {
