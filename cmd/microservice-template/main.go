@@ -12,7 +12,6 @@ import (
 	"github.com/Ubivius/microservice-template/pkg/database"
 	"github.com/Ubivius/microservice-template/pkg/handlers"
 	"github.com/Ubivius/microservice-template/pkg/router"
-	"github.com/Ubivius/microservice-template/pkg/server"
 	"go.opentelemetry.io/otel/exporters/stdout"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
@@ -28,8 +27,6 @@ func main() {
 	newLogger := zap.New(zap.UseFlagOptions(&opts), zap.WriteTo(os.Stdout))
 	logf.SetLogger(newLogger.WithName("zap"))
 
-	// Starting server (this is only a test for logging for now)
-	server.NewServer()
 	// Logger
 	logger := log.New(os.Stdout, "Template", log.LstdFlags)
 
