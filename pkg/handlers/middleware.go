@@ -20,7 +20,7 @@ func (productHandler *ProductsHandler) MiddlewareProductValidation(next http.Han
 
 		err := json.NewDecoder(request.Body).Decode(product)
 		if err != nil {
-			productHandler.logger.Println("[ERROR] deserializing product", err)
+			// productHandler.logger.Println("[ERROR] deserializing product", err)
 			http.Error(responseWriter, "Error reading product", http.StatusBadRequest)
 			return
 		}
@@ -28,7 +28,7 @@ func (productHandler *ProductsHandler) MiddlewareProductValidation(next http.Han
 		// validate the product
 		err = product.ValidateProduct()
 		if err != nil {
-			productHandler.logger.Println("[ERROR] validating product", err)
+			// productHandler.logger.Println("[ERROR] validating product", err)
 			http.Error(responseWriter, fmt.Sprintf("Error validating product: %s", err), http.StatusBadRequest)
 			return
 		}
