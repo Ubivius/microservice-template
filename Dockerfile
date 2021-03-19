@@ -11,8 +11,6 @@ RUN export PATH=$PATH:/go/bin
 RUN export GO111MODULE=on
 RUN echo "Building Microsevice..."
 RUN go build cmd/microservice-*/main.go
-RUN echo "Do tests"
-# RUN go test -v ./...
 RUN echo "First Docker build-stage is now done"
 
 FROM gcr.io/distroless/base as prod
