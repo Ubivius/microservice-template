@@ -2,8 +2,10 @@ package handlers
 
 import (
 	"context"
+	"flag"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -11,10 +13,16 @@ import (
 	"github.com/Ubivius/microservice-template/pkg/database"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
-func loggerSetup() {
-
+// TODO write to an in memory buffer and stdout to be able to compare values in memory to logs
+func setup() {
+	opts := zap.Options{}
+	opts.BindFlags(flag.CommandLine)
+	newLogger := zap.New(zap.UseFlagOptions(&opts), zap.WriteTo(os.Stdout))
+	logf.SetLogger(newLogger.WithName("zap"))
 }
 
 func newProductDB() database.ProductDB {
@@ -22,6 +30,7 @@ func newProductDB() database.ProductDB {
 }
 
 func TestGetProducts(t *testing.T) {
+	setup()
 	request := httptest.NewRequest(http.MethodGet, "/products", nil)
 	response := httptest.NewRecorder()
 
@@ -38,6 +47,7 @@ func TestGetProducts(t *testing.T) {
 }
 
 func TestGetExistingProductByID(t *testing.T) {
+	setup()
 	request := httptest.NewRequest(http.MethodGet, "/products/1", nil)
 	response := httptest.NewRecorder()
 
@@ -60,6 +70,7 @@ func TestGetExistingProductByID(t *testing.T) {
 }
 
 func TestGetNonExistingProductByID(t *testing.T) {
+	setup()
 	request := httptest.NewRequest(http.MethodGet, "/products/4", nil)
 	response := httptest.NewRecorder()
 
@@ -82,6 +93,7 @@ func TestGetNonExistingProductByID(t *testing.T) {
 }
 
 func TestDeleteNonExistantProduct(t *testing.T) {
+	setup()
 	request := httptest.NewRequest(http.MethodDelete, "/products/4", nil)
 	response := httptest.NewRecorder()
 
@@ -103,6 +115,7 @@ func TestDeleteNonExistantProduct(t *testing.T) {
 }
 
 func TestAddProduct(t *testing.T) {
+	setup()
 	// Creating request body
 	body := &data.Product{
 		Name:        "addName",
@@ -127,6 +140,7 @@ func TestAddProduct(t *testing.T) {
 }
 
 func TestUpdateProduct(t *testing.T) {
+	setup()
 	// Creating request body
 	body := &data.Product{
 		ID:          "a2181017-5c53-422b-b6bc-036b27c04fc8",
@@ -152,6 +166,7 @@ func TestUpdateProduct(t *testing.T) {
 }
 
 func TestDeleteExistingProduct(t *testing.T) {
+	setup()
 	request := httptest.NewRequest(http.MethodDelete, "/products/1", nil)
 	response := httptest.NewRecorder()
 
@@ -167,5 +182,4 @@ func TestDeleteExistingProduct(t *testing.T) {
 	if response.Code != http.StatusNoContent {
 		t.Errorf("Expected status code %d but got : %d", http.StatusNoContent, response.Code)
 	}
-	t.Fail()
 }
