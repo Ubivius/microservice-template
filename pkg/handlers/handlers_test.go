@@ -27,7 +27,7 @@ func TestGetProducts(t *testing.T) {
 	if response.Code != 200 {
 		t.Errorf("Expected status code 200 but got : %d", response.Code)
 	}
-	// log.Println(response.Body.String())
+
 	if !strings.Contains(response.Body.String(), "a2181017-5c53-422b-b6bc-036b27c04fc8") || !strings.Contains(response.Body.String(), "e2382ea2-b5fa-4506-aa9d-d338aa52af44") {
 		t.Error("Missing elements from expected results")
 	}

@@ -15,7 +15,6 @@ type ProductsHandler struct {
 	db database.ProductDB
 }
 
-// NewProductsHandler returns a pointer to a ProductsHandler with the logger passed as a parameter
 func NewProductsHandler(db database.ProductDB) *ProductsHandler {
 	return &ProductsHandler{db}
 }
