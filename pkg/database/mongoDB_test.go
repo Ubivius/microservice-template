@@ -1,30 +1,19 @@
 package database
 
 import (
-	"flag"
-	"os"
 	"testing"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
 	"github.com/google/uuid"
-	logf "sigs.k8s.io/controller-runtime/pkg/log"
-	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
 // TODO sprint 11: need setup step to set database to desired state before tests.
 // TODO sprint 11: complete integration tests once setup task is completed
-func setup() {
-	opts := zap.Options{}
-	opts.BindFlags(flag.CommandLine)
-	newLogger := zap.New(zap.UseFlagOptions(&opts), zap.WriteTo(os.Stdout))
-	logf.SetLogger(newLogger.WithName("zap"))
-}
 
 func TestMongoDBConnectionAndShutdownIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Test skipped during unit tests")
 	}
-	setup()
 
 	mp := NewMongoProducts()
 	if mp == nil {
@@ -37,7 +26,6 @@ func TestMongoDBAddProductIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Test skipped during unit tests")
 	}
-	setup()
 
 	product := &data.Product{
 		Name:        "testName",
@@ -58,7 +46,6 @@ func TestMongoDBUpdateProductIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Test skipped during unit tests")
 	}
-	setup()
 
 	product := &data.Product{
 		ID:          uuid.NewString(),
@@ -80,7 +67,6 @@ func TestMongoDBGetProductsIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Test skipped during unit tests")
 	}
-	setup()
 
 	mp := NewMongoProducts()
 	products := mp.GetProducts()
@@ -96,7 +82,6 @@ func TestMongoDBGetProductByIDIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Test skipped during unit tests")
 	}
-	setup()
 
 	mp := NewMongoProducts()
 	product, err := mp.GetProductByID("e2382ea2-b5fa-4506-aa9d-d338aa52af44")
