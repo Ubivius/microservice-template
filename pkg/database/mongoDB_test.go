@@ -7,9 +7,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// TODO sprint 11: need setup step to set database to desired state before tests.
-// TODO sprint 11: complete integration tests once setup task is completed
-
 func TestMongoDBConnectionAndShutdownIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Test skipped during unit tests")
