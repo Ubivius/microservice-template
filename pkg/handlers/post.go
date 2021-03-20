@@ -8,7 +8,7 @@ import (
 
 // AddProduct creates a new product from the received JSON
 func (productHandler *ProductsHandler) AddProduct(responseWriter http.ResponseWriter, request *http.Request) {
-	productHandler.logger.Println("Handle POST Product")
+	log.Info("AddProduct request")
 	product := request.Context().Value(KeyProduct{}).(*data.Product)
 
 	err := productHandler.db.AddProduct(product)

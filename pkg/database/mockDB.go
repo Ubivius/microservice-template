@@ -1,7 +1,6 @@
 package database
 
 import (
-	"log"
 	"time"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
@@ -12,6 +11,7 @@ type MockProducts struct {
 }
 
 func NewMockProducts() ProductDB {
+	log.Info("Connecting to mock database")
 	return &MockProducts{}
 }
 
@@ -20,7 +20,7 @@ func (mp *MockProducts) Connect() error {
 }
 
 func (mp *MockProducts) CloseDB() {
-	log.Println("Mocked DB connection closed")
+	log.Info("Mocked DB connection closed")
 }
 
 func (mp *MockProducts) GetProducts() data.Products {

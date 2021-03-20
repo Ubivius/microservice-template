@@ -9,11 +9,11 @@ import (
 
 // GetProducts returns the full list of products
 func (productHandler *ProductsHandler) GetProducts(responseWriter http.ResponseWriter, request *http.Request) {
-	productHandler.logger.Println("Handle GET products")
+	log.Info("GetProducts request")
 	productList := productHandler.db.GetProducts()
 	err := json.NewEncoder(responseWriter).Encode(productList)
 	if err != nil {
-		productHandler.logger.Println("[ERROR] serializing product", err)
+		log.Error(err, "Error serializing product")
 		http.Error(responseWriter, "Unable to marshal json", http.StatusInternalServerError)
 	}
 }
@@ -21,8 +21,7 @@ func (productHandler *ProductsHandler) GetProducts(responseWriter http.ResponseW
 // GetProductByID returns a single product from the database
 func (productHandler *ProductsHandler) GetProductByID(responseWriter http.ResponseWriter, request *http.Request) {
 	id := getProductID(request)
-
-	productHandler.logger.Println("[DEBUG] getting id", id)
+	log.Info("GetProductsByID request", "id", id)
 
 	product, err := productHandler.db.GetProductByID(id)
 
@@ -30,14 +29,14 @@ func (productHandler *ProductsHandler) GetProductByID(responseWriter http.Respon
 	case nil:
 		err = json.NewEncoder(responseWriter).Encode(product)
 		if err != nil {
-			productHandler.logger.Println("[ERROR] serializing product", err)
+			log.Error(err, "Error serializing product")
 		}
 	case data.ErrorProductNotFound:
-		productHandler.logger.Println("[ERROR] fetching product", err)
+		log.Error(err, "Product not found")
 		http.Error(responseWriter, "Product not found", http.StatusBadRequest)
 		return
 	default:
-		productHandler.logger.Println("[ERROR] fetching product", err)
+		log.Error(err, "Error getting product")
 		http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
 		return
 	}
