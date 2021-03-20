@@ -24,7 +24,7 @@ func main() {
 	opts := zap.Options{}
 	opts.BindFlags(flag.CommandLine)
 	newLogger := zap.New(zap.UseFlagOptions(&opts), zap.WriteTo(os.Stdout))
-	logf.SetLogger(newLogger.WithName("zap"))
+	logf.SetLogger(newLogger.WithName("log"))
 
 	// Initialising open telemetry
 	// Creating console exporter
