@@ -1,7 +1,7 @@
 #!/bin/bash
 #script to pull and run mongoDB in single node inside a docker container
 
-# If elasticsearch container is running, exit.
+# If mongoDB container is running, exit.
 running_app_container=`docker ps | grep local-mongo | wc -l`
 if [ $running_app_container -gt "0" ]
 then
@@ -11,7 +11,7 @@ then
 	exit 1
 fi
 		
-# If elasticsearch container exists and is off, run.
+# If mongoDB container exists and is off, run.
 existing_app_container=`docker ps -a | grep local-mongo | grep Exit | wc -l`
 if [ $existing_app_container -gt "0" ]
 then
