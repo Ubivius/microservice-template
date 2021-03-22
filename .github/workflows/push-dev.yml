@@ -69,11 +69,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Prepare helm
         run: |
-            curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-            chmod 700 get_helm.sh
-            ./get_helm.sh
-            sudo wget https://github.com/mikefarah/yq/releases/download/latest/yq_linux_amd64 -O /usr/bin/yq
-            chmod +x /usr/bin/yq
+            snap install yq
             helm plugin install https://github.com/chartmuseum/helm-push.git
             helm repo add ysma500 http://ysma500.tk:314
             IN=$(echo ${GITHUB_REPOSITORY})
