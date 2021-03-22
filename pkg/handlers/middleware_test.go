@@ -24,7 +24,7 @@ func TestValidationMiddlewareWithValidBody(t *testing.T) {
 	request := httptest.NewRequest(http.MethodPost, "/products", strings.NewReader(string(bodyBytes)))
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewTestLogger())
+	productHandler := NewProductsHandler(newProductDB())
 
 	// Create a router for middleware because function attachment is handled by gorilla/mux
 	router := mux.NewRouter()
@@ -54,7 +54,7 @@ func TestValidationMiddlewareWithNoName(t *testing.T) {
 	request := httptest.NewRequest(http.MethodPost, "/products", strings.NewReader(string(bodyBytes)))
 	response := httptest.NewRecorder()
 
-	productHandler := NewProductsHandler(NewTestLogger())
+	productHandler := NewProductsHandler(newProductDB())
 
 	// Create a router for middleware because linking is handled by gorilla/mux
 	router := mux.NewRouter()

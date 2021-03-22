@@ -7,7 +7,7 @@ on:
     branches: [ dev ]
 
 env:
-  BUILD_LVL: test
+  BUILD_TYPE: test
   DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_EMAIL: ${{ secrets.DOCKERHUB_EMAIL }}
   DOCKERHUB_PWD: ${{ secrets.DOCKERHUB_PWD }}
@@ -26,8 +26,8 @@ jobs:
     - name: Build
       run: go build -v ./...
 
-    - name: Test
-      run: go test -v ./...
+    - name: Unit tests
+      run: go test -short -v ./...
 
   golangci-lint:
     runs-on: ubuntu-latest
@@ -54,10 +54,12 @@ jobs:
 
       - name: Build and Push Artefact to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
+        env:
+          BUILD_TYPE: ${{ env.BUILD_TYPE }}
         with:
-          name: ubiviushub/${{ steps.fetch-vars.outputs.REPO_NAME }}
+          name: ubivius/${{ steps.fetch-vars.outputs.REPO_NAME }}
           username: ${{ env.DOCKERHUB_USER }}
           password: ${{ env.DOCKERHUB_PWD }}
-          buildargs: ${{ env.BUILD_LVL }}
+          buildargs: BUILD_TYPE
           dockerfile: Dockerfile
           tags: "${{ env.REPO_VERSION }}"
