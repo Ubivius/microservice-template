@@ -43,8 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Pre-load env-var
-        id: fetch-vars
+      - name: Prepare docker env
+        id: fetch-docker-vars
         run: |
             IN=$(echo ${GITHUB_REPOSITORY})
             NAME=${IN#"Ubivius/"}
@@ -55,7 +55,7 @@ jobs:
       - name: Build and Push Artefact to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: ubiviushub/${{ steps.fetch-vars.outputs.REPO_NAME }}
+          name: ubiviushub/${{ steps.fetch-docker-vars.outputs.REPO_NAME }}
           username: ${{ env.DOCKERHUB_USER }}
           password: ${{ env.DOCKERHUB_PWD }}
           buildargs: ${{ env.BUILD_LVL }}
@@ -67,7 +67,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Prepare helm
+      - name: Prepare helm env
+        id: fetch-helm-vars
         run: |
             brew install yq
             helm plugin install https://github.com/chartmuseum/helm-push.git
@@ -76,8 +77,10 @@ jobs:
             NAME=${IN#"Ubivius/"}
             VERSION=$(yq e '.version' ./chart/Chart.yaml)
             FULL_NAME="./${NAME}-${VERSION}.tgz"
+            echo "::set-output name=PKG_NAME::$(echo $FULL_NAME)"
+        shell: bash
       
       - name: Package and Push Chart to ChartMuseum
         run: |
             helm package chart/
-            helm push $FULL_NAME ysma500 -f
+            helm push ${{ steps.fetch-helm-vars.outputs.PKG_NAME }} ysma500 -f
