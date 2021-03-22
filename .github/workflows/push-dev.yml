@@ -4,7 +4,7 @@ on:
   push:
     tags:
       - v*
-    branches: [ dev ]
+    branches: [ dev, feature/UBI-252-Build-and-push-charts ]
 
 env:
   BUILD_LVL: test
@@ -61,3 +61,27 @@ jobs:
           buildargs: ${{ env.BUILD_LVL }}
           dockerfile: Dockerfile
           tags: "${{ env.REPO_VERSION }}"
+    
+  publish-helm:
+    needs: [ build-and-test, golangci-lint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Prepare helm
+        run: |
+            curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+            chmod 700 get_helm.sh
+            ./get_helm.sh
+            wget https://github.com/mikefarah/yq/releases/download/latest/yq_linux_amd64 -O /usr/bin/yq
+            chmod +x /usr/bin/yq
+            helm plugin install https://github.com/chartmuseum/helm-push.git
+            helm repo add ysma500 http://ysma500.tk:314
+            IN=$(echo ${GITHUB_REPOSITORY})
+            NAME=${IN#"Ubivius/"}
+            VERSION=$(yq e '.version' ./chart/Chart.yaml)
+            FULL_NAME="./${NAME}-${VERSION}.tgz"
+      
+      - name: Package and Push Chart to ChartMuseum
+        run: |
+            helm package chart/
+            helm push $FULL_NAME ysma500 -f
