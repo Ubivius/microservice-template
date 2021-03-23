@@ -20,6 +20,9 @@ jobs:
     - name: Test
       run: go test -v ./...
 
+    - name: Integration tests
+      run: go test ./... -run Integration
+
   golangci-lint:
     runs-on: ubuntu-latest
     steps:
