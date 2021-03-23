@@ -17,8 +17,11 @@ jobs:
     - name: Build
       run: go build -v ./...
 
-    - name: Test
-      run: go test -v ./...
+    - name: Unit tests
+      run: go test -short -v ./...
+
+    - name: Integration tests
+      run: go test ./... -run Integration
 
   golangci-lint:
     runs-on: ubuntu-latest
