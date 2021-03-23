@@ -168,7 +168,7 @@ func TestUpdateNonExistantProduct(t *testing.T) {
 	productHandler.UpdateProducts(response, request)
 
 	if response.Code != http.StatusNotFound {
-		t.Errorf("Expected status code %d, but got %d", http.StatusNoContent, response.Code)
+		t.Errorf("Expected status code %d, but got %d", http.StatusNotFound, response.Code)
 	}
 	if !strings.Contains(response.Body.String(), "Product not found") {
 		t.Error("Expected response : Product not found")
