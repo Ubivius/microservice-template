@@ -47,12 +47,14 @@ jobs:
       - name: Prepare docker env
         id: fetch-docker-vars
         run: |
-            IN=$(echo ${GITHUB_REPOSITORY})
-            NAME=${IN#"Ubivius/"}
-            VERSION=$(yq e '.version' ./chart/Chart.yaml)
-            echo "::set-output name=REPO_NAME::$(echo $NAME)"
-            echo "::set-output name=BRANCH::$(echo $GITHUB_REF)"
-            echo "::set-output name=REPO_VERSION::$(echo $VERSION)"
+          chmod 700 .github/tools_install.sh
+          ./.github/tools_install.sh
+          IN=$(echo ${GITHUB_REPOSITORY})
+          NAME=${IN#"Ubivius/"}
+          VERSION=$(yq e '.version' ./chart/Chart.yaml)
+          echo "::set-output name=REPO_NAME::$(echo $NAME)"
+          echo "::set-output name=BRANCH::$(echo $GITHUB_REF)"
+          echo "::set-output name=REPO_VERSION::$(echo $VERSION)"
         shell: bash
 
       - name: Build and Push Artefact to Registry
