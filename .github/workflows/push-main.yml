@@ -64,3 +64,26 @@ jobs:
           buildargs: BUILD_TYPE
           dockerfile: Dockerfile
           tags: "${{ env.REPO_VERSION }}"
+
+  publish-helm:
+    needs: [ build-and-test, golangci-lint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Prepare helm env
+        id: fetch-helm-vars
+        run: |
+            brew install yq
+            helm plugin install https://github.com/chartmuseum/helm-push.git
+            helm repo add ysma500 http://ysma500.tk:314
+            IN=$(echo ${GITHUB_REPOSITORY})
+            NAME=${IN#"Ubivius/"}
+            VERSION=$(yq e '.version' ./chart/Chart.yaml)
+            FULL_NAME="./${NAME}-${VERSION}.tgz"
+            echo "::set-output name=PKG_NAME::$(echo $FULL_NAME)"
+        shell: bash
+
+      - name: Package and Push Chart to ChartMuseum
+        run: |
+            helm package chart/
+            helm push ${{ steps.fetch-helm-vars.outputs.PKG_NAME }} ysma500 -f
