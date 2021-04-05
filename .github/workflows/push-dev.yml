@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Pre-load env-var
+      - name: Prepare docker env
         id: fetch-docker-vars
         run: |
             chmod 700 .github/tools_install.sh
@@ -79,7 +79,7 @@ jobs:
         run: |
             chmod 700 .github/tools_install.sh
             ./.github/tools_install.sh
-
+      
       - name: Package and Push Chart to ChartMuseum
         run: |
             IN=$(echo ${GITHUB_REPOSITORY})
@@ -88,3 +88,23 @@ jobs:
             FULL_NAME="./${NAME}-${VERSION}.tgz"
             helm package chart/
             helm push $FULL_NAME ysma500 -f
+
+  deployment:
+    needs: [publish-docker, publish-helm]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Prepare deploy env
+        run: |
+            chmod 700 .github/tools_install.sh
+            ./.github/tools_install.sh
+            printf '${{ env.DEV_GKE_JSON }}' > ubivius-deployments-5e62532eb5a9.json
+            gcloud auth activate-service-account ${{ env.DEV_GKE_USER }} --key-file=ubivius-deployments-5e62532eb5a9.json
+            gcloud container clusters get-credentials test-environment --zone us-east1-c --project ubivius-deployments
+
+      - name: Push with valuefile
+        run: |
+            IN=$(echo ${GITHUB_REPOSITORY})
+            NAME=${IN#"Ubivius/"}
+            VERSION=$(yq e '.version' ./chart/Chart.yaml)
+            helm upgrade $NAME --install --version $VERSION ysma500/$NAME -f chart/values.yaml
