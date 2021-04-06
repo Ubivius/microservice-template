@@ -11,12 +11,12 @@ fullnameOverride: ""
 
 readinessProbe:
   httpGet:
-    path: /products # TODO: Change for /health
+    path: /health/ready
     port: 9090
 
 livenessProbe:
   httpGet:
-    path: /products # TODO: Change for /health
+    path: /health/live 
     port: 9090
   initialDelaySeconds: 60
   timeoutSeconds: 30
