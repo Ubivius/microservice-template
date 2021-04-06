@@ -147,6 +147,34 @@ func TestUpdateProduct(t *testing.T) {
 	}
 }
 
+func TestUpdateNonExistantProduct(t *testing.T) {
+	// Creating request body
+	body := &data.Product{
+		ID:          uuid.NewString(),
+		Name:        "addName",
+		Description: "addDescription",
+		Price:       1,
+		SKU:         "abc-abc-abcd",
+	}
+
+	request := httptest.NewRequest(http.MethodPut, "/products", nil)
+	response := httptest.NewRecorder()
+
+	// Add the body to the context since we arent passing through middleware
+	ctx := context.WithValue(request.Context(), KeyProduct{}, body)
+	request = request.WithContext(ctx)
+
+	productHandler := NewProductsHandler(newProductDB())
+	productHandler.UpdateProducts(response, request)
+
+	if response.Code != http.StatusNotFound {
+		t.Errorf("Expected status code %d, but got %d", http.StatusNotFound, response.Code)
+	}
+	if !strings.Contains(response.Body.String(), "Product not found") {
+		t.Error("Expected response : Product not found")
+	}
+}
+
 func TestDeleteExistingProduct(t *testing.T) {
 	request := httptest.NewRequest(http.MethodDelete, "/products/1", nil)
 	response := httptest.NewRecorder()
