@@ -10,15 +10,17 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"k8s.io/client-go/kubernetes"
 )
 
 type MongoProducts struct {
 	client     *mongo.Client
 	collection *mongo.Collection
+	k8sClient  *kubernetes.Clientset
 }
 
-func NewMongoProducts() ProductDB {
-	mp := &MongoProducts{}
+func NewMongoProducts(k *kubernetes.Clientset) ProductDB {
+	mp := &MongoProducts{k8sClient: k}
 	err := mp.Connect()
 	// If connect fails, kill the program
 	if err != nil {
@@ -29,8 +31,15 @@ func NewMongoProducts() ProductDB {
 }
 
 func (mp *MongoProducts) Connect() error {
+	// Getting mongodb secret
+	password, err := mp.k8sClient.GetSecret("mongodb","mongodb-root-password")
+	if err != nil {
+		log.Error(err, "Failed to get mongodb secret")
+		os.Exit(1)
+	}
+
 	// Setting client options
-	clientOptions := options.Client().ApplyURI("mongodb://admin:pass@localhost:27888/?authSource=admin")
+	clientOptions := options.Client().ApplyURI("mongodb://root:" + password + "@ubivius.tk:27017/?authSource=admin")
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)

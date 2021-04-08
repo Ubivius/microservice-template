@@ -10,6 +10,7 @@ import (
 
 	"github.com/Ubivius/microservice-template/pkg/database"
 	"github.com/Ubivius/microservice-template/pkg/handlers"
+	"github.com/Ubivius/microservice-template/pkg/k8s"
 	"github.com/Ubivius/microservice-template/pkg/router"
 	"go.opentelemetry.io/otel/exporters/stdout"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
@@ -42,7 +43,10 @@ func main() {
 	defer func() { _ = tracerProvider.Shutdown(ctx) }()
 
 	// Database init
-	db := database.NewMongoProducts()
+	k8sClient := k8s.NewKubernetes()
+
+	// Database init
+	db := database.NewMongoProducts(k8sClient)
 
 	// Creating handlers
 	productHandler := handlers.NewProductsHandler(db)
