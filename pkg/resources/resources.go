@@ -13,7 +13,7 @@ type Resources struct {
 	k8sClient *kubernetes.Clientset
 }
 
-func NewResources() ResourcesManager {
+func NewResources() ResourceManager {
 	mp := &Resources{}
 	err := mp.Init()
 	// If Init fails, kill the program

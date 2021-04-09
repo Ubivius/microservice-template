@@ -1,6 +1,6 @@
 package resources
 
-type ResourcesManager interface {
+type ResourceManager interface {
 	GetSecret(namespace string, name string, key string) (string, error)
 	Init() error
 }

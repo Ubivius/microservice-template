@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func newResourcesManager() resources.ResourcesManager {
+func newResourcesManager() resources.ResourceManager {
 	return resources.NewMockResources()
 }
 

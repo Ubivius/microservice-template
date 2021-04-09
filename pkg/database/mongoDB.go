@@ -16,11 +16,11 @@ import (
 type MongoProducts struct {
 	client            *mongo.Client
 	collection        *mongo.Collection
-	resourcesManager  resources.ResourcesManager
+	resourceManager  resources.ResourceManager
 }
 
-func NewMongoProducts(r resources.ResourcesManager) ProductDB {
-	mp := &MongoProducts{resourcesManager: r}
+func NewMongoProducts(r resources.ResourceManager) ProductDB {
+	mp := &MongoProducts{resourceManager: r}
 	err := mp.Connect()
 	// If connect fails, kill the program
 	if err != nil {
@@ -32,7 +32,7 @@ func NewMongoProducts(r resources.ResourcesManager) ProductDB {
 
 func (mp *MongoProducts) Connect() error {
 	// Getting mongodb secret
-	password, err := mp.resourcesManager.GetSecret("default", "mongodb", "mongodb-root-password")
+	password, err := mp.resourceManager.GetSecret("default", "mongodb", "mongodb-root-password")
 	if err != nil {
 		log.Error(err, "Failed to get mongodb secret")
 		os.Exit(1)

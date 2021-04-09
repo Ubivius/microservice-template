@@ -2,7 +2,7 @@ package resources
 
 type MockResources struct{}
 
-func NewMockResources() ResourcesManager {
+func NewMockResources() ResourceManager {
 	log.Info("Connecting to mock resources")
 	return &MockResources{}
 }
