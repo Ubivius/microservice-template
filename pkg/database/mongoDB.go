@@ -6,21 +6,21 @@ import (
 	"time"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
+	"github.com/Ubivius/microservice-template/pkg/resources"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"k8s.io/client-go/kubernetes"
 )
 
 type MongoProducts struct {
-	client     *mongo.Client
-	collection *mongo.Collection
-	k8sClient  *kubernetes.Clientset
+	client            *mongo.Client
+	collection        *mongo.Collection
+	resourcesManager  resources.ResourcesManager
 }
 
-func NewMongoProducts(k *kubernetes.Clientset) ProductDB {
-	mp := &MongoProducts{k8sClient: k}
+func NewMongoProducts(r resources.ResourcesManager) ProductDB {
+	mp := &MongoProducts{resourcesManager: r}
 	err := mp.Connect()
 	// If connect fails, kill the program
 	if err != nil {
@@ -32,14 +32,14 @@ func NewMongoProducts(k *kubernetes.Clientset) ProductDB {
 
 func (mp *MongoProducts) Connect() error {
 	// Getting mongodb secret
-	password, err := mp.k8sClient.GetSecret("mongodb","mongodb-root-password")
+	password, err := mp.resourcesManager.GetSecret("default", "mongodb", "mongodb-root-password")
 	if err != nil {
 		log.Error(err, "Failed to get mongodb secret")
 		os.Exit(1)
 	}
 
 	// Setting client options
-	clientOptions := options.Client().ApplyURI("mongodb://root:" + password + "@ubivius.tk:27017/?authSource=admin")
+	clientOptions := options.Client().ApplyURI("mongodb://root:" + password + "@mongodb:27017/?authSource=admin")
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -57,7 +57,7 @@ func (mp *MongoProducts) Connect() error {
 
 	log.Info("Connection to MongoDB established")
 
-	collection := client.Database("test").Collection("products")
+	collection := client.Database("ubivius").Collection("products")
 
 	// Assign client and collection to the MongoProducts struct
 	mp.collection = collection
