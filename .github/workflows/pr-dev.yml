@@ -5,7 +5,7 @@ on:
     branches: [ dev ]
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -17,9 +17,13 @@ jobs:
     - name: Build
       run: go build -v ./...
 
+  unit-test:
+    needs: [ build ]
     - name: Unit tests
       run: go test -short -v ./...
 
+  integration-test:
+    needs: [ build ]
     - name: Integration tests
       run: |
         printf "pulling image for MongoDB... \n\n"
