@@ -15,6 +15,16 @@ env:
   DEV_GKE_JSON: ${{ secrets.SERVICEACCOUNT_JSONKEY }}
 
 jobs:
+  golangci-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -61,18 +71,10 @@ jobs:
         docker run -d --name local-mongo -p 27888:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=pass mongo
         go test ./... -run Integration
 
-  golangci-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.29
+  
   
   publish-docker:
-    needs: [ build, unit-test, integration-test, golangci-lint ]
+    needs: [ golangci-lint, build, unit-test, integration-test ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -103,7 +105,7 @@ jobs:
           tags: "${{ steps.fetch-docker-vars.outputs.REPO_VERSION }}"
 
   publish-helm:
-    needs: [ build, unit-test, integration-test, golangci-lint ]
+    needs: [ golangci-lint, build, unit-test, integration-test ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
