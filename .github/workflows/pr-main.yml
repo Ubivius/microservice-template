@@ -5,25 +5,57 @@ on:
     branches: [ master, main ]
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
         go-version: 1.15
 
-    - name: Build
+    - name: Build step
       run: go build -v ./...
+
+  unit-test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15
 
     - name: Unit tests
       run: go test -short -v ./...
+
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15
+
+    - name: Integration tests
+      run: |
+        printf "pulling image for MongoDB... \n\n"
+        docker pull mongo
+        printf "running container... \n\n"
+        docker run -d --name local-mongo -p 27888:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=pass mongo
+        go test ./... -run Integration
 
   golangci-lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
         with:
