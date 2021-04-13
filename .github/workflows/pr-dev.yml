@@ -14,16 +14,32 @@ jobs:
       with:
         go-version: 1.15
 
-    - name: Build
+    - name: Build step
       run: go build -v ./...
 
   unit-test:
+    runs-on: ubuntu-latest
     needs: build
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15
+
     - name: Unit tests
       run: go test -short -v ./...
 
   integration-test:
+    runs-on: ubuntu-latest
     needs: build
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15
+
     - name: Integration tests
       run: |
         printf "pulling image for MongoDB... \n\n"
