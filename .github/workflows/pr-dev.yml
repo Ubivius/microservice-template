@@ -18,12 +18,12 @@ jobs:
       run: go build -v ./...
 
   unit-test:
-    needs: [ build ]
+    needs: build
     - name: Unit tests
       run: go test -short -v ./...
 
   integration-test:
-    needs: [ build ]
+    needs: build
     - name: Integration tests
       run: |
         printf "pulling image for MongoDB... \n\n"
