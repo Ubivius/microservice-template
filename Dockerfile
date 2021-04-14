@@ -15,7 +15,7 @@ RUN echo "First Docker build-stage is now done"
 
 FROM gcr.io/distroless/base as prod
 
-FROM golang:alpine as test
+FROM golang:stretch as test
 
 FROM golang:stretch as local
 
