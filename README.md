@@ -5,15 +5,15 @@ This template can be used to create another microservice without having to write
 
 ## Product endpoints
 
-`GET`    `/products`      Returns json data about every product.
+`GET` `/products` Returns json data about every product.
 
-`GET`    `/products/{id}` Returns json data about a specific product. `id=[string]`
+`GET` `/products/{id}` Returns json data about a specific product. `id=[string]`
 
-`GET`    `/health/live`   Returns a Status OK when live.
+`GET` `/health/live` Returns a Status OK when live.
 
-`GET`    `/health/ready`  Returns a Status OK when ready or an error when dependencies are not available.
+`GET` `/health/ready` Returns a Status OK when ready or an error when dependencies are not available.
 
-`POST`   `/products`      Add new product with specific data.
+`POST` `/products` Add new product with specific data.
 
 ###### Data Params
 
@@ -22,11 +22,11 @@ This template can be used to create another microservice without having to write
   "name":        "string, required",
   "sku":         "string, required",
   "description": "string",
-  "price":       float,
+  "price":       "float",
 }
 ```
 
-`PUT`    `/products`      Update product data
+`PUT` `/products` Update product data
 
 ###### Data Params
 
@@ -36,7 +36,7 @@ This template can be used to create another microservice without having to write
   "name":        "string",
   "sku":         "string",
   "description": "string",
-  "price":       float,
+  "price":       "float",
 }
 ```
 
