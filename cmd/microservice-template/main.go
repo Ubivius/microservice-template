@@ -10,15 +10,19 @@ import (
 
 	"github.com/Ubivius/microservice-template/pkg/database"
 	"github.com/Ubivius/microservice-template/pkg/handlers"
-	"github.com/Ubivius/microservice-template/pkg/resources"
 	"github.com/Ubivius/microservice-template/pkg/router"
+	"github.com/Ubivius/shared-resource-manager/resources"
 	"go.opentelemetry.io/otel/exporters/stdout"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
-var log = logf.Log.WithName("template-main")
+var (
+	log = logf.Log.WithName("template-main")
+	command = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	dev     = command.Bool("dev", false, "run microservice in local")
+)
 
 func main() {
 	// Starting k8s logger
@@ -42,11 +46,19 @@ func main() {
 	tracerProvider := sdktrace.NewTracerProvider(sdktrace.WithSpanProcessor(batchSpanProcessor))
 	defer func() { _ = tracerProvider.Shutdown(ctx) }()
 
+	command.Parse(os.Args[1:])
+	
 	// Resources init
-	resources := resources.NewResources()
+	var res resources.ResourceManager
+
+	if *dev {
+		res = resources.NewMockResources()
+	}else {
+		res = resources.NewResources()
+	}
 
 	// Database init
-	db := database.NewMongoProducts(resources)
+	db := database.NewMongoProducts(res)
 
 	// Creating handlers
 	productHandler := handlers.NewProductsHandler(db)

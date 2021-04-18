@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
-	"github.com/Ubivius/microservice-template/pkg/resources"
+	"github.com/Ubivius/shared-resource-manager/resources"
 	"github.com/google/uuid"
 )
 
