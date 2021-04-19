@@ -13,10 +13,8 @@ This template can be used to create another microservice without having to write
 
 `GET` `/health/ready` Returns a Status OK when ready or an error when dependencies are not available.
 
-`POST` `/products` Add new product with specific data.
-
-###### Data Params
-
+`POST` `/products` Add new product with specific data.</br>
+__Data Params__
 ```json
 {
   "name":        "string, required",
@@ -26,10 +24,8 @@ This template can be used to create another microservice without having to write
 }
 ```
 
-`PUT` `/products` Update product data
-
-###### Data Params
-
+`PUT` `/products` Update product data</br>
+__Data Params__
 ```json
 {
   "id":          "string, required",
