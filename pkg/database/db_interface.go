@@ -12,5 +12,6 @@ type ProductDB interface {
 	AddProduct(product *data.Product) error
 	DeleteProduct(id string) error
 	Connect() error
+	PingDB() error
 	CloseDB()
 }

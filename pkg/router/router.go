@@ -17,6 +17,10 @@ func New(productHandler *handlers.ProductsHandler) *mux.Router {
 	getRouter.HandleFunc("/products", productHandler.GetProducts)
 	getRouter.HandleFunc("/products/{id:[0-9a-z-]+}", productHandler.GetProductByID)
 
+	//Health Check
+	getRouter.HandleFunc("/health/live", productHandler.LivenessCheck)
+	getRouter.HandleFunc("/health/ready", productHandler.ReadinessCheck)
+
 	// Put router
 	putRouter := router.Methods(http.MethodPut).Subrouter()
 	putRouter.HandleFunc("/products", productHandler.UpdateProducts)
