@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"time"
 
@@ -11,6 +12,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+// ErrorEnvVar : Environment variable error
+var ErrorEnvVar = fmt.Errorf("missing environment variable")
 
 type MongoProducts struct {
 	client            *mongo.Client
@@ -167,6 +171,11 @@ func mongodbURI() string {
 	port := os.Getenv("DB_PORT")
 	username := os.Getenv("DB_USERNAME")
 	password := os.Getenv("DB_PASSWORD")
+
+	if hostname == "" || port == "" || username == "" || password == "" {
+		log.Error(ErrorEnvVar, "Some environment variables are not available for the DB connection. DB_HOSTNAME, DB_PORT, DB_USERNAME, DB_PASSWORD")
+		os.Exit(1)
+	}
 
 	return "mongodb://" + username + ":" + password + "@" + hostname + ":" + port + "/?authSource=admin"
 }
