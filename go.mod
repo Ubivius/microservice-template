@@ -3,7 +3,6 @@ module github.com/Ubivius/microservice-template
 go 1.15
 
 require (
-	github.com/Ubivius/shared-resource-manager v0.0.0-20210417174942-f2576f884446
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/golang/protobuf v1.5.1 // indirect

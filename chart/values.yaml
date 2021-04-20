@@ -22,6 +22,28 @@ livenessProbe:
   timeoutSeconds: 30
   failureThreshold: 10
 
+env:
+  - name: DB_HOSTNAME
+    valueFrom:
+      configMapKeyRef:
+        name: mongodb
+        key: hostname
+  - name: DB_PORT
+    valueFrom:
+      configMapKeyRef:
+        name: mongodb
+        key: port
+  - name: DB_USERNAME
+    valueFrom:
+      configMapKeyRef:
+        name: mongodb
+        key: username
+  - name: DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: mongodb
+        key: mongodb-root-password
+
 # Whether Role Based Access Control objects like roles and rolebindings should be created
 rbac:
   enabled: true

@@ -2,12 +2,10 @@ package database
 
 import (
 	"context"
-	"flag"
 	"os"
 	"time"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
-	"github.com/Ubivius/shared-resource-manager/resources"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -17,11 +15,10 @@ import (
 type MongoProducts struct {
 	client            *mongo.Client
 	collection        *mongo.Collection
-	resourceManager   resources.ResourceManager
 }
 
-func NewMongoProducts(r resources.ResourceManager) ProductDB {
-	mp := &MongoProducts{resourceManager: r}
+func NewMongoProducts() ProductDB {
+	mp := &MongoProducts{}
 	err := mp.Connect()
 	// If connect fails, kill the program
 	if err != nil {
@@ -32,18 +29,7 @@ func NewMongoProducts(r resources.ResourceManager) ProductDB {
 }
 
 func (mp *MongoProducts) Connect() error {
-
-	var uri string
-
-	var command = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	var dev     = command.Bool("dev", false, "run microservice in local")
-	command.Parse(os.Args[1:])
-	
-	if *dev {
-		uri = "mongodb://admin:pass@localhost:27888/?authSource=admin"
-	}else {
-		uri = mongodbURI(mp.resourceManager)
-	}
+	uri := mongodbURI()
 	
 	// Setting client options
 	clientOptions := options.Client().ApplyURI(uri)
@@ -176,26 +162,11 @@ func (mp *MongoProducts) DeleteProduct(id string) error {
 	return nil
 }
 
-func mongodbURI(resourceManager resources.ResourceManager) string { 
-	username, err := resourceManager.GetConfigMap("default", "mongodb", "username")
-	if err != nil {
-		log.Error(err, "Failed to get mongodb username")
-		os.Exit(1)
-	}
+func mongodbURI() string { 
+	hostname := os.Getenv("DB_HOSTNAME")
+	port := os.Getenv("DB_PORT")
+	username := os.Getenv("DB_USERNAME")
+	password := os.Getenv("DB_PASSWORD")
 
-	urlDB, err := resourceManager.GetConfigMap("default", "mongodb", "urlDB")
-	if err != nil {
-		log.Error(err, "Failed to get mongodb url")
-		os.Exit(1)
-	}
-
-	// Getting mongodb secret
-	password, err := resourceManager.GetSecret("default", "mongodb", "mongodb-root-password")
-	if err != nil {
-		log.Error(err, "Failed to get mongodb secret")
-		os.Exit(1)
-	}
-
-	return "mongodb://" + username + ":" + password + "@" + urlDB + "/?authSource=admin"
-
+	return "mongodb://" + username + ":" + password + "@" + hostname + ":" + port + "/?authSource=admin"
 }
