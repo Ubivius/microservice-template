@@ -12,8 +12,6 @@ import (
 	"github.com/Ubivius/microservice-template/pkg/handlers"
 	"github.com/Ubivius/microservice-template/pkg/resources"
 	"github.com/Ubivius/microservice-template/pkg/router"
-	"go.opentelemetry.io/otel/exporters/stdout"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
@@ -26,21 +24,6 @@ func main() {
 	opts.BindFlags(flag.CommandLine)
 	newLogger := zap.New(zap.UseFlagOptions(&opts), zap.WriteTo(os.Stdout))
 	logf.SetLogger(newLogger.WithName("log"))
-
-	// Initialising open telemetry
-	// Creating console exporter
-	exporter, err := stdout.NewExporter(
-		stdout.WithPrettyPrint(),
-	)
-	if err != nil {
-		log.Error(err, "Failed to initialize stdout export pipeline")
-	}
-
-	// Creating tracer provider
-	ctx := context.Background()
-	batchSpanProcessor := sdktrace.NewBatchSpanProcessor(exporter)
-	tracerProvider := sdktrace.NewTracerProvider(sdktrace.WithSpanProcessor(batchSpanProcessor))
-	defer func() { _ = tracerProvider.Shutdown(ctx) }()
 
 	// Resources init
 	resources := resources.NewResources()
