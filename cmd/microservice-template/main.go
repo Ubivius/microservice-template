@@ -12,6 +12,8 @@ import (
 	"github.com/Ubivius/microservice-template/pkg/handlers"
 	"github.com/Ubivius/microservice-template/pkg/resources"
 	"github.com/Ubivius/microservice-template/pkg/router"
+	"github.com/Ubivius/microservice-template/pkg/telemetry"
+	"go.opentelemetry.io/otel"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
@@ -24,6 +26,13 @@ func main() {
 	opts.BindFlags(flag.CommandLine)
 	newLogger := zap.New(zap.UseFlagOptions(&opts), zap.WriteTo(os.Stdout))
 	logf.SetLogger(newLogger.WithName("log"))
+
+	// Starting tracer provider
+	tp, err := telemetry.CreateTracerProvider("url des variables d'environnement")
+	if err != nil {
+		log.Error(err, "Error initializing jaeger trace exporter")
+	}
+	otel.SetTracerProvider(tp)
 
 	// Resources init
 	resources := resources.NewResources()

@@ -9,12 +9,12 @@ import (
 )
 
 const (
-	service     = "trace-demo"
+	service     = "microservice-template-traces"
 	environment = "dev"
 	id          = 1
 )
 
-func TracerProvider(url string) (*tracesdk.TracerProvider, error) {
+func CreateTracerProvider(url string) (*tracesdk.TracerProvider, error) {
 	log.Info("Starting trace exporter")
 	exporter, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
 	if err != nil {
