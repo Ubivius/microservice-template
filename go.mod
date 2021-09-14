@@ -15,8 +15,12 @@ require (
 	go.mongodb.org/mongo-driver v1.4.6
 	go.opentelemetry.io/otel v1.0.0-RC3 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.0.0-RC3
+	go.opentelemetry.io/otel/exporters/prometheus v0.23.0 // indirect
 	go.opentelemetry.io/otel/exporters/stdout v0.16.0
+	go.opentelemetry.io/otel/metric v0.23.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.0.0-RC3
+	go.opentelemetry.io/otel/sdk/export/metric v0.23.0 // indirect
+	go.opentelemetry.io/otel/sdk/metric v0.23.0 // indirect
 	golang.org/x/crypto v0.0.0-20210317152858-513c2a44f670 // indirect
 	golang.org/x/net v0.0.0-20210316092652-d523dce5a7f4 // indirect
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a // indirect
@@ -30,5 +34,5 @@ require (
 	k8s.io/client-go v0.20.2
 	k8s.io/klog/v2 v2.8.0 // indirect
 	sigs.k8s.io/controller-runtime v0.8.3
-	sigs.k8s.io/structured-merge-diff/v4 v4.1.0 // indirect
+	sigs.k8s.io/structured-merge-diff/v4 v4.1.2 // indirect
 )
