@@ -10,7 +10,6 @@ import (
 
 	"github.com/Ubivius/microservice-template/pkg/database"
 	"github.com/Ubivius/microservice-template/pkg/handlers"
-	"github.com/Ubivius/microservice-template/pkg/resources"
 	"github.com/Ubivius/microservice-template/pkg/router"
 	"github.com/Ubivius/microservice-template/pkg/telemetry"
 	"go.opentelemetry.io/otel"
@@ -34,11 +33,8 @@ func main() {
 	}
 	otel.SetTracerProvider(tp)
 
-	// Resources init
-	resources := resources.NewResources()
-
 	// Database init
-	db := database.NewMongoProducts(resources)
+	db := database.NewMockProducts()
 
 	// Creating handlers
 	productHandler := handlers.NewProductsHandler(db)
