@@ -2,15 +2,10 @@
 #script to pull and run mongoDB in single node inside a docker container
 
 # Set env var
-hostname=localhost
-port=27888
-username=admin
-password=pass
-
-setx DB_HOSTNAME $hostname
-setx DB_PORT $port
-setx DB_USERNAME $username
-setx DB_PASSWORD $password
+export DB_HOSTNAME=localhost
+export DB_PORT=27888
+export DB_USERNAME=admin
+export DB_PASSWORD=pass
 
 # If mongoDB container is running, exit.
 running_app_container=`docker ps | grep local-mongo | wc -l`
