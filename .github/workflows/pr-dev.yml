@@ -2,7 +2,7 @@ name: CI for Pull-Request on dev
 
 on:
   pull_request:
-    branches: [ dev, test ]
+    pull_request_target: [ dev ]
 
 jobs:
   build-and-test:
