@@ -27,14 +27,11 @@ func main() {
 	logf.SetLogger(newLogger.WithName("log"))
 
 	// Starting tracer provider
-	tp, err := telemetry.CreateTracerProvider("url des variables d'environnement")
+	tp, err := telemetry.CreateTracerProvider("http://localhost:14268/api/traces")
 	if err != nil {
 		log.Error(err, "Error initializing jaeger trace exporter")
 	}
 	otel.SetTracerProvider(tp)
-
-	// Starting metrics exporter
-	telemetry.InitMeter()
 
 	// Database init
 	db := database.NewMockProducts()
@@ -75,13 +72,27 @@ func main() {
 	timeoutContext, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	// Telemetry shutdown
+	// Cleanly shutdown and flush telemetry on shutdown
 	defer func(ctx context.Context) {
 		if err := tp.Shutdown(ctx); err != nil {
 			log.Error(err, "Error shutting down tracer provider")
 		}
 	}(timeoutContext)
 
+	tr := otel.Tracer("component-main")
+
+	_, span := tr.Start(timeoutContext, "test-timeout-context")
+	defer span.End()
+
+	// anotherFUnction(ctx1)
+
 	// Server shutdown
 	_ = server.Shutdown(timeoutContext)
+}
+
+func anotherFUnction(ctx context.Context) {
+	tr := otel.Tracer("anotherFunction-trace")
+	_, span := tr.Start(ctx, "function-trace")
+	defer span.End()
+	log.Info("Hello")
 }
