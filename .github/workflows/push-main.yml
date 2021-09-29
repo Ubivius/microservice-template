@@ -91,7 +91,7 @@ jobs:
             VERSION=$(yq e '.version' ./chart/Chart.yaml)
             FULL_NAME="./${NAME}-${VERSION}.tgz"
             helm package chart/
-            helm push $FULL_NAME ysma500 -f
+            helm push $FULL_NAME ysma500
 
   deployment-lke:
     needs: [publish-docker, publish-helm]
