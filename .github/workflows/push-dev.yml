@@ -94,7 +94,7 @@ jobs:
             env
             helm version
             helm package chart/
-            helm push $FULL_NAME ysma500 -f
+            helm cm-push $FULL_NAME ysma500 -f
 
   deployment-lke:
     needs: [publish-docker, publish-helm]
