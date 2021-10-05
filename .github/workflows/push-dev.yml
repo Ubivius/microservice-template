@@ -9,7 +9,6 @@ on:
 env:
   BUILD_TYPE: test
   DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
-  DOCKERHUB_EMAIL: ${{ secrets.DOCKERHUB_EMAIL }}
   DOCKERHUB_PWD: ${{ secrets.DOCKERHUB_PWD }}
   GKE_USER: ${{ secrets.GKE_SERVICEACCOUNT_EMAIL }}
   GKE_JSON: ${{ secrets.GKE_SERVICEACCOUNT_JSONKEY }}
@@ -18,6 +17,7 @@ env:
   GKE_CLUSTER_PROJECT: ${{ secrets.GKE_DEV_CLUSTER_PROJECT }}
   LKE_SERVICEACCOUNT_TOKEN: ${{ secrets.LKE_SERVICEACCOUNT_TOKEN }}
   LKE_CLUSTERID: ${{ secrets.LKE_DEV_CLUSTERID }}
+
 
 jobs:
   build-and-test:
@@ -91,6 +91,8 @@ jobs:
             NAME=${IN#"Ubivius/"}
             VERSION=$(yq e '.version' ./chart/Chart.yaml)
             FULL_NAME="./${NAME}-${VERSION}.tgz"
+            env
+            helm version
             helm package chart/
             helm cm-push $FULL_NAME ysma500 -f
             helm repo update
@@ -98,8 +100,6 @@ jobs:
   deployment-lke:
     needs: [publish-docker, publish-helm]
     runs-on: ubuntu-latest
-    on: 
-      workflow_dispatch:
     steps:
       - uses: actions/checkout@v2
       - name: Prepare deploy env

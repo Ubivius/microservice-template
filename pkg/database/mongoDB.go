@@ -2,25 +2,27 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"time"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
-	"github.com/Ubivius/microservice-template/pkg/resources"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// ErrorEnvVar : Environment variable error
+var ErrorEnvVar = fmt.Errorf("missing environment variable")
+
 type MongoProducts struct {
 	client            *mongo.Client
 	collection        *mongo.Collection
-	resourceManager  resources.ResourceManager
 }
 
-func NewMongoProducts(r resources.ResourceManager) ProductDB {
-	mp := &MongoProducts{resourceManager: r}
+func NewMongoProducts() ProductDB {
+	mp := &MongoProducts{}
 	err := mp.Connect()
 	// If connect fails, kill the program
 	if err != nil {
@@ -31,15 +33,10 @@ func NewMongoProducts(r resources.ResourceManager) ProductDB {
 }
 
 func (mp *MongoProducts) Connect() error {
-	// Getting mongodb secret
-	password, err := mp.resourceManager.GetSecret("default", "mongodb", "mongodb-root-password")
-	if err != nil {
-		log.Error(err, "Failed to get mongodb secret")
-		os.Exit(1)
-	}
-
+	uri := mongodbURI()
+	
 	// Setting client options
-	clientOptions := options.Client().ApplyURI("mongodb://root:" + password + "@mongodb:27017/?authSource=admin")
+	clientOptions := options.Client().ApplyURI(uri)
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -167,4 +164,18 @@ func (mp *MongoProducts) DeleteProduct(id string) error {
 	log.Info("Deleted documents in products collection", "delete_count", result.DeletedCount)
 
 	return nil
+}
+
+func mongodbURI() string { 
+	hostname := os.Getenv("DB_HOSTNAME")
+	port := os.Getenv("DB_PORT")
+	username := os.Getenv("DB_USERNAME")
+	password := os.Getenv("DB_PASSWORD")
+
+	if hostname == "" || port == "" || username == "" || password == "" {
+		log.Error(ErrorEnvVar, "Some environment variables are not available for the DB connection. DB_HOSTNAME, DB_PORT, DB_USERNAME, DB_PASSWORD")
+		os.Exit(1)
+	}
+
+	return "mongodb://" + username + ":" + password + "@" + hostname + ":" + port + "/?authSource=admin"
 }

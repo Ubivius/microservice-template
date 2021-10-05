@@ -100,7 +100,9 @@ To customize you can add the desired deployment code block at the end of your `p
 
 ### Add Deployment code snippet
 You can add any number of the following snippets to the end of your push-{branch}.yml file to enable the deployment of the selected platform (Secrets must have been populated as describe above). An important step while injecting these code blocks is to make sure that the added job is tabbed like the other jobs already in the workflow file.
+
 #### GKE's deployment script
+
 ```yaml
   deployment-gke:
     needs: [publish-docker, publish-helm]
@@ -114,6 +116,7 @@ You can add any number of the following snippets to the end of your push-{branch
             printf '${{ env.GKE_JSON }}' > deployments-data.json
             gcloud auth activate-service-account ${{ env.GKE_USER }} --key-file=deployments-data.json
             gcloud container clusters get-credentials ${{ env.GKE_CLUSTER_NAME }} --zone ${{ env.GKE_CLUSTER_ZONE }} --project ${{ env.GKE_CLUSTER_PROJECT }}
+
       - name: Push with valuefile
         run: |
             IN=$(echo ${GITHUB_REPOSITORY})
@@ -133,6 +136,7 @@ You can add any number of the following snippets to the end of your push-{branch
             chmod 700 .github/tools_install.sh
             ./.github/tools_install.sh
             curl -H "Authorization: Bearer ${{ env.LKE_SERVICEACCOUNT_TOKEN }}" https://api.linode.com/v4/lke/clusters/${{ env.LKE_CLUSTERID }}/kubeconfig | jq '.kubeconfig' | sed 's/["]//g' | base64 --decode > ~/.kube/config
+
       - name: Push with valuefile
         run: |
             IN=$(echo ${GITHUB_REPOSITORY})
