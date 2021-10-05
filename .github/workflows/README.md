@@ -100,9 +100,7 @@ To customize you can add the desired deployment code block at the end of your `p
 
 ### Add Deployment code snippet
 You can add any number of the following snippets to the end of your push-{branch}.yml file to enable the deployment of the selected platform (Secrets must have been populated as describe above). An important step while injecting these code blocks is to make sure that the added job is tabbed like the other jobs already in the workflow file.
-
 #### GKE's deployment script
-
 ```yaml
   deployment-gke:
     needs: [publish-docker, publish-helm]
