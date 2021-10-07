@@ -109,7 +109,7 @@ func main() {
 
 // readEvaluateProcess reads a line from the input reader and
 // then processes it. It returns an error if any was encountered.
-func readEvaluateProcess(br *bufio.Reader) (terr error) {
+func readEvaluateProcess(br *bufio.Reader) (returnError error) {
 	startTime := time.Now()
 	ctx, err := tag.New(context.Background(), tag.Insert(KeyMethod, "repl"), tag.Insert(KeyStatus, "OK"))
 	if err != nil {
@@ -117,9 +117,9 @@ func readEvaluateProcess(br *bufio.Reader) (terr error) {
 	}
 
 	defer func() {
-		if terr != nil {
+		if returnError != nil {
 			ctx, _ = tag.New(ctx, tag.Upsert(KeyStatus, "ERROR"),
-				tag.Upsert(KeyError, terr.Error()))
+				tag.Upsert(KeyError, returnError.Error()))
 		}
 
 		stats.Record(ctx, MLatencyMs.M(sinceInMilliseconds(startTime)))
