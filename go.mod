@@ -20,11 +20,7 @@ require (
 	go.opencensus.io v0.23.0
 	go.opentelemetry.io/otel v1.0.0-RC3
 	go.opentelemetry.io/otel/exporters/jaeger v1.0.0-RC3
-	go.opentelemetry.io/otel/exporters/prometheus v0.23.0
-	go.opentelemetry.io/otel/metric v0.23.0
 	go.opentelemetry.io/otel/sdk v1.0.0-RC3
-	go.opentelemetry.io/otel/sdk/export/metric v0.23.0
-	go.opentelemetry.io/otel/sdk/metric v0.23.0
 	golang.org/x/crypto v0.0.0-20210317152858-513c2a44f670 // indirect
 	golang.org/x/net v0.0.0-20211006190231-62292e806868 // indirect
 	golang.org/x/sys v0.0.0-20211006225509-1a26e0398eed // indirect
