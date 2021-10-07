@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  # https://hub.docker.com/r/prom/prometheus/ for image
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    networks:
+      metrics_internal:
+        ipv4_address: 192.168.6.10
+    ports:
+      - "60000:9090"
+    volumes:
+      - "~/ubivius/microservice-template/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+    deploy:
+      mode: host
+  application:
+    image: custom/metric
+    container_name: metrics_exporter
+    networks:
+      metrics_internal:
+        ipv4_address: 192.168.6.11
+    ports:
+      - "8888:8888"
+    deploy:
+      mode: host
+
+networks:
+  metrics_internal:
+    ipam:
+      driver: default
+      config:
+        - subnet: "192.168.6.0/24"
