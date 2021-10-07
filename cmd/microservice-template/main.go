@@ -81,16 +81,16 @@ func main() {
 
 	tr := otel.Tracer("component-main")
 
-	_, span := tr.Start(timeoutContext, "test-timeout-context")
+	ctx1, span := tr.Start(timeoutContext, "test-timeout-context")
 	defer span.End()
 
-	// anotherFUnction(ctx1)
+	anotherFunction(ctx1)
 
 	// Server shutdown
 	_ = server.Shutdown(timeoutContext)
 }
 
-func anotherFUnction(ctx context.Context) {
+func anotherFunction(ctx context.Context) {
 	tr := otel.Tracer("anotherFunction-trace")
 	_, span := tr.Start(ctx, "function-trace")
 	defer span.End()
