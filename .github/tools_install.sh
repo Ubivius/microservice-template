@@ -4,7 +4,7 @@ curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyr
 sudo apt-get update
 sudo apt-get install google-cloud-sdk -y
 brew install --build-from-source yq jq
-export HELM_EXPERIMENTAL_OCI=1
+mkdir ~/.kube
 helm plugin install https://github.com/chartmuseum/helm-push.git
 helm repo add ysma500 http://ysma500.tk:314
 helm repo update
