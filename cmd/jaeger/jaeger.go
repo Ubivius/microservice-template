@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -83,4 +84,5 @@ func bar(ctx context.Context) {
 	defer span.End()
 
 	// Do bar...
+	fmt.Println("Done bar")
 }
