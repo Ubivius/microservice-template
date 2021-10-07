@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Ubivius/microservice-template/pkg/handlers"
+	"github.com/Ubivius/microservice-template/pkg/telemetry"
 	"github.com/gorilla/mux"
 )
 
@@ -11,6 +12,7 @@ import (
 func New(productHandler *handlers.ProductsHandler) *mux.Router {
 	log.Info("Starting router")
 	router := mux.NewRouter()
+	router.Use(telemetry.RequestCountMiddleware)
 
 	// Get Router
 	getRouter := router.Methods(http.MethodGet).Subrouter()
