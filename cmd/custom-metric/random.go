@@ -35,7 +35,7 @@ func main() {
 
 	// Create the Prometheus exporter.
 	pe, err := prometheus.NewExporter(prometheus.Options{
-		Namespace: "ocmetricstutorial",
+		Namespace: "golangsvc",
 	})
 	if err != nil {
 		log.Fatalf("Failed to create the Prometheus stats exporter: %v", err)

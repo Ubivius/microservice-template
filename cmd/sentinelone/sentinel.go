@@ -32,7 +32,7 @@ func main() {
 	}
 
 	log.Printf("Server listening! ...")
-	log.Fatal(http.ListenAndServe(":8080", h))
+	log.Fatal(http.ListenAndServe(":8888", h))
 }
 
 func list(w http.ResponseWriter, r *http.Request) {
