@@ -91,11 +91,6 @@ func main() {
 	//   2. process input
 	br := bufio.NewReader(os.Stdin)
 
-	// Register the views
-	if err := view.Register(LatencyView, LineCountView, LineLengthView); err != nil {
-		log.Fatalf("Failed to register views: %v", err)
-	}
-
 	// repl is the read, evaluate, print, loop
 	for {
 		if err := readEvaluateProcess(br); err != nil {
