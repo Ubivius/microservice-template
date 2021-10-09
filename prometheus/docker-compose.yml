@@ -1,6 +1,5 @@
 version: "3.9"
 services:
-  # https://hub.docker.com/r/prom/prometheus/ for image
   prometheus:
     image: my-prometheus
     container_name: prometheus
