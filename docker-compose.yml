@@ -2,15 +2,13 @@ version: "3.9"
 services:
   # https://hub.docker.com/r/prom/prometheus/ for image
   prometheus:
-    image: prom/prometheus:latest
+    image: my-prometheus
     container_name: prometheus
     networks:
       metrics_internal:
         ipv4_address: 192.168.6.10
     ports:
       - "60000:9090"
-    volumes:
-      - "~/ubivius/microservice-template/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
     deploy:
       mode: host
   application:
