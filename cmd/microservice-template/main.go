@@ -27,11 +27,7 @@ func main() {
 	logf.SetLogger(newLogger.WithName("log"))
 
 	// Starting tracer provider
-	tp, err := telemetry.CreateTracerProvider("http://localhost:14268/api/traces")
-	if err != nil {
-		log.Error(err, "Error initializing jaeger trace exporter")
-	}
-	otel.SetTracerProvider(tp)
+	tp := telemetry.CreateTracerProvider("http://localhost:14268/api/traces")
 
 	// Starting metrics exporter
 	telemetry.StartPrometheusExporterWithName("template")

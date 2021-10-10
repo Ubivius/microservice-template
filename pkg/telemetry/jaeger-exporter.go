@@ -1,6 +1,7 @@
 package telemetry
 
 import (
+	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
 	"go.opentelemetry.io/otel/sdk/resource"
@@ -14,11 +15,12 @@ const (
 	id          = 1
 )
 
-func CreateTracerProvider(url string) (*tracesdk.TracerProvider, error) {
+func CreateTracerProvider(url string) *tracesdk.TracerProvider {
 	log.Info("Starting trace exporter")
 	exporter, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
 	if err != nil {
-		return nil, err
+		log.Error(err, "Error initializing jaeger trace exporter")
+		return nil
 	}
 	traceProvider := tracesdk.NewTracerProvider(
 		// Always be sure to batch in production.
@@ -31,5 +33,6 @@ func CreateTracerProvider(url string) (*tracesdk.TracerProvider, error) {
 			attribute.Int64("ID", id),
 		)),
 	)
-	return traceProvider, nil
+	otel.SetTracerProvider(traceProvider)
+	return traceProvider
 }
