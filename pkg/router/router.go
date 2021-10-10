@@ -6,12 +6,14 @@ import (
 	"github.com/Ubivius/microservice-template/pkg/handlers"
 	"github.com/Ubivius/microservice-template/pkg/telemetry"
 	"github.com/gorilla/mux"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux"
 )
 
 // Mux route handling with gorilla/mux
 func New(productHandler *handlers.ProductsHandler) *mux.Router {
 	log.Info("Starting router")
 	router := mux.NewRouter()
+	router.Use(otelmux.Middleware("template"))
 	router.Use(telemetry.RequestCountMiddleware)
 
 	// Get Router

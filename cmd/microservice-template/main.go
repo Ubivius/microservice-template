@@ -80,7 +80,7 @@ func main() {
 
 	tr := otel.Tracer("component-main")
 
-	ctx1, span := tr.Start(timeoutContext, "test-timeout-context")
+	ctx1, span := tr.Start(context.Background(), "test-timeout-context")
 	defer span.End()
 
 	anotherFunction(ctx1)
