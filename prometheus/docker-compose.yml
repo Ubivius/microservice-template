@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  prometheus:
+    image: my-prometheus
+    container_name: prometheus
+    networks:
+      metrics_internal:
+        ipv4_address: 192.168.6.10
+    ports:
+      - "60000:9090"
+    deploy:
+      mode: host
+  application:
+    image: microservice/template
+    container_name: microservice-template
+    networks:
+      metrics_internal:
+        ipv4_address: 192.168.6.11
+    ports:
+      - "8888:8888"
+      - "9090:9090"
+    deploy:
+      mode: host
+
+networks:
+  metrics_internal:
+    ipam:
+      driver: default
+      config:
+        - subnet: "192.168.6.0/24"

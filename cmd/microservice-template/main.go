@@ -33,6 +33,9 @@ func main() {
 	}
 	otel.SetTracerProvider(tp)
 
+	// Starting metrics exporter
+	telemetry.StartPrometheusExporterWithName("template")
+
 	// Database init
 	db := database.NewMockProducts()
 

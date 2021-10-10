@@ -1,0 +1,15 @@
+global:
+  scrape_interval: 5s
+  external_labels:
+    monitor: 'external' 
+
+scrape_configs:
+  - job_name: 'microservice'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['192.168.6.11:8888']
+  - job_name: 'prometheus'
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9090']
