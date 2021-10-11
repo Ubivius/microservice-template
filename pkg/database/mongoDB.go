@@ -17,8 +17,8 @@ import (
 var ErrorEnvVar = fmt.Errorf("missing environment variable")
 
 type MongoProducts struct {
-	client            *mongo.Client
-	collection        *mongo.Collection
+	client     *mongo.Client
+	collection *mongo.Collection
 }
 
 func NewMongoProducts() ProductDB {
@@ -34,7 +34,7 @@ func NewMongoProducts() ProductDB {
 
 func (mp *MongoProducts) Connect() error {
 	uri := mongodbURI()
-	
+
 	// Setting client options
 	clientOptions := options.Client().ApplyURI(uri)
 
@@ -73,7 +73,7 @@ func (mp *MongoProducts) CloseDB() {
 	}
 }
 
-func (mp *MongoProducts) GetProducts() data.Products {
+func (mp *MongoProducts) GetProducts(ctx context.Context) data.Products {
 	// products will hold the array of Products
 	var products data.Products
 
@@ -103,7 +103,7 @@ func (mp *MongoProducts) GetProducts() data.Products {
 	return products
 }
 
-func (mp *MongoProducts) GetProductByID(id string) (*data.Product, error) {
+func (mp *MongoProducts) GetProductByID(ctx context.Context, id string) (*data.Product, error) {
 	// MongoDB search filter
 	filter := bson.D{{Key: "_id", Value: id}}
 
@@ -117,7 +117,7 @@ func (mp *MongoProducts) GetProductByID(id string) (*data.Product, error) {
 	return &result, err
 }
 
-func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
+func (mp *MongoProducts) UpdateProduct(ctx context.Context, product *data.Product) error {
 	// Set updated timestamp in product
 	product.UpdatedOn = time.Now().UTC().String()
 
@@ -136,7 +136,7 @@ func (mp *MongoProducts) UpdateProduct(product *data.Product) error {
 	return err
 }
 
-func (mp *MongoProducts) AddProduct(product *data.Product) error {
+func (mp *MongoProducts) AddProduct(ctx context.Context, product *data.Product) error {
 	product.ID = uuid.NewString()
 	// Adding time information to new product
 	product.CreatedOn = time.Now().UTC().String()
@@ -152,7 +152,7 @@ func (mp *MongoProducts) AddProduct(product *data.Product) error {
 	return nil
 }
 
-func (mp *MongoProducts) DeleteProduct(id string) error {
+func (mp *MongoProducts) DeleteProduct(ctx context.Context, id string) error {
 	// MongoDB search filter
 	filter := bson.D{{Key: "_id", Value: id}}
 
@@ -166,7 +166,7 @@ func (mp *MongoProducts) DeleteProduct(id string) error {
 	return nil
 }
 
-func mongodbURI() string { 
+func mongodbURI() string {
 	hostname := os.Getenv("DB_HOSTNAME")
 	port := os.Getenv("DB_PORT")
 	username := os.Getenv("DB_USERNAME")
