@@ -9,7 +9,7 @@ import (
 
 // UpdateProducts updates the product with the ID specified in the received JSON product
 func (productHandler *ProductsHandler) UpdateProducts(responseWriter http.ResponseWriter, request *http.Request) {
-	_, span := otel.Tracer("mux-server").Start(request.Context(), "updateProductById")
+	_, span := otel.Tracer("template").Start(request.Context(), "updateProductById")
 	defer span.End()
 	product := request.Context().Value(KeyProduct{}).(*data.Product)
 	log.Info("UpdateProducts request", "id", product.ID)
