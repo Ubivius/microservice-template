@@ -12,7 +12,6 @@ import (
 	"github.com/Ubivius/microservice-template/pkg/handlers"
 	"github.com/Ubivius/microservice-template/pkg/router"
 	"github.com/Ubivius/microservice-template/pkg/telemetry"
-	"go.opentelemetry.io/otel"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
@@ -78,19 +77,6 @@ func main() {
 		}
 	}(timeoutContext)
 
-	// Testing telemetry simply in main function
-	tr := otel.Tracer("component-main")
-	ctx1, span := tr.Start(context.Background(), "test-timeout-context")
-	defer span.End()
-	anotherFunction(ctx1)
-
 	// Server shutdown
 	_ = server.Shutdown(timeoutContext)
-}
-
-func anotherFunction(ctx context.Context) {
-	tr := otel.Tracer("anotherFunction-trace")
-	_, span := tr.Start(ctx, "function-trace")
-	defer span.End()
-	log.Info("Hello")
 }
