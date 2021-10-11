@@ -18,7 +18,8 @@ require (
 	github.com/prometheus/statsd_exporter v0.22.2 // indirect
 	go.mongodb.org/mongo-driver v1.7.2
 	go.opencensus.io v0.23.0
-	go.opentelemetry.io/otel v1.0.0-RC3
+	go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux v0.25.0
+	go.opentelemetry.io/otel v1.0.1
 	go.opentelemetry.io/otel/exporters/jaeger v1.0.0-RC3
 	go.opentelemetry.io/otel/sdk v1.0.0-RC3
 	golang.org/x/crypto v0.0.0-20210317152858-513c2a44f670 // indirect

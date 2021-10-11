@@ -12,7 +12,6 @@ import (
 	"github.com/Ubivius/microservice-template/pkg/handlers"
 	"github.com/Ubivius/microservice-template/pkg/router"
 	"github.com/Ubivius/microservice-template/pkg/telemetry"
-	"go.opentelemetry.io/otel"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
@@ -27,11 +26,7 @@ func main() {
 	logf.SetLogger(newLogger.WithName("log"))
 
 	// Starting tracer provider
-	tp, err := telemetry.CreateTracerProvider("http://localhost:14268/api/traces")
-	if err != nil {
-		log.Error(err, "Error initializing jaeger trace exporter")
-	}
-	otel.SetTracerProvider(tp)
+	tp := telemetry.CreateTracerProvider("http://localhost:14268/api/traces")
 
 	// Starting metrics exporter
 	telemetry.StartPrometheusExporterWithName("template")
@@ -82,20 +77,6 @@ func main() {
 		}
 	}(timeoutContext)
 
-	tr := otel.Tracer("component-main")
-
-	ctx1, span := tr.Start(timeoutContext, "test-timeout-context")
-	defer span.End()
-
-	anotherFunction(ctx1)
-
 	// Server shutdown
 	_ = server.Shutdown(timeoutContext)
-}
-
-func anotherFunction(ctx context.Context) {
-	tr := otel.Tracer("anotherFunction-trace")
-	_, span := tr.Start(ctx, "function-trace")
-	defer span.End()
-	log.Info("Hello")
 }
