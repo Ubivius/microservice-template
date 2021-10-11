@@ -18,6 +18,7 @@ env:
   LKE_SERVICEACCOUNT_TOKEN: ${{ secrets.LKE_SERVICEACCOUNT_TOKEN }}
   LKE_CLUSTERID: ${{ secrets.LKE_PROD_CLUSTERID }}
 
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -91,7 +92,8 @@ jobs:
             VERSION=$(yq e '.version' ./chart/Chart.yaml)
             FULL_NAME="./${NAME}-${VERSION}.tgz"
             helm package chart/
-            helm push $FULL_NAME ysma500 -f
+            helm cm-push $FULL_NAME ysma500 -f
+            helm repo update
 
   deployment-lke:
     needs: [publish-docker, publish-helm]
