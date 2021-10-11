@@ -78,11 +78,10 @@ func main() {
 		}
 	}(timeoutContext)
 
+	// Testing telemetry simply in main function
 	tr := otel.Tracer("component-main")
-
 	ctx1, span := tr.Start(context.Background(), "test-timeout-context")
 	defer span.End()
-
 	anotherFunction(ctx1)
 
 	// Server shutdown

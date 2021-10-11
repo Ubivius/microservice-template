@@ -4,10 +4,13 @@ import (
 	"net/http"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
+	"go.opentelemetry.io/otel"
 )
 
 // UpdateProducts updates the product with the ID specified in the received JSON product
 func (productHandler *ProductsHandler) UpdateProducts(responseWriter http.ResponseWriter, request *http.Request) {
+	_, span := otel.Tracer("mux-server").Start(request.Context(), "updateProductById")
+	defer span.End()
 	product := request.Context().Value(KeyProduct{}).(*data.Product)
 	log.Info("UpdateProducts request", "id", product.ID)
 
