@@ -12,6 +12,7 @@ import (
 	"github.com/Ubivius/microservice-template/pkg/handlers"
 	"github.com/Ubivius/microservice-template/pkg/router"
 	"github.com/Ubivius/microservice-template/pkg/telemetry"
+	tel "github.com/Ubivius/pkg-telemetry/metrics"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
@@ -29,7 +30,7 @@ func main() {
 	tp := telemetry.CreateTracerProvider("http://localhost:14268/api/traces")
 
 	// Starting metrics exporter
-	telemetry.StartPrometheusExporterWithName("template")
+	tel.StartPrometheusExporterWithName("template")
 
 	// Database init
 	db := database.NewMockProducts()
