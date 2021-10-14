@@ -11,7 +11,6 @@ func (productHandler *ProductsHandler) LivenessCheck(responseWriter http.Respons
 
 //ReadinessCheck verifies that the application is ready to accept requests
 func (productHandler *ProductsHandler) ReadinessCheck(responseWriter http.ResponseWriter, request *http.Request) {
-
 	err := productHandler.db.PingDB()
 	if err != nil {
 		log.Error(err, "DB unavailable")

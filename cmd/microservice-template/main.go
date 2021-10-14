@@ -11,8 +11,8 @@ import (
 	"github.com/Ubivius/microservice-template/pkg/database"
 	"github.com/Ubivius/microservice-template/pkg/handlers"
 	"github.com/Ubivius/microservice-template/pkg/router"
-	"go.opentelemetry.io/otel/exporters/stdout"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	"github.com/Ubivius/microservice-template/pkg/telemetry"
+	"github.com/Ubivius/pkg-telemetry/metrics"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
@@ -26,23 +26,14 @@ func main() {
 	newLogger := zap.New(zap.UseFlagOptions(&opts), zap.WriteTo(os.Stdout))
 	logf.SetLogger(newLogger.WithName("log"))
 
-	// Initialising open telemetry
-	// Creating console exporter
-	exporter, err := stdout.NewExporter(
-		stdout.WithPrettyPrint(),
-	)
-	if err != nil {
-		log.Error(err, "Failed to initialize stdout export pipeline")
-	}
+	// Starting tracer provider
+	tp := telemetry.CreateTracerProvider("http://localhost:14268/api/traces")
 
-	// Creating tracer provider
-	ctx := context.Background()
-	batchSpanProcessor := sdktrace.NewBatchSpanProcessor(exporter)
-	tracerProvider := sdktrace.NewTracerProvider(sdktrace.WithSpanProcessor(batchSpanProcessor))
-	defer func() { _ = tracerProvider.Shutdown(ctx) }()
+	// Starting metrics exporter
+	metrics.StartPrometheusExporterWithName("template")
 
 	// Database init
-	db := database.NewMongoProducts()
+	db := database.NewMockProducts()
 
 	// Creating handlers
 	productHandler := handlers.NewProductsHandler(db)
@@ -76,9 +67,17 @@ func main() {
 	// DB connection shutdown
 	db.CloseDB()
 
-	// Server shutdown
+	// Context cancelling
 	timeoutContext, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
+	// Cleanly shutdown and flush telemetry on shutdown
+	defer func(ctx context.Context) {
+		if err := tp.Shutdown(ctx); err != nil {
+			log.Error(err, "Error shutting down tracer provider")
+		}
+	}(timeoutContext)
+
+	// Server shutdown
 	_ = server.Shutdown(timeoutContext)
 }
