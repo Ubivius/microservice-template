@@ -15,7 +15,7 @@ func (productHandler *ProductsHandler) UpdateProducts(responseWriter http.Respon
 	log.Info("UpdateProducts request", "id", product.ID)
 
 	// Update product
-	err := productHandler.db.UpdateProduct(product)
+	err := productHandler.db.UpdateProduct(request.Context(), product)
 	if err == data.ErrorProductNotFound {
 		log.Error(err, "Product not found")
 		http.Error(responseWriter, "Product not found", http.StatusNotFound)

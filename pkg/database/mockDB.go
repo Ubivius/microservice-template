@@ -1,10 +1,12 @@
 package database
 
 import (
+	"context"
 	"time"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
 	"github.com/google/uuid"
+	"go.opentelemetry.io/otel"
 )
 
 type MockProducts struct {
@@ -27,11 +29,15 @@ func (mp *MockProducts) CloseDB() {
 	log.Info("Mocked DB connection closed")
 }
 
-func (mp *MockProducts) GetProducts() data.Products {
+func (mp *MockProducts) GetProducts(ctx context.Context) data.Products {
+	_, span := otel.Tracer("template").Start(ctx, "getProductsDatabase")
+	defer span.End()
 	return productList
 }
 
-func (mp *MockProducts) GetProductByID(id string) (*data.Product, error) {
+func (mp *MockProducts) GetProductByID(ctx context.Context, id string) (*data.Product, error) {
+	_, span := otel.Tracer("template").Start(ctx, "getProductsByIdDatabase")
+	defer span.End()
 	index := findIndexByProductID(id)
 	if index == -1 {
 		return nil, data.ErrorProductNotFound
@@ -39,7 +45,9 @@ func (mp *MockProducts) GetProductByID(id string) (*data.Product, error) {
 	return productList[index], nil
 }
 
-func (mp *MockProducts) UpdateProduct(product *data.Product) error {
+func (mp *MockProducts) UpdateProduct(ctx context.Context, product *data.Product) error {
+	_, span := otel.Tracer("template").Start(ctx, "updateProductByIdDatabase")
+	defer span.End()
 	index := findIndexByProductID(product.ID)
 	if index == -1 {
 		return data.ErrorProductNotFound
@@ -48,13 +56,17 @@ func (mp *MockProducts) UpdateProduct(product *data.Product) error {
 	return nil
 }
 
-func (mp *MockProducts) AddProduct(product *data.Product) error {
+func (mp *MockProducts) AddProduct(ctx context.Context, product *data.Product) error {
+	_, span := otel.Tracer("template").Start(ctx, "addProductDatabase")
+	defer span.End()
 	product.ID = uuid.NewString()
 	productList = append(productList, product)
 	return nil
 }
 
-func (mp *MockProducts) DeleteProduct(id string) error {
+func (mp *MockProducts) DeleteProduct(ctx context.Context, id string) error {
+	_, span := otel.Tracer("template").Start(ctx, "deleteProductByIdDatabase")
+	defer span.End()
 	index := findIndexByProductID(id)
 	if index == -1 {
 		return data.ErrorProductNotFound

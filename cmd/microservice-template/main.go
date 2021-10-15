@@ -27,7 +27,7 @@ func main() {
 	logf.SetLogger(newLogger.WithName("log"))
 
 	// Starting tracer provider
-	tp := telemetry.CreateTracerProvider("http://localhost:14268/api/traces")
+	tp := telemetry.CreateTracerProvider("http://192.168.6.12:14268/api/traces")
 
 	// Starting metrics exporter
 	metrics.StartPrometheusExporterWithName("template")

@@ -14,7 +14,7 @@ func (productHandler *ProductsHandler) AddProduct(responseWriter http.ResponseWr
 	log.Info("AddProduct request")
 	product := request.Context().Value(KeyProduct{}).(*data.Product)
 
-	err := productHandler.db.AddProduct(product)
+	err := productHandler.db.AddProduct(request.Context(), product)
 
 	if err != nil {
 		responseWriter.WriteHeader(http.StatusBadRequest)

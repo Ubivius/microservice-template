@@ -13,7 +13,7 @@ func (productHandler *ProductsHandler) GetProducts(responseWriter http.ResponseW
 	_, span := otel.Tracer("template").Start(request.Context(), "getProducts")
 	defer span.End()
 	log.Info("GetProducts request")
-	productList := productHandler.db.GetProducts()
+	productList := productHandler.db.GetProducts(request.Context())
 	err := json.NewEncoder(responseWriter).Encode(productList)
 	if err != nil {
 		log.Error(err, "Error serializing product")
@@ -28,7 +28,7 @@ func (productHandler *ProductsHandler) GetProductByID(responseWriter http.Respon
 	id := getProductID(request)
 	log.Info("GetProductsByID request", "id", id)
 
-	product, err := productHandler.db.GetProductByID(id)
+	product, err := productHandler.db.GetProductByID(request.Context(), id)
 
 	switch err {
 	case nil:

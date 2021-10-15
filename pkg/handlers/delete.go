@@ -14,7 +14,7 @@ func (productHandler *ProductsHandler) Delete(responseWriter http.ResponseWriter
 	id := getProductID(request)
 	log.Info("Delete product by ID request", "id", id)
 
-	err := productHandler.db.DeleteProduct(id)
+	err := productHandler.db.DeleteProduct(request.Context(), id)
 	if err == data.ErrorProductNotFound {
 		log.Error(err, "Error deleting product, id does not exist")
 		http.Error(responseWriter, "Product not found", http.StatusNotFound)
