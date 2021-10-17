@@ -21,7 +21,6 @@ func NewProductsHandler(db database.ProductDB) *ProductsHandler {
 
 // getProductID extracts the product ID from the URL
 // The verification of this variable is handled by gorilla/mux
-// We panic if it is not valid because that means gorilla is failing
 func getProductID(request *http.Request) string {
 	vars := mux.Vars(request)
 	id := vars["id"]
