@@ -9,10 +9,10 @@ on:
 env:
   BUILD_TYPE: prod
   DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
-  DOCKERHUB_EMAIL: ${{ secrets.DOCKERHUB_EMAIL }}
   DOCKERHUB_PWD: ${{ secrets.DOCKERHUB_PWD }}
   DEV_GKE_USER: ${{ secrets.SERVICEACCOUNT_EMAIL }}
   DEV_GKE_JSON: ${{ secrets.SERVICEACCOUNT_JSONKEY }}
+
 
 jobs:
   build-and-test:

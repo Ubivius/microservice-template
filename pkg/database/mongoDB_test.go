@@ -1,23 +1,19 @@
 package database
 
 import (
+	"context"
 	"testing"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
-	"github.com/Ubivius/microservice-template/pkg/resources"
 	"github.com/google/uuid"
 )
-
-func newResourceManager() resources.ResourceManager {
-	return resources.NewMockResources()
-}
 
 func TestMongoDBConnectionAndShutdownIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Test skipped during unit tests")
 	}
 
-	mp := NewMongoProducts(newResourceManager())
+	mp := NewMongoProducts()
 	if mp == nil {
 		t.Fail()
 	}
@@ -36,8 +32,8 @@ func TestMongoDBAddProductIntegration(t *testing.T) {
 		SKU:         "abc-abc-abcd",
 	}
 
-	mp := NewMongoProducts(newResourceManager())
-	err := mp.AddProduct(product)
+	mp := NewMongoProducts()
+	err := mp.AddProduct(context.Background(), product)
 	if err != nil {
 		t.Errorf("Failed to add product to database")
 	}
@@ -57,8 +53,8 @@ func TestMongoDBUpdateProductIntegration(t *testing.T) {
 		SKU:         "abc-abc-abcd",
 	}
 
-	mp := NewMongoProducts(newResourceManager())
-	err := mp.UpdateProduct(product)
+	mp := NewMongoProducts()
+	err := mp.UpdateProduct(context.Background(), product)
 	if err != nil {
 		t.Fail()
 	}
@@ -70,8 +66,8 @@ func TestMongoDBGetProductsIntegration(t *testing.T) {
 		t.Skip("Test skipped during unit tests")
 	}
 
-	mp := NewMongoProducts(newResourceManager())
-	products := mp.GetProducts()
+	mp := NewMongoProducts()
+	products := mp.GetProducts(context.Background())
 	if products == nil {
 		t.Fail()
 	}
@@ -84,8 +80,8 @@ func TestMongoDBGetProductByIDIntegration(t *testing.T) {
 		t.Skip("Test skipped during unit tests")
 	}
 
-	mp := NewMongoProducts(newResourceManager())
-	_, err := mp.GetProductByID("e2382ea2-b5fa-4506-aa9d-d338aa52af44")
+	mp := NewMongoProducts()
+	_, err := mp.GetProductByID(context.Background(), "e2382ea2-b5fa-4506-aa9d-d338aa52af44")
 	if err != nil {
 		t.Fail()
 	}

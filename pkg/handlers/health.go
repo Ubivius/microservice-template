@@ -6,14 +6,11 @@ import (
 
 // LivenessCheck determine when the application needs to be restarted
 func (productHandler *ProductsHandler) LivenessCheck(responseWriter http.ResponseWriter, request *http.Request) {
-	log.Info("LivenessCheck")
 	responseWriter.WriteHeader(http.StatusOK)
 }
 
 //ReadinessCheck verifies that the application is ready to accept requests
 func (productHandler *ProductsHandler) ReadinessCheck(responseWriter http.ResponseWriter, request *http.Request) {
-	log.Info("ReadinessCheck")
-
 	err := productHandler.db.PingDB()
 	if err != nil {
 		log.Error(err, "DB unavailable")
