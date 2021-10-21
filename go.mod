@@ -3,7 +3,7 @@ module github.com/Ubivius/microservice-template
 go 1.15
 
 require (
-	github.com/Ubivius/pkg-telemetry v0.1.0
+	github.com/Ubivius/pkg-telemetry v1.0.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/google/gofuzz v1.2.0 // indirect
