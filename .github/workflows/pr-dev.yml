@@ -20,6 +20,14 @@ jobs:
     - name: Unit tests
       run: go test -short -v ./...
 
+    - name: Integration tests
+      run: |
+        printf "pulling image for MongoDB... \n\n"
+        docker pull mongo
+        printf "running container... \n\n"
+        docker run -d --name local-mongo -p 27888:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=pass mongo
+        go test ./... -run Integration
+
   golangci-lint:
     runs-on: ubuntu-latest
     steps:
