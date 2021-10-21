@@ -53,6 +53,8 @@ github.com/PuerkitoBio/purell v1.1.1/go.mod h1:c11w/QuzBsJSee3cPx9rAFu61PvFxuPbt
 github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdkoq3SwY9Y+13GIhn11/XLaGBb4BfwItxLd5jeuXE=
 github.com/Ubivius/pkg-telemetry v0.0.0-20211012170442-d1d7ec8425d9 h1:EbF8b+xaU45AR8FprPN3kvsHTB0X1Hv7aS+dVIEsteE=
 github.com/Ubivius/pkg-telemetry v0.0.0-20211012170442-d1d7ec8425d9/go.mod h1:pByU0PiljUky/jJpkdkxHEsC7JXlJOxwbFyv8RT3/FQ=
+github.com/Ubivius/pkg-telemetry v0.0.0-20211015012316-bce9638de0a5 h1:Sfe3907I+0NoIuvh/bawzgXl1Lnhe7iS2lINgVhpNvA=
+github.com/Ubivius/pkg-telemetry v0.0.0-20211015012316-bce9638de0a5/go.mod h1:pByU0PiljUky/jJpkdkxHEsC7JXlJOxwbFyv8RT3/FQ=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
 github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
 github.com/alecthomas/units v0.0.0-20151022065526-2efee857e7cf/go.mod h1:ybxpYRFXyAe+OPACYpWeL0wqObRcbAqCMya13uyzqw0=
