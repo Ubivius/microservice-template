@@ -229,5 +229,4 @@ func TestMongoDBDeleteNonExistantProductIntegration(t *testing.T) {
 	}
 
 	mp.CloseDB()
-	t.Fail()
 }
