@@ -13,13 +13,12 @@ import (
 )
 
 func integrationTestSetup(t *testing.T) {
-	// Starting k8s logger
+	t.Log("Test setup")
+
 	opts := zap.Options{}
 	opts.BindFlags(flag.CommandLine)
 	newLogger := zap.New(zap.UseFlagOptions(&opts), zap.WriteTo(os.Stdout))
 	logf.SetLogger(newLogger.WithName("log"))
-
-	t.Log("Test setup")
 
 	if os.Getenv("DB_USERNAME") == "" {
 		os.Setenv("DB_USERNAME", "admin")
@@ -34,7 +33,29 @@ func integrationTestSetup(t *testing.T) {
 		os.Setenv("DB_HOSTNAME", "localhost")
 	}
 
-	deleteAllProductsFromMongoDB(context.Background())
+	err := deleteAllProductsFromMongoDB()
+	if err != nil {
+		t.Errorf("Failed to delete existing items from database during setup")
+	}
+}
+
+func addProductAndGetId(t *testing.T) string {
+	t.Log("Adding product")
+	product := &data.Product{
+		Name:        "testName",
+		Description: "testDescription",
+		Price:       1,
+		SKU:         "abc-abc-abcd",
+	}
+
+	mp := NewMongoProducts()
+	err := mp.AddProduct(context.Background(), product)
+	if err != nil {
+		t.Errorf("Failed to add product to database")
+	}
+
+	products := mp.GetProducts(context.Background())
+	return products[0].ID
 }
 
 func TestMongoDBConnectionAndShutdownIntegration(t *testing.T) {
@@ -54,6 +75,7 @@ func TestMongoDBAddProductIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Test skipped during unit tests")
 	}
+	integrationTestSetup(t)
 
 	product := &data.Product{
 		Name:        "testName",
@@ -67,13 +89,19 @@ func TestMongoDBAddProductIntegration(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to add product to database")
 	}
+
+	products := mp.GetProducts(context.Background())
+	if len(products) != 1 {
+		t.Errorf("Added product missing from database")
+	}
 	mp.CloseDB()
 }
 
-func TestMongoDBUpdateProductIntegration(t *testing.T) {
+func TestMongoDBUpdateNonExistantProductIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Test skipped during unit tests")
 	}
+	integrationTestSetup(t)
 
 	product := &data.Product{
 		ID:          uuid.NewString(),
@@ -85,9 +113,10 @@ func TestMongoDBUpdateProductIntegration(t *testing.T) {
 
 	mp := NewMongoProducts()
 	err := mp.UpdateProduct(context.Background(), product)
-	if err != nil {
+	if err == nil || err.Error() != "no matches found" {
 		t.Fail()
 	}
+
 	mp.CloseDB()
 }
 
