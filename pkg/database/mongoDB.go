@@ -187,7 +187,7 @@ func deleteAllProductsFromMongoDB() error {
 		return err
 	}
 	collection := client.Database("ubivius").Collection("products")
-	collection.DeleteMany(context.Background(), bson.D{{}})
+	_, err = collection.DeleteMany(context.Background(), bson.D{{}})
 	return err
 }
 
