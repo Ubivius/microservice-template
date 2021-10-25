@@ -54,6 +54,7 @@ func addProductAndGetId(t *testing.T) string {
 		t.Errorf("Failed to add product to database")
 	}
 
+	t.Log("Fetching new product ID")
 	products := mp.GetProducts(context.Background())
 	return products[0].ID
 }
@@ -120,10 +121,34 @@ func TestMongoDBUpdateNonExistantProductIntegration(t *testing.T) {
 	mp.CloseDB()
 }
 
+func TestMongoDBUpdateExistingProductIntegration(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Test skipped during unit tests")
+	}
+	integrationTestSetup(t)
+
+	product := &data.Product{
+		ID:          uuid.NewString(),
+		Name:        "testName",
+		Description: "testDescription",
+		Price:       1,
+		SKU:         "abc-abc-abcd",
+	}
+
+	mp := NewMongoProducts()
+	err := mp.UpdateProduct(context.Background(), product)
+	if err == nil || err.Error() != "no matches found" {
+		t.Fail()
+	}
+
+	mp.CloseDB()
+}
+
 func TestMongoDBGetProductsIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Test skipped during unit tests")
 	}
+	integrationTestSetup(t)
 
 	mp := NewMongoProducts()
 	products := mp.GetProducts(context.Background())
@@ -134,10 +159,27 @@ func TestMongoDBGetProductsIntegration(t *testing.T) {
 	mp.CloseDB()
 }
 
-func TestMongoDBGetProductByIDIntegration(t *testing.T) {
+func TestMongoDBGetNonExistantProductByIDIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Test skipped during unit tests")
 	}
+	integrationTestSetup(t)
+
+	mp := NewMongoProducts()
+	_, err := mp.GetProductByID(context.Background(), uuid.NewString())
+	t.Log(err.Error())
+	if err == nil || err.Error() != "mongo: no documents in result" {
+		t.Fail()
+	}
+
+	mp.CloseDB()
+}
+
+func TestMongoDBGetExistingProductByIDIntegration(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Test skipped during unit tests")
+	}
+	integrationTestSetup(t)
 
 	mp := NewMongoProducts()
 	_, err := mp.GetProductByID(context.Background(), "e2382ea2-b5fa-4506-aa9d-d338aa52af44")
