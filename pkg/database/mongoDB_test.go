@@ -215,3 +215,18 @@ func TestMongoDBGetExistingProductByIDIntegration(t *testing.T) {
 
 	mp.CloseDB()
 }
+
+func TestMongoDBDeleteNonExistantProductIntegration(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Test skipped during unit tests")
+	}
+	integrationTestSetup(t)
+
+	mp := NewMongoProducts()
+	err := mp.DeleteProduct(context.Background(), addProductAndGetId(t))
+	if err != nil {
+		t.Fail()
+	}
+
+	mp.CloseDB()
+}
