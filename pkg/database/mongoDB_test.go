@@ -2,23 +2,15 @@ package database
 
 import (
 	"context"
-	"flag"
 	"os"
 	"testing"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
 	"github.com/google/uuid"
-	logf "sigs.k8s.io/controller-runtime/pkg/log"
-	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
 func integrationTestSetup(t *testing.T) {
 	t.Log("Test setup")
-
-	opts := zap.Options{}
-	opts.BindFlags(flag.CommandLine)
-	newLogger := zap.New(zap.UseFlagOptions(&opts), zap.WriteTo(os.Stdout))
-	logf.SetLogger(newLogger.WithName("log"))
 
 	if os.Getenv("DB_USERNAME") == "" {
 		os.Setenv("DB_USERNAME", "admin")
