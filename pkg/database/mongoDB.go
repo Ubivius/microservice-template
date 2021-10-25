@@ -166,7 +166,23 @@ func (mp *MongoProducts) DeleteProduct(ctx context.Context, id string) error {
 	}
 	log.Info("Deleted documents in products collection", "delete_count", result.DeletedCount)
 
-	return nil
+	return err
+}
+
+func deleteAllProductsFromMongoDB(ctx context.Context) error {
+	uri := mongodbURI()
+
+	// Setting client options
+	opts := options.Client()
+	clientOptions := opts.ApplyURI(uri)
+	client, err := mongo.Connect(context.Background(), clientOptions)
+	if err != nil || client == nil {
+		log.Error(err, "Failed to connect to database. Failing test")
+		return err
+	}
+	collection := client.Database("ubivius").Collection("products")
+	collection.DeleteMany(ctx, bson.D{{}})
+	return err
 }
 
 func mongodbURI() string {

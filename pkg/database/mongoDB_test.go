@@ -2,16 +2,46 @@ package database
 
 import (
 	"context"
+	"flag"
+	"os"
 	"testing"
 
 	"github.com/Ubivius/microservice-template/pkg/data"
 	"github.com/google/uuid"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
+
+func integrationTestSetup(t *testing.T) {
+	// Starting k8s logger
+	opts := zap.Options{}
+	opts.BindFlags(flag.CommandLine)
+	newLogger := zap.New(zap.UseFlagOptions(&opts), zap.WriteTo(os.Stdout))
+	logf.SetLogger(newLogger.WithName("log"))
+
+	t.Log("Test setup")
+
+	if os.Getenv("DB_USERNAME") == "" {
+		os.Setenv("DB_USERNAME", "admin")
+	}
+	if os.Getenv("DB_PASSWORD") == "" {
+		os.Setenv("DB_PASSWORD", "pass")
+	}
+	if os.Getenv("DB_PORT") == "" {
+		os.Setenv("DB_PORT", "27888")
+	}
+	if os.Getenv("DB_HOSTNAME") == "" {
+		os.Setenv("DB_HOSTNAME", "localhost")
+	}
+
+	deleteAllProductsFromMongoDB(context.Background())
+}
 
 func TestMongoDBConnectionAndShutdownIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Test skipped during unit tests")
 	}
+	integrationTestSetup(t)
 
 	mp := NewMongoProducts()
 	if mp == nil {
