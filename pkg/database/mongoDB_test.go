@@ -56,7 +56,8 @@ func addProductAndGetId(t *testing.T) string {
 
 	t.Log("Fetching new product ID")
 	products := mp.GetProducts(context.Background())
-	return products[0].ID
+	mp.CloseDB()
+	return products[len(products)-1].ID
 }
 
 func TestMongoDBConnectionAndShutdownIntegration(t *testing.T) {
@@ -128,7 +129,7 @@ func TestMongoDBUpdateExistingProductIntegration(t *testing.T) {
 	integrationTestSetup(t)
 
 	product := &data.Product{
-		ID:          uuid.NewString(),
+		ID:          addProductAndGetId(t),
 		Name:        "testName",
 		Description: "testDescription",
 		Price:       1,
@@ -137,14 +138,14 @@ func TestMongoDBUpdateExistingProductIntegration(t *testing.T) {
 
 	mp := NewMongoProducts()
 	err := mp.UpdateProduct(context.Background(), product)
-	if err == nil || err.Error() != "no matches found" {
+	if err != nil {
 		t.Fail()
 	}
 
 	mp.CloseDB()
 }
 
-func TestMongoDBGetProductsIntegration(t *testing.T) {
+func TestMongoDBGetProductsFromEmptyDatabaseIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Test skipped during unit tests")
 	}
@@ -152,8 +153,35 @@ func TestMongoDBGetProductsIntegration(t *testing.T) {
 
 	mp := NewMongoProducts()
 	products := mp.GetProducts(context.Background())
-	if products == nil {
+	if products != nil {
 		t.Fail()
+	}
+
+	mp.CloseDB()
+}
+
+func TestMongoDBGetProductsFromNonEmptyDatabaseIntegration(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Test skipped during unit tests")
+	}
+	integrationTestSetup(t)
+
+	var ids [5]string
+	for i := 0; i < 5; i++ {
+		ids[i] = addProductAndGetId(t)
+	}
+
+	mp := NewMongoProducts()
+	products := mp.GetProducts(context.Background())
+
+	if products == nil || len(products) != 5 {
+		t.Fail()
+	}
+
+	for i := 0; i < 5; i++ {
+		if ids[i] != products[i].ID {
+			t.Fail()
+		}
 	}
 
 	mp.CloseDB()
@@ -181,9 +209,15 @@ func TestMongoDBGetExistingProductByIDIntegration(t *testing.T) {
 	}
 	integrationTestSetup(t)
 
+	id := addProductAndGetId(t)
+
 	mp := NewMongoProducts()
-	_, err := mp.GetProductByID(context.Background(), "e2382ea2-b5fa-4506-aa9d-d338aa52af44")
+	product, err := mp.GetProductByID(context.Background(), id)
 	if err != nil {
+		t.Fail()
+	}
+
+	if id != product.ID {
 		t.Fail()
 	}
 
