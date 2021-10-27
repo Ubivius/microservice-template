@@ -80,7 +80,8 @@ jobs:
             IN=$(echo ${GITHUB_REPOSITORY})
             NAME=${IN#"Ubivius/"}
             VERSION_ACTUAL=$(yq e '.version' ./chart/Chart.yaml)-rc
-            yq eval -i ".version = \"$VERSION_ACTUAL\", .appVersion = \"$VERSION_ACTUAL\"" ./chart/Chart.yaml > ./chart/Chart.yaml
+            yq eval -i ".version = \"$VERSION_ACTUAL\"" ./chart/Chart.yaml
+            yq eval -i ".appVersion = \"$VERSION_ACTUAL\"" ./chart/Chart.yaml
             VERSION=$(yq e '.version' ./chart/Chart.yaml)
             FULL_NAME="./${NAME}-${VERSION}.tgz"
             helm package chart/
