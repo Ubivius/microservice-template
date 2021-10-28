@@ -3,7 +3,8 @@ sudo echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages
 curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
 sudo apt-get update
 sudo apt-get install google-cloud-sdk -y
-brew install --build-from-source yq
+brew install --build-from-source yq jq
+mkdir ~/.kube
 helm plugin install https://github.com/chartmuseum/helm-push.git
 helm repo add ysma500 http://ysma500.tk:314
 helm repo update

@@ -10,8 +10,13 @@ env:
   BUILD_TYPE: prod
   DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_PWD: ${{ secrets.DOCKERHUB_PWD }}
-  DEV_GKE_USER: ${{ secrets.SERVICEACCOUNT_EMAIL }}
-  DEV_GKE_JSON: ${{ secrets.SERVICEACCOUNT_JSONKEY }}
+  GKE_USER: ${{ secrets.GKE_SERVICEACCOUNT_EMAIL }}
+  GKE_JSON: ${{ secrets.GKE_SERVICEACCOUNT_JSONKEY }}
+  GKE_CLUSTER_NAME: ${{ secrets.GKE_PROD_CLUSTER_NAME }}
+  GKE_CLUSTER_ZONE: ${{ secrets.GKE_PROD_CLUSTER_ZONE }}
+  GKE_CLUSTER_PROJECT: ${{ secrets.GKE_PROD_CLUSTER_PROJECT }}
+  LKE_SERVICEACCOUNT_TOKEN: ${{ secrets.LKE_SERVICEACCOUNT_TOKEN }}
+  LKE_CLUSTERID: ${{ secrets.LKE_PROD_CLUSTERID }}
 
 
 jobs:
@@ -22,7 +27,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.15
+        go-version: 1.16
 
     - name: Build
       run: go build -v ./...
@@ -87,9 +92,10 @@ jobs:
             VERSION=$(yq e '.version' ./chart/Chart.yaml)
             FULL_NAME="./${NAME}-${VERSION}.tgz"
             helm package chart/
-            helm push $FULL_NAME ysma500 -f
+            helm cm-push $FULL_NAME ysma500 -f
+            helm repo update
 
-  deployment:
+  deployment-lke:
     needs: [publish-docker, publish-helm]
     runs-on: ubuntu-latest
     steps:
@@ -98,9 +104,7 @@ jobs:
         run: |
             chmod 700 .github/tools_install.sh
             ./.github/tools_install.sh
-            printf '${{ env.DEV_GKE_JSON }}' > ubivius-deployments-5e62532eb5a9.json
-            gcloud auth activate-service-account ${{ env.DEV_GKE_USER }} --key-file=ubivius-deployments-5e62532eb5a9.json
-            gcloud container clusters get-credentials test-environment --zone us-east1-c --project ubivius-deployments
+            curl -H "Authorization: Bearer ${{ env.LKE_SERVICEACCOUNT_TOKEN }}" https://api.linode.com/v4/lke/clusters/${{ env.LKE_CLUSTERID }}/kubeconfig | jq '.kubeconfig' | sed 's/["]//g' | base64 --decode > ~/.kube/config
 
       - name: Push with valuefile
         run: |
