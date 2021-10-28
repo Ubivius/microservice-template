@@ -40,6 +40,3 @@ docker pull mongo
 printf "running container... \n\n"
 # Start mongo
 docker run -d --name local-mongo -p $port:27017 -e MONGO_INITDB_ROOT_USERNAME=$username -e MONGO_INITDB_ROOT_PASSWORD=$password mongo
-
-# Start go main
-go run cmd/microservice-template/main.go
