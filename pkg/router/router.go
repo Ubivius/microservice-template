@@ -5,6 +5,7 @@ import (
 
 	"github.com/Ubivius/microservice-template/pkg/handlers"
 	tel "github.com/Ubivius/pkg-telemetry/metrics"
+	tokenValidation "github.com/Ubivius/shared-authentication/pkg/auth"
 	"github.com/gorilla/mux"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux"
 )
@@ -15,6 +16,7 @@ func New(productHandler *handlers.ProductsHandler) *mux.Router {
 	router := mux.NewRouter()
 	router.Use(otelmux.Middleware("template"))
 	router.Use(tel.RequestCountMiddleware)
+	router.Use(tokenValidation.Middleware)
 
 	// Get Router
 	getRouter := router.Methods(http.MethodGet).Subrouter()

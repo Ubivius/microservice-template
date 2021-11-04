@@ -4,16 +4,13 @@ go 1.15
 
 require (
 	github.com/Ubivius/pkg-telemetry v1.0.0
-	github.com/dvyukov/go-fuzz v0.0.0-20210914135545-4980593459a1 // indirect
-	github.com/elazarl/go-bindata-assetfs v1.0.1 // indirect
+	github.com/Ubivius/shared-authentication v0.0.0-20211104192230-fa3fdc81582b
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.2.0
 	github.com/gorilla/mux v1.8.0
 	github.com/leodido/go-urn v1.2.1 // indirect
-	github.com/stephens2424/writerset v1.0.2 // indirect
-	github.com/stretchr/objx v0.2.0 // indirect
 	go.mongodb.org/mongo-driver v1.7.3
 	go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux v0.25.0
 	go.opentelemetry.io/contrib/instrumentation/go.mongodb.org/mongo-driver/mongo/otelmongo v0.25.0
