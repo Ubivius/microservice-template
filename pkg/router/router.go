@@ -16,30 +16,34 @@ func New(productHandler *handlers.ProductsHandler) *mux.Router {
 	router := mux.NewRouter()
 	router.Use(otelmux.Middleware("template"))
 	router.Use(tel.RequestCountMiddleware)
-	router.Use(tokenValidation.Middleware)
 
 	// Get Router
 	getRouter := router.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/products", productHandler.GetProducts)
 	getRouter.HandleFunc("/products/{id:[0-9a-z-]+}", productHandler.GetProductByID)
+	getRouter.Use(tokenValidation.Middleware)
 
 	//Health Check
-	getRouter.HandleFunc("/health/live", productHandler.LivenessCheck)
-	getRouter.HandleFunc("/health/ready", productHandler.ReadinessCheck)
+	healthRouter := router.Methods(http.MethodGet).Subrouter()
+	healthRouter.HandleFunc("/health/live", productHandler.LivenessCheck)
+	healthRouter.HandleFunc("/health/ready", productHandler.ReadinessCheck)
 
 	// Put router
 	putRouter := router.Methods(http.MethodPut).Subrouter()
 	putRouter.HandleFunc("/products", productHandler.UpdateProducts)
 	putRouter.Use(productHandler.MiddlewareProductValidation)
+	putRouter.Use(tokenValidation.Middleware)
 
 	// Post router
 	postRouter := router.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/products", productHandler.AddProduct)
 	postRouter.Use(productHandler.MiddlewareProductValidation)
+	postRouter.Use(tokenValidation.Middleware)
 
 	// Delete router
 	deleteRouter := router.Methods(http.MethodDelete).Subrouter()
 	deleteRouter.HandleFunc("/products/{id:[0-9a-z-]+}", productHandler.Delete)
+	deleteRouter.Use(tokenValidation.Middleware)
 
 	return router
 }
