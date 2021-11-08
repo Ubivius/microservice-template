@@ -19,9 +19,9 @@ func New(productHandler *handlers.ProductsHandler) *mux.Router {
 
 	// Get Router
 	getRouter := router.Methods(http.MethodGet).Subrouter()
+	getRouter.Use(tokenValidation.Middleware)
 	getRouter.HandleFunc("/products", productHandler.GetProducts)
 	getRouter.HandleFunc("/products/{id:[0-9a-z-]+}", productHandler.GetProductByID)
-	getRouter.Use(tokenValidation.Middleware)
 
 	//Health Check
 	healthRouter := router.Methods(http.MethodGet).Subrouter()
