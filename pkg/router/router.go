@@ -30,20 +30,20 @@ func New(productHandler *handlers.ProductsHandler) *mux.Router {
 
 	// Put router
 	putRouter := router.Methods(http.MethodPut).Subrouter()
+	putRouter.Use(tokenValidation.Middleware)
 	putRouter.HandleFunc("/products", productHandler.UpdateProducts)
 	putRouter.Use(productHandler.MiddlewareProductValidation)
-	putRouter.Use(tokenValidation.Middleware)
 
 	// Post router
 	postRouter := router.Methods(http.MethodPost).Subrouter()
+	postRouter.Use(tokenValidation.Middleware)
 	postRouter.HandleFunc("/products", productHandler.AddProduct)
 	postRouter.Use(productHandler.MiddlewareProductValidation)
-	postRouter.Use(tokenValidation.Middleware)
 
 	// Delete router
 	deleteRouter := router.Methods(http.MethodDelete).Subrouter()
-	deleteRouter.HandleFunc("/products/{id:[0-9a-z-]+}", productHandler.Delete)
 	deleteRouter.Use(tokenValidation.Middleware)
+	deleteRouter.HandleFunc("/products/{id:[0-9a-z-]+}", productHandler.Delete)
 
 	return router
 }
