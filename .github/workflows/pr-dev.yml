@@ -11,16 +11,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.WORKFLOWS_TOKEN }}
 
 jobs:
-  golangci-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.29
-
-  build:
+  build-and-lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -31,6 +22,10 @@ jobs:
 
     - name: Build
       run: go build -v ./...
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v2
+      with:
+        version: v1.29
 
   unit-test:
     runs-on: ubuntu-latest
@@ -75,7 +70,7 @@ jobs:
           github_token: ${{ env.GITHUB_TOKEN }}
 
   publish-docker:
-    needs: [ build, unit-test, integration-test ]
+    needs: [ build-and-lint, unit-test, integration-test, pr-naming-rules ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -105,7 +100,7 @@ jobs:
           tags: "${{ steps.fetch-docker-vars.outputs.REPO_VERSION }}"
 
   publish-helm:
-    needs: [ build, unit-test, integration-test ]
+    needs: [ build-and-lint, unit-test, integration-test, pr-naming-rules ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
