@@ -79,7 +79,7 @@ jobs:
           github_token: ${{ env.GITHUB_TOKEN }}
 
   publish-docker:
-    needs: [ build, unit-test, integration-test ]
+    needs: [ build-and-lint, unit-test, integration-test ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -109,7 +109,7 @@ jobs:
           tags: "${{ steps.fetch-docker-vars.outputs.REPO_VERSION }}"
 
   publish-helm:
-    needs: [ build, unit-test, integration-test ]
+    needs: [ build-and-lint, unit-test, integration-test ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
