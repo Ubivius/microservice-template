@@ -73,7 +73,7 @@ jobs:
         go test ./... -run Integration
   
   publish-docker:
-    needs: [ build, unit-test, integration-test ]
+    needs: [ golangci-lint, build, unit-test, integration-test ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -103,7 +103,7 @@ jobs:
           tags: "${{ steps.fetch-docker-vars.outputs.REPO_VERSION }}"
 
   publish-helm:
-    needs: [ build, unit-test, integration-test ]
+    needs: [ golangci-lint, build, unit-test, integration-test ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
