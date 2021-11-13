@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/Ubivius/pkg-telemetry v1.0.0
-	github.com/Ubivius/shared-authentication v0.0.0-20210414195205-42bbbf3e6626 // indirect
+	github.com/Ubivius/shared-authentication v0.0.0-20211113221950-120d47cecb60 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/google/gofuzz v1.2.0 // indirect
