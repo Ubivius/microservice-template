@@ -58,6 +58,8 @@ github.com/PuerkitoBio/purell v1.1.1/go.mod h1:c11w/QuzBsJSee3cPx9rAFu61PvFxuPbt
 github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdkoq3SwY9Y+13GIhn11/XLaGBb4BfwItxLd5jeuXE=
 github.com/Ubivius/pkg-telemetry v1.0.0 h1:KqYyIaEWBtiexv0Q0XG/507LqOB8xWgV2zmfj8bH0bc=
 github.com/Ubivius/pkg-telemetry v1.0.0/go.mod h1:Qk6rTW8c2oT1zvFgj3HygncBsZeivHDWTEXsR1vMlfE=
+github.com/Ubivius/shared-authentication v0.0.0-20210414195205-42bbbf3e6626 h1:wLfshUtp4026MLCfKDRHHnFLDdrVMFpJTwzdlNaUfpE=
+github.com/Ubivius/shared-authentication v0.0.0-20210414195205-42bbbf3e6626/go.mod h1:XfZshYyu2BL4A9ePivZadUTGzguUlQB1WXQesF/OFJc=
 github.com/Ubivius/shared-authentication v0.0.0-20211104192230-fa3fdc81582b h1:eCsEPl+PfoIucpId9IxVwZuqrqbFGlJ0EtsmYtpuhmE=
 github.com/Ubivius/shared-authentication v0.0.0-20211104192230-fa3fdc81582b/go.mod h1:XfZshYyu2BL4A9ePivZadUTGzguUlQB1WXQesF/OFJc=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
