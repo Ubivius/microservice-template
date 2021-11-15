@@ -2,7 +2,7 @@ apiVersion: v2
 name: microservice-template
 type: application
 version: 0.0.0
-appVersion: 0.0.0-rc
+appVersion: 0.0.0
 description: "microservice-template: Template for microservices."
 icon: https://avatars.githubusercontent.com/u/64909001
 sources:

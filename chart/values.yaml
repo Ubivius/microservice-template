@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: ubiviushub/microservice-template
-  tag: 0.0.0-rc
+  tag: 0.0.0
   pullPolicy: Always
 
 imagePullSecrets: []
