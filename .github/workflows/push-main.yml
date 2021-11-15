@@ -20,7 +20,16 @@ env:
 
 
 jobs:
-  build-and-test:
+  golangci-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
+
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -32,20 +41,39 @@ jobs:
     - name: Build
       run: go build -v ./...
 
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
     - name: Unit tests
       run: go test -short -v ./...
 
-  golangci-lint:
+  integration-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.29
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Integration tests
+      run: |
+        printf "pulling image for MongoDB... \n\n"
+        docker pull mongo
+        printf "running container... \n\n"
+        docker run -d --name local-mongo -p 27888:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=pass mongo
+        go test ./... -run Integration
   
   publish-docker:
-    needs: [ build-and-test, golangci-lint]
+    needs: [ golangci-lint, build, unit-test, integration-test ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -75,7 +103,7 @@ jobs:
           tags: "${{ steps.fetch-docker-vars.outputs.REPO_VERSION }}"
 
   publish-helm:
-    needs: [ build-and-test, golangci-lint]
+    needs: [ golangci-lint, build, unit-test, integration-test ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
