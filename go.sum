@@ -64,6 +64,8 @@ github.com/Ubivius/shared-authentication v0.0.0-20211104192230-fa3fdc81582b h1:e
 github.com/Ubivius/shared-authentication v0.0.0-20211104192230-fa3fdc81582b/go.mod h1:XfZshYyu2BL4A9ePivZadUTGzguUlQB1WXQesF/OFJc=
 github.com/Ubivius/shared-authentication v0.0.0-20211113221950-120d47cecb60 h1:pjfis9ufKBX+oQV1p+I2vagBDPI51sKpyZ21fPhmVc4=
 github.com/Ubivius/shared-authentication v0.0.0-20211113221950-120d47cecb60/go.mod h1:XfZshYyu2BL4A9ePivZadUTGzguUlQB1WXQesF/OFJc=
+github.com/Ubivius/shared-authentication v1.0.0 h1:zcgS3t91DjWKj0uXFs3eNpGJl7+K6a50hi9gBYq0rGE=
+github.com/Ubivius/shared-authentication v1.0.0/go.mod h1:XfZshYyu2BL4A9ePivZadUTGzguUlQB1WXQesF/OFJc=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
 github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
 github.com/alecthomas/units v0.0.0-20151022065526-2efee857e7cf/go.mod h1:ybxpYRFXyAe+OPACYpWeL0wqObRcbAqCMya13uyzqw0=
