@@ -75,7 +75,7 @@ jobs:
           github_token: ${{ env.GITHUB_TOKEN }}
 
   publish-docker:
-    needs: [ golangci-lint, build, unit-test, integration-test, pr-naming-rules ]
+    needs: [ golangci-lint, build, pr-naming-rules ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -105,7 +105,7 @@ jobs:
           tags: "${{ steps.fetch-docker-vars.outputs.REPO_VERSION }}"
 
   publish-helm:
-    needs: [ golangci-lint, build, unit-test, integration-test, pr-naming-rules ]
+    needs: [ golangci-lint, build, pr-naming-rules ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
