@@ -27,7 +27,7 @@ func main() {
 	logf.SetLogger(newLogger.WithName("log"))
 
 	// Starting tracer provider
-	tp := tracing.CreateTracerProvider("http://192.168.6.12:14268/api/traces", "microservice-template-traces")
+	tp := tracing.CreateTracerProvider(os.Getenv("JAEGER_ENDPOINT"), "microservice-template-traces")
 
 	// Starting metrics exporter
 	metrics.StartPrometheusExporterWithName("template")

@@ -14,6 +14,8 @@ spec:
     metadata:
       labels:
         {{- include "microservice-template.selectorLabels" . | nindent 8 }}
+      annotations:
+        {{- toYaml .Values.annotations | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -30,8 +32,13 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 9090
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
+{{- range .Values.service.otherPorts }}          
+            - name: {{ .name }}
+              containerPort: {{ .port }}
+              protocol: TCP
+{{- end}}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:

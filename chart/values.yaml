@@ -5,6 +5,11 @@ image:
   tag: 0.0.0
   pullPolicy: Always
 
+annotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/path: /metrics
+  prometheus.io/port: "8888"
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -79,6 +84,9 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 9090
+  otherPorts:
+    - port: 8888
+      name: metrics
 
 ingress:
   enabled: true
