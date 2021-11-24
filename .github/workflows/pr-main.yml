@@ -5,7 +5,10 @@ on:
     branches: [ master, main ]
 
 env:
+  GIT_USER: ${{ secrets.GIT_USERNAME }}
+  GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
   GITHUB_TOKEN: ${{ secrets.WORKFLOWS_TOKEN }}
+  GH_TOKEN: ${{ secrets.GITHUBCLI_TOKEN }}
 
 jobs:
   golangci-lint:
@@ -70,3 +73,22 @@ jobs:
           min_length: 5 # Min length of the branch name
           max_length: 60 # Max length of the branch name
           github_token: ${{ env.GITHUB_TOKEN }}
+  
+  convert-ingress-prod:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Setup Git
+      run: |
+          export GH_TOKEN=${{ env.GH_TOKEN }}
+          git config --global user.name "${{ env.GIT_USER }}"
+          git config --global user.email "${{ env.GIT_EMAIL }}"
+          chmod 700 ./.github/main_conversion.sh
+    
+    - name: Change and Commit ingress prod uri paths
+          ./.github/main_conversion.sh
+          git add .;
+          git commit -m "Fix prod uri paths";
+          git push;
