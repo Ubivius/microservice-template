@@ -89,7 +89,7 @@ service:
       name: metrics
 
 ingress:
-  enabled: true
+  enabled: false
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -101,6 +101,12 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+ingressRoute:
+  enabled: true
+  match: Host(`template.player.dev.ubivius.tk`) && PathPrefix(`/`)
+  tls:
+    secretName: template.player.dev.ubivius.tk
 
 resources:
   requests:
