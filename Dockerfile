@@ -21,6 +21,7 @@ FROM golang:stretch as local
 
 FROM ${BUILD_TYPE} AS exit_artefact
 COPY --from=build-env /go/src/main /microservice
+ENV JAEGER_ENDPOINT=http://jaeger-tracing-collector:14268/api/traces
 EXPOSE 8888
 EXPOSE 9090
 CMD ["/microservice"]
