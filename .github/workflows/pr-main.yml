@@ -80,6 +80,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
+
     - name: Setup Git
       run: |
           export GH_TOKEN=${{ env.GH_TOKEN }}
@@ -88,6 +89,7 @@ jobs:
           chmod 700 ./.github/main_conversion.sh
     
     - name: Change and Commit ingress prod uri paths
+      run: |
           ./.github/main_conversion.sh
           git add .;
           git commit -m "Fix prod uri paths";
