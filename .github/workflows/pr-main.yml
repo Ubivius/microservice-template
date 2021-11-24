@@ -5,10 +5,7 @@ on:
     branches: [ master, main ]
 
 env:
-  GIT_USER: ${{ secrets.GIT_USERNAME }}
-  GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
   GITHUB_TOKEN: ${{ secrets.WORKFLOWS_TOKEN }}
-  GH_TOKEN: ${{ secrets.GITHUBCLI_TOKEN }}
 
 jobs:
   golangci-lint:
