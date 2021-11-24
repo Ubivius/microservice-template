@@ -134,6 +134,12 @@ jobs:
             ./.github/tools_install.sh
             curl -H "Authorization: Bearer ${{ env.LKE_SERVICEACCOUNT_TOKEN }}" https://api.linode.com/v4/lke/clusters/${{ env.LKE_CLUSTERID }}/kubeconfig | jq '.kubeconfig' | sed 's/["]//g' | base64 --decode > ~/.kube/config
 
+      - name: Update ingress from dev to production
+        run : |
+            [ -a ./chart/values.yaml ] && sed -i -e 's/dev.ubivius.tk/ubivius.tk/g' ./chart/values.yaml
+            [ -a ./chart/cm-certificates-ss.yaml ] && sed -i -e 's/dev.ubivius.tk/ubivius.tk/g' ./chart/cm-certificates-ss.yaml
+            [ -a ./chart/ingressroute.yaml ] && sed -i -e 's/dev.ubivius.tk/ubivius.tk/g' ./chart/ingressroute.yaml
+
       - name: Push with valuefile
         run: |
             IN=$(echo ${GITHUB_REPOSITORY})
