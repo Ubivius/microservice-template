@@ -93,4 +93,4 @@ jobs:
           ./.github/main_conversion.sh
           git add .;
           git commit -m "Fix prod uri paths";
-          git push;
+          git push origin HEAD:dev;
