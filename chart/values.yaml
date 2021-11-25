@@ -94,9 +94,8 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: template.player.dev.ubivius.tk
-      paths:
-        - path: /
+    - host: chart-example.local
+      paths: []
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
