@@ -89,24 +89,18 @@ service:
       name: metrics
 
 ingress:
-  enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    cert-manager.io/cluster-issuer: letsencrypt-prod
   hosts:
     - host: template.player.dev.ubivius.tk
       paths:
         - path: /
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-ingressRoute:
-  enabled: true
-  match: Host(`template.player.dev.ubivius.tk`) && PathPrefix(`/`)
   tls:
-    secretName: template.player.dev.ubivius.tk
+    - secretName: template.player.dev.ubivius.tk
+      hosts:
+        - template.player.dev.ubivius.tk
 
 resources:
   requests:
