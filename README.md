@@ -37,3 +37,14 @@ __Data Params__
 ```
 
 `DELETE` `/products/{id}` Delete product.  `id=[string]`
+
+__Fuzzing__
+To start fuzzing, simply build and run:
+```console
+$ cd pkg/fuzzing
+$ go-fuzz-build
+$ go-fuzz
+```
+This will generate and test inputs in an infinite loop.
+You need at least an initial input named "0" inside the `corpus` folder.
+For more information, refer to [go-fuzz](https://github.com/dvyukov/go-fuzz/tree/master) documentation.

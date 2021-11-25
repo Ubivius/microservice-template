@@ -4,22 +4,13 @@ on:
   pull_request:
     branches: [ dev ]
 
+env:
+  BUILD_TYPE: test
+  DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_PWD: ${{ secrets.DOCKERHUB_PWD }}
+  GITHUB_TOKEN: ${{ secrets.WORKFLOWS_TOKEN }}
+
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.15
-
-    - name: Build
-      run: go build -v ./...
-
-    - name: Unit tests
-      run: go test -short -v ./...
-
   golangci-lint:
     runs-on: ubuntu-latest
     steps:
@@ -28,3 +19,111 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: v1.29
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Build
+      run: go build -v ./...
+
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Unit tests
+      run: go test -short -v ./...
+
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Integration tests
+      run: |
+        printf "pulling image for MongoDB... \n\n"
+        docker pull mongo
+        printf "running container... \n\n"
+        docker run -d --name local-mongo -p 27888:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=pass mongo
+        go test ./... -run Integration
+
+  pr-naming-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: deepakputhraya/action-pr-title@master
+        with:
+          regex: '^(major|minor|patch)\/(feature|hotfix)\/(UBI)-([0-9]{3})-([A-Za-z-]+)$' # e.g. "major|minor|patch/{{branch name}}"
+          prefix_case_sensitive: false # title prefix are case insensitive
+          min_length: 5 # Min length of the branch name
+          max_length: 60 # Max length of the branch name
+          github_token: ${{ env.GITHUB_TOKEN }}
+
+  publish-docker:
+    needs: [ golangci-lint, build, pr-naming-rules ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Prepare docker env
+        id: fetch-docker-vars
+        run: |
+            chmod 700 .github/tools_install.sh
+            ./.github/tools_install.sh
+            IN=$(echo ${GITHUB_REPOSITORY})
+            NAME=${IN#"Ubivius/"}
+            VERSION=$(yq e '.version' ./chart/Chart.yaml)-rc
+            echo "::set-output name=REPO_NAME::$(echo $NAME)"
+            echo "::set-output name=BRANCH::$(echo $GITHUB_REF)"
+            echo "::set-output name=REPO_VERSION::$(echo $VERSION)"
+        shell: bash
+
+      - name: Build and Push Artefact to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        env:
+          BUILD_TYPE: ${{ env.BUILD_TYPE }}
+        with:
+          name: ubiviushub/${{ steps.fetch-docker-vars.outputs.REPO_NAME }}
+          username: ${{ env.DOCKERHUB_USER }}
+          password: ${{ env.DOCKERHUB_PWD }}
+          buildargs: BUILD_TYPE
+          dockerfile: Dockerfile
+          tags: "${{ steps.fetch-docker-vars.outputs.REPO_VERSION }}"
+
+  publish-helm:
+    needs: [ golangci-lint, build, pr-naming-rules ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Prepare helm env
+        id: fetch-helm-vars
+        run: |
+            chmod 700 .github/tools_install.sh
+            ./.github/tools_install.sh
+      
+      - name: Package and Push Chart to ChartMuseum
+        run: |
+            IN=$(echo ${GITHUB_REPOSITORY})
+            NAME=${IN#"Ubivius/"}
+            VERSION_ACTUAL=$(yq e '.version' ./chart/Chart.yaml)-rc
+            yq eval -i ".version = \"$VERSION_ACTUAL\"" ./chart/Chart.yaml
+            yq eval -i ".appVersion = \"$VERSION_ACTUAL\"" ./chart/Chart.yaml
+            VERSION=$(yq e '.version' ./chart/Chart.yaml)
+            FULL_NAME="./${NAME}-${VERSION}.tgz"
+            helm package chart/
+            helm cm-push $FULL_NAME ysma500 -f
+            helm repo update

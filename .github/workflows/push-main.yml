@@ -10,26 +10,16 @@ env:
   BUILD_TYPE: prod
   DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_PWD: ${{ secrets.DOCKERHUB_PWD }}
-  DEV_GKE_USER: ${{ secrets.SERVICEACCOUNT_EMAIL }}
-  DEV_GKE_JSON: ${{ secrets.SERVICEACCOUNT_JSONKEY }}
+  GKE_USER: ${{ secrets.GKE_SERVICEACCOUNT_EMAIL }}
+  GKE_JSON: ${{ secrets.GKE_SERVICEACCOUNT_JSONKEY }}
+  GKE_CLUSTER_NAME: ${{ secrets.GKE_PROD_CLUSTER_NAME }}
+  GKE_CLUSTER_ZONE: ${{ secrets.GKE_PROD_CLUSTER_ZONE }}
+  GKE_CLUSTER_PROJECT: ${{ secrets.GKE_PROD_CLUSTER_PROJECT }}
+  LKE_SERVICEACCOUNT_TOKEN: ${{ secrets.LKE_SERVICEACCOUNT_TOKEN }}
+  LKE_CLUSTERID: ${{ secrets.LKE_PROD_CLUSTERID }}
 
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.15
-
-    - name: Build
-      run: go build -v ./...
-
-    - name: Unit tests
-      run: go test -short -v ./...
-
   golangci-lint:
     runs-on: ubuntu-latest
     steps:
@@ -38,9 +28,52 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: v1.29
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Build
+      run: go build -v ./...
+
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Unit tests
+      run: go test -short -v ./...
+
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Integration tests
+      run: |
+        printf "pulling image for MongoDB... \n\n"
+        docker pull mongo
+        printf "running container... \n\n"
+        docker run -d --name local-mongo -p 27888:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=pass mongo
+        go test ./... -run Integration
   
   publish-docker:
-    needs: [ build-and-test, golangci-lint]
+    needs: [ golangci-lint, build ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -70,7 +103,7 @@ jobs:
           tags: "${{ steps.fetch-docker-vars.outputs.REPO_VERSION }}"
 
   publish-helm:
-    needs: [ build-and-test, golangci-lint]
+    needs: [ golangci-lint, build ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -87,9 +120,10 @@ jobs:
             VERSION=$(yq e '.version' ./chart/Chart.yaml)
             FULL_NAME="./${NAME}-${VERSION}.tgz"
             helm package chart/
-            helm push $FULL_NAME ysma500 -f
+            helm cm-push $FULL_NAME ysma500 -f
+            helm repo update
 
-  deployment:
+  deployment-lke:
     needs: [publish-docker, publish-helm]
     runs-on: ubuntu-latest
     steps:
@@ -98,9 +132,13 @@ jobs:
         run: |
             chmod 700 .github/tools_install.sh
             ./.github/tools_install.sh
-            printf '${{ env.DEV_GKE_JSON }}' > ubivius-deployments-5e62532eb5a9.json
-            gcloud auth activate-service-account ${{ env.DEV_GKE_USER }} --key-file=ubivius-deployments-5e62532eb5a9.json
-            gcloud container clusters get-credentials test-environment --zone us-east1-c --project ubivius-deployments
+            curl -H "Authorization: Bearer ${{ env.LKE_SERVICEACCOUNT_TOKEN }}" https://api.linode.com/v4/lke/clusters/${{ env.LKE_CLUSTERID }}/kubeconfig | jq '.kubeconfig' | sed 's/["]//g' | base64 --decode > ~/.kube/config
+
+      - name: Update ingress from dev to production
+        run : |
+            [ -a ./chart/values.yaml ] && sed -i -e 's/dev.ubivius.tk/ubivius.tk/g' ./chart/values.yaml
+            [ -a ./chart/cm-certificates-ss.yaml ] && sed -i -e 's/dev.ubivius.tk/ubivius.tk/g' ./chart/cm-certificates-ss.yaml
+            [ -a ./chart/ingressroute.yaml ] && sed -i -e 's/dev.ubivius.tk/ubivius.tk/g' ./chart/ingressroute.yaml
 
       - name: Push with valuefile
         run: |

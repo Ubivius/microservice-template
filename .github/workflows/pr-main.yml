@@ -4,22 +4,10 @@ on:
   pull_request:
     branches: [ master, main ]
 
+env:
+  GITHUB_TOKEN: ${{ secrets.WORKFLOWS_TOKEN }}
+
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.15
-
-    - name: Build
-      run: go build -v ./...
-
-    - name: Unit tests
-      run: go test -short -v ./...
-
   golangci-lint:
     runs-on: ubuntu-latest
     steps:
@@ -28,3 +16,57 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: v1.29
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Build
+      run: go build -v ./...
+
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Unit tests
+      run: go test -short -v ./...
+
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Integration tests
+      run: |
+        printf "pulling image for MongoDB... \n\n"
+        docker pull mongo
+        printf "running container... \n\n"
+        docker run -d --name local-mongo -p 27888:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=pass mongo
+        go test ./... -run Integration
+
+  pr-naming-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: deepakputhraya/action-pr-title@master
+        with:
+          regex: '^(major|minor|patch)\/(feature|hotfix)\/(UBI)-([0-9]{3})-([A-Za-z-]+)$' # e.g. "major|minor|patch/{{branch name}}"
+          prefix_case_sensitive: false # title prefix are case insensitive
+          min_length: 5 # Min length of the branch name
+          max_length: 60 # Max length of the branch name
+          github_token: ${{ env.GITHUB_TOKEN }}
